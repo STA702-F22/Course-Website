@@ -1,0 +1,229 @@
+---
+title: "STA 601: Bayesian Model Averaging"
+subtitle: "STA 601 Fall 2021"
+author: "Merlise Clyde"
+date: "October 19, 2021"
+header-includes:
+  - \include{macros.tex}
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/class_logo.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+# R options
+options(
+  htmltools.dir.version = FALSE, # for blogdown
+  show.signif.stars = FALSE,     # for regression output
+  warm = 1
+  )
+# Set dpi and height for images
+library(knitr)
+knitr::opts_chunk$set(fig.height = 2.65, dpi = 300,fig.align='center',fig.show='hold',size='footnotesize', small.mar=TRUE) 
+# For nonsese...
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rvest)
+```
+
+
+## Posteriors
+
+Likelihood under model $\gamma$
+.block[
+.small[
+$$\begin{align*}
+p(\boldsymbol{y} \mid \boldsymbol{X}_\gamma, \gamma, \alpha, \boldsymbol{\beta}_{\gamma}, \phi) & \propto (\phi^{\frac{n}{2}} \ \textrm{exp} \left\{-\frac{\phi}{2} (\boldsymbol{y} - \mathbf{1} \alpha - \boldsymbol{X}_{\gamma}\boldsymbol{\beta}_{\gamma})^T (\boldsymbol{y} - \mathbf{1} \alpha -\boldsymbol{X}_{\gamma}\boldsymbol{\beta}_{\gamma})\right\}\end{align*}$$
+]
+]
+
+--
+
+Independent Jeffrey's priors on common parameters and the g-prior 
+
+$$\begin{align*}
+\pi(\alpha, \phi) & = \phi^{-1}\\
+\pi(\boldsymbol{\beta}_{\gamma} | \phi) & = \textsf{N}_p\left(\boldsymbol{\beta}_{0\gamma}= \boldsymbol{0}, \Sigma_{0\gamma} = \frac{g}{\phi} \left[{\boldsymbol{X}_{\gamma}}^T \boldsymbol{X}_{\gamma} \right]^{-1} \right) \\ 
+\end{align*}$$
+
+
+
+
+---
+## Posteriors
+
+With those pieces, the conditional posteriors are straightforward 
+
+$$\begin{align*}\alpha \mid \phi, y & \sim \textsf{N}\left(\bar{y}, \frac{1}{n \phi}\right)\\
+\boldsymbol{\beta}_{\gamma} \mid \gamma, \phi, g, y &\sim \textsf{N}\left( \frac{g}{1 + g} \hat{\boldsymbol{\beta}}_{\gamma}, \frac{g}{1 + g} \frac{1}{\phi} \left[{\boldsymbol{X}_{\gamma}}^T \boldsymbol{X}_{\gamma} \right]^{-1}  \right) \\
+\phi \mid \gamma, y & \sim \textsf{Gamma}\left(\frac{n-1}{2}, \frac{\textsf{TotalSS} - \frac{g}{1+g} \textsf{RegSS}}{2}\right) \\
+p(\gamma \mid y) & \propto p(y \mid \gamma) p(\gamma) \\
+\textsf{TotalSS} \equiv \sum_i (y_i - \bar{y})^2 & \qquad
+\textsf{RegSS} \equiv \hat{\boldsymbol{\beta}}_\gamma^T \boldsymbol{X}_\gamma^T \boldsymbol{X}_\gamma \hat{\beta}\gamma\\
+R^2_\gamma = \frac{\textsf{RegSS}}{\textsf{TotalSS}} & = 1 - \frac{\textsf{ErrorSS}}{\textsf{TotalSS}}
+\end{align*}$$
+
+--
+ 
+
+$$p(Y \mid \gamma) = C (1 + g)^{\frac{n-p_\gamma -1}{2}} ( 1 + g (1 - R^2_\gamma))^{- \frac{(n-1)}{2}}$$
+ 
+
+
+
+
+
+---
+## Find Posteriors 
+
+
+---
+##  Continued
+
+
+---
+## Summaries
+
+-  We can run a collapsed Gibbs or MH sampler over just $\Gamma$! 
+
+- We can then compute marginal posterior probabilities $\Pr[\gamma | Y]$ for each model and select model with the highest posterior probability.
+
+--
+
+- We can also compute posterior $\Pr[\gamma_j = 1 \mid Y]$, the posterior probability of including the $j$'th predictor, often called .hlight[marginal inclusion probability (MIP)], allowing for uncertainty in the other predictors.
+
+--
+
+- Also straightforward to do model averaging once we all have posterior samples.
+
+--
+
+- The Hoff book works through one example and you can find the Gibbs sampler for doing inference there. I strongly recommend you go through it carefully!
+
+--
+
+- Also paper by Liang et al (2008)  JASA
+
+--
+- we will focus on using R packages for implementing
+
+
+---
+##  Examples with BAS
+```{r bas}
+library(BAS)
+data(usair, package="HH")
+poll.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
+                             log(popn) + wind +
+                             precip + raindays,
+                  data=usair,
+                  prior="g-prior",
+                  alpha=nrow(usair), # g = n
+                  n.models=2^6,
+                  modelprior = uniform(),
+                  method="deterministic")
+```
+
+---
+## Summaries
+
+```{r}
+poll.bma
+```
+
+---
+## Plots of Coefficients
+
+```{r coef_plot, out.width='75%',out.height='75%', fig.height=5,fig.width=8, echo=TRUE}
+ beta = coef(poll.bma)
+ par(mfrow=c(2,3));  plot(beta, subset=2:7,ask=F)
+```
+
+---
+##  Summary of Coefficients
+
+```{r}
+beta
+```
+
+Iterated Expectations!
+
+---
+##  Model Space Visualization 
+
+```{r image_plot, out.width='75%',out.height='75%', fig.height=5,fig.width=8, echo=TRUE}
+
+image(poll.bma, rotate=FALSE)
+```
+
+---
+##  Bartlett's Paradox
+
+$$\textsf{BF}(\gamma : \gamma_0) =    (1 + g)^{(n - 1 - p_\gamma)/2} (1 + g(1 - R^2_\gamma))^{-(n-1)/2}$$
+
+- What happens to Bayes Factors or posterior probabilites of $\gamma$ as $g \to \infty$?  (for fixed data)
+
+--
+
+-  What happens to Bayes Factor as $g \to 0$
+
+---
+##  Information Paradox
+
+$$\textsf{BF}(\gamma : \gamma_0) =    (1 + g)^{(n - 1 - p_\gamma)/2} (1 + g(1 - R^2_\gamma))^{-(n-1)/2}$$
+
+- Let $g$ be a fixed constant and take $n$ fixed imagine a sequence of data such that $R^2_\gamma \to 1$  (increasing explained variation)
+
+--
+
+- Let $F = \frac{R_{\gamma}^2/p_\gamma}{(1 - R_{\gamma}^2)/(n - 1 - p_\gamma)}$ 
+
+--
+
+- As $R^2_{\gamma} \to 1$, $F \to \infty$ LR test would reject $\gamma_0$
+  where $F$ is the usual $F$ statistic for  comparing model $\gamma$ to
+  $\gamma_0$ 
+
+--
+
+- BF converges to a fixed constant $(1+g)^{-p_\gamma/2}$  (does not go
+  to infinity
+  
+--
+
+- one predictor example
+
+--
+
+**Information Inconsistency**  see Liang et al JASA 2008
+
+---
+## Mixtures of $g$-priors & Information Consistency
+
+Need $BF \to \infty$ if $R^2_\gamma \to 1$  $\Leftrightarrow$ $\textsf{E}_g[(1 +g)^{-p_\gamma/2}]$ diverges for $p_\gamma < n - 1$ (proof in Liang et al)
+
+--
+
+- Zellner-Siow Cauchy prior, $1/g \sim \textsf{Gamma}(1/2, 1/2))$
+
+--
+
+- hyper-g prior or hyper-g/n (Liang et al JASA 2008) 
+
+--
+
+- robust prior (Bayarrri et al Annals of Statistics 2012 
+
+--
+
+ All have tails that behave like a Cauchy distribution  (robustness)
+ 

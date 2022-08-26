@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 601: Random Effects</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 601: Random Effects
+## STA 601 Fall 2021
+### Merlise Clyde
+### Nov 1, 2021
+
+---
+
+
+
+
+
+
+
+## Hierarchical Models Continued
+
+- Models for Gaussian Data with no Covariates
+
+$$ y_{ij} \sim \, ? \qquad i = 1, \ldots n; j = 1, \ldots, n_i$$ 
+
+--
+
+- `\(i\)` "block" - schools, counties, etc
+
+--
+
+- `\(j\)`  observations within a block - students within schools,  households within counties,  etc
+
+--
+
+- potentially there may be within block dependence in the observations due to unmeasured covariates
+
+--
+
+- structure?
+---
+## Models
+
+- Naive model (baseline)
+
+$$ y_{ij} \overset{iid}{\sim}  N(\mu, \sigma^2) $$
+--
+
+- issue: no systematic variation across blocks
+
+--
+
+- Fixed Effects model:
+
+$$  y_{ij} \overset{ind}{\sim}  N(\mu_i, \sigma^2) $$
+--
+
+- Common reparameterization
+
+$$  y_{ij} \overset{ind}{\sim}  N(\alpha + \beta_i, \sigma^2) $$
+
+ + `\(\mu\)` intercept
+
+ +  `\(\beta_i\)` shift for school
+ 
+--
+
+- Identifiability ?
+
+
+
+---
+##  Non-Identifiability
+
+- Example:  `\(y_i \sim N(\alpha + \beta, \sigma^2)\)`  overparameterized
+
+
+--
+
+- `\(\mu = \alpha + \beta\)` and `\(\sigma^2\)` are uniquely estimated, but not `\(\alpha\)` or `\(\beta\)`
+
+--
+
+-  `\(x_i \in \{1, \ldots, d \}\)` factor levels
+
+ `$$y_i \sim N(\mu + \sum_j\beta_j 1(x_i = j), \sigma^2)$$`
+ 
+--
+ 
+ `\(\theta_j = \mu + \beta_j\)` identifiable - `\(d\)` equations but `\(d + 1\)` unknowns
+ 
+--
+ 
+- Put constraints  on parameters  
+ 
+  + `\(\alpha = 0\)`
+  + `\(\beta_d = 0\)` 
+  + `\(\sum \beta_j = 0\)`
+ 
+ 
+---
+##  Bayesian Notion of Identifiability
+ 
+ - Bayesian Learning
+ 
+--
+ 
+- the posterior distribution differs from the prior
+ 
+ 
+--
+
+- **Note:**  In general, it's good to avoid working with non-identifiable models; 
+
+**Caveats:**
+
+--
+
+
+
+- Forcing identifiability may involve (complex) constraints that bias parameter estimates and make MCMC less efficient
+
+--
+
+- sometimes purposely introduce non-identifiability to improve computation  (parameter expansion PX)
+ 
+
+--
+
+- run non-identifiable model and focus on identifiable parameters or functions of them
+
+--
+
+- post-processing of output
+
+---
+##  Issue with Fixed Effect Approach
+
+- What if `\(n_i\)`, number of observations per block, are small?
+
+--
+
+- Estimated uncertainty/variances are large based on MLE using group specific means
+
+--
+
+- What if blocks might be viewed as a sample from some larger population?   Sample of schools?
+
+--
+
+-  May want inference about  the larger population and say things about future blocks!
+
+
+--
+
+- fixed effects do not allow us to say anything about  blocks not in our sample!
+
+--
+
+- how to address this?
+
+---
+## Random Effects
+
+`$$\begin{align*}
+y_{ij} &amp; = \alpha + \beta_i + \epsilon_{ij}, \qquad \epsilon_{ij} \overset{iid}{\sim} N(0, \sigma^2) \\
+\beta_i &amp; \overset{iid}{\sim} N(0, \tau^2)
+\end{align*}$$`
+
+- random effects `\(\beta_j\)`
+
+--
+
+Note: Don't confuse random effect distributions with prior distributions! 
+
+--
+-  Random effect distributions should be viewed as part of the model specification (likelihood)
+
+--
+
+- We've specified the likelihood in a hierarchical manner to induce desirable structure
+
+--
+
+-  unknown parameters are population parameters `\(\alpha\)`, `\(\tau\)` and `\(\sigma^2\)`   
+
+--
+
+- Bayesians put prior distributions on `\(\alpha\)`, `\(\tau\)` and `\(\sigma^2\)`; frequentists don't!
+
+---
+## Equivalent Model
+
+`$$y_{i} = (y_{i1}, y_{i2}, \ldots, y_{in_i})$$`
+`$$y_i \overset{ind}{\sim} N_{n_i}\left( \alpha 1_{n_i}, \left(
+\begin{array}{cccc}
+\sigma^2 + \tau &amp; \tau &amp; \ldots &amp; \tau \\
+\tau &amp; \ddots &amp;    &amp; \tau  \\
+\vdots &amp; &amp; \ddots &amp; \vdots \\
+\tau &amp; \ldots &amp; \tau &amp; \sigma^2 + \tau \end{array}\right) \right)$$`
+
+within-block correlation
+
+--
+
+- algorithmically we can use either the latent variable model or the collapsed (marginal) model for inferences;  
+
+--
+
+- often latent variable is easier to work with!
+
+---
+##  Simple Gibbs Sampler
+
+`$$\begin{align*} \theta = (\alpha, \tau, \sigma^2, \beta_1, \ldots, \beta_n) &amp; \\
+\alpha &amp; \sim N(\alpha_0, V_0) \\
+\tau^{-1} &amp; \sim \textsf{Gamma}(a_\tau/2, b_\tau/2)\\
+\sigma^{-2}  &amp; \sim  \textsf{Gamma}(a_\sigma/2, b_\sigma/2)
+\end{align*}$$`
+--
+
+**Full Conditionals:**
+
+`$$\begin{align*}\alpha \mid \tau, \sigma^2, \beta_1, \ldots \beta_n &amp; \sim N( \hat{\alpha}, \hat{V}_n) \\
+\hat{V}_n &amp;= \left(\frac{1}{V_0} + \sum_i \frac{n_i}{\sigma^2}  \right)^{-1}\\
+\hat{\alpha} &amp; = \frac{\frac{\alpha_0}{V_0} + \frac{\sum_i n_i \bar{y}^*_i}{\sigma^2} }{\hat{V}_n^{-1}} \\
+y_{ij}^* \equiv y_{ij} - \beta_i  &amp;\qquad \bar{y}^*_i  \equiv \frac{\sum_j (y_{ij} - \beta_i)}{n_i}
+\end{align*}$$`
+
+---
+# Full Conditional Continued
+
+`$$\begin{align*}
+\sigma^{-2} \mid \alpha, \tau, \beta_1, \ldots, \beta_n \sim  \textsf{Gamma}\left(\frac{a_\sigma + \sum_i n_i}{2}, \frac{b_\sigma + \sum_i \sum_j (y_{ij} - \alpha - \beta_i)^2}{2} \right)
+\end{align*}$$`
+--
+
+`$$\begin{align*}
+\tau^{-1} \mid \alpha, \sigma^2, \beta_1, \ldots, \beta_n \sim  \textsf{Gamma}\left(\frac{a_\tau +  n}{2}, \frac{b_\tau+ \sum_i \beta_i^2}{2} \right)
+\end{align*}$$`
+
+--
+
+`$$\begin{align*}\beta_j \mid \alpha, \tau, \sigma^2  &amp; \overset{ind}{\sim} N( \hat{b}_i, \hat{V}_{\beta_i}) \\
+\hat{V}_{\beta_i} &amp;= \left(\frac{1}{\tau} +  \frac{n_i}{\sigma^2}  \right)^{-1}\\
+\hat{b}_i &amp; = \frac{\frac{0}{\tau} + \frac{ n_i \bar{y}^*_i}{\sigma^2} }{\hat{V}^{-1}_{\beta_i}} \\
+y_{ij}^{**} \equiv y_{ij} - \alpha &amp; \qquad \bar{y}^{**}_i  \equiv \frac{\sum_j (y_{ij} - \alpha)}{n_i}
+\end{align*}$$`
+
+
+---
+## Complications Relative to Usual Regression
+
+1. Prior Choice
+--
+
+2. Mixing and its dependence on parameterization
+
+--
+
+- Early recommendation after Gibbs Sampler introduced non-informative priors
+
+`$$\begin{align*}
+\pi(\alpha) &amp; \propto 1 \\
+\pi(\sigma^{-2}) &amp; \sim \textsf{Gamma}(\epsilon/2, \epsilon/2) \qquad \pi(\sigma^{-2} ) \propto 1/\sigma^{-2} \text{ as } \epsilon \to 0 \\
+\pi(\tau^{-1}) &amp; \sim \textsf{Gamma}(\epsilon/2, \epsilon/2)  \qquad  \pi(\tau^{-1}) \propto 1/\tau^{-1}  \text{ as } \epsilon \to 0 
+\end{align*}$$`
+
+--
+
+- Are full conditionals proper ?
+
+--
+
+- Is joint posterior proper ?
+---
+##  MCMC and Priors
+
+- proper full conditionals
+
+--
+
+- joint is improper
+
+--
+
+-  MCMC won't converge to the stationary distribution  (doesn't exist)
+
+--
+
+- may not notice it! 
+
+---
+## Diffuse But Proper
+
+`$$\begin{align*}
+\alpha &amp; \sim N(0, 10^{-6})\\
+\pi(\sigma^{-2}) &amp; \sim \textsf{Gamma}(10^{-6}, 10^{-6} )\\
+\pi(\tau^{-1}) &amp; \sim \textsf{Gamma}(10^{-6}, 10^{-6} )
+\end{align*}$$`
+
+--
+
+-  Nearly improper priors lead to terrible performance!   highly sensitive to just how vague the prior is!
+
+--
+
+&lt;img src="18-random-effects-handout_files/figure-html/unnamed-chunk-2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+## Alternative Priors
+
+- Choose a flat or heavy tailed prior for random effect standard deviation `\(\tau^{1/2}\)`
+
+`$$\begin{align*}
+y_{ij}  &amp; = \alpha + \beta_i + \epsilon_{ij} &amp; \qquad &amp; \qquad y_{ij}  = \alpha + \lambda \eta_i + \epsilon_{ij}\\
+&amp; &amp; \Leftrightarrow &amp;  &amp; \\
+\beta_i &amp; \overset{iid}{\sim} N(0, \tau) &amp;  &amp; \qquad \eta_i  \overset{iid}{\sim} N(0, 1 )
+\end{align*}$$`
+
+--
+
+- Reparameterization
+
+`$$\eta_i = \frac{\beta_i}{\tau^{1/2}} \Rightarrow \frac{\beta_i}{\lambda} \sim N(0, 1)$$` 
+--
+
+- `\(\pi(\lambda ) \propto 1(\lambda &gt; 0)\)`  (improper prior)
+
+--
+
+- `\(\pi(\lambda ) \propto 1(\lambda &gt; 0)N(0,1)\)`  folded standard normal (half-normal)
+
+--
+
+- `\(\pi(\lambda ) \propto 1(\lambda &gt; 0)N(0,1/\psi)  \qquad \psi \sim \textsf{Gamma}(\nu/2, \nu/2)\)`  folded t or half t
+---
+## Proper Posterior
+
+Work with  
+
+`$$\pi(\mu, \tau, \sigma^2 \mid y) \propto \pi(\mu, \tau, \sigma^2) \prod_{i=1}^n N\left(y_{i}; \alpha 1_{n_i}, \left(
+\begin{array}{cccc}
+\sigma^2 + \tau &amp; \tau &amp; \ldots &amp; \tau \\
+\tau &amp; \ddots &amp;    &amp; \tau  \\
+\vdots &amp; &amp; \ddots &amp; \vdots \\
+\tau &amp; \ldots &amp; \tau &amp; \sigma^2 + \tau \end{array}\right) \right)$$`
+
+- take `\(\pi(\mu, \tau^{1/2}, \sigma^2) \propto \sigma^{-2} \, \textsf{t}_1^+(\tau^{1/2}; 0, 1)\)`
+
+--
+
+- take `\(\pi(\mu, \tau^{1/2}, \sigma^2) \propto \sigma^{-2}\)`
+
+--
+
+-  Show joint posterior is proper !
+
+--
+
+- See Gelman 2005 discussion of Draper paper in Bayesian Analysis
+---
+## Propriety
+
+- need expression for likelihood; requires determinant and inverse of intra-class correlation matrix!   Write covariance as `\(\sigma^2 I_{n_i} + \tau n_1 P_1\)` and find spectral decomposition to provide determinant and inverse!
+
+- integrate out `\(\alpha\)`  (messy)
+
+- determine if integrals are finite (what happens at 0 and infinity ?)
+
+- look at special case when `\(n_i\)` are all equal.
+
+
+---
+## Linear Mixed Effects
+
+`$$y_{ij} = X_{ij}^T B + z_{ij} ^T\beta_i + \epsilon_{ij}$$`
+
+--
+
+- Fixed effects `\(X_{ij}^T B\)`
+
+--
+
+- Random effects `\(z_{ij}^T \beta_i\)` with `\(\beta_i \overset{iid}{\sim} N(0, \Psi)\)` 
+
+--
+
+- Designed to accomodate correlated data due to nested/hierarchical structure/repeated measurements
+
+--
+
+- students w/in schools; patients w/in hospitals
+
+--
+
+- As before not inherently Bayesian!   It's just a model/likelihood specification!
+
+
+--
+
+- If `\(\theta\)` is population parameters, `\(\theta = (B, \Psi, \sigma^2)\)`, find the marginal distribution for `\(y_i\)` given `\(\theta\)`!
+
+
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

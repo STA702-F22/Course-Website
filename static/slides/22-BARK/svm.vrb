@@ -1,0 +1,24 @@
+\frametitle{BART}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlkwd{suppressMessages}\hlstd{(}\hlkwd{library}\hlstd{(BART))}
+\hlstd{circle.bart} \hlkwb{=} \hlkwd{pbart}\hlstd{(}\hlkwc{x.train} \hlstd{= circle2[train,} \hlnum{1}\hlopt{:}\hlnum{2}\hlstd{],}
+                    \hlkwc{y.train} \hlstd{= circle2[train,} \hlstr{"y"}\hlstd{])}
+\hlstd{pred.bart} \hlkwb{=} \hlkwd{predict}\hlstd{(circle.bart, circle2[}\hlopt{-}\hlstd{train,} \hlnum{1}\hlopt{:}\hlnum{2}\hlstd{])}
+\hlkwd{mean}\hlstd{((pred.bart}\hlopt{$}\hlstd{prob.test.mean} \hlopt{>} \hlnum{.5}\hlstd{)} \hlopt{!=}
+      \hlstd{circle2[}\hlopt{-}\hlstd{train,} \hlstr{"y"}\hlstd{])}
+\end{alltt}
+\end{kframe}
+\end{knitrout}
+
+
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{verbatim}
+## [1] 0.036
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+

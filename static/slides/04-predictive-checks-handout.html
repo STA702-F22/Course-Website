@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 601: Lecture 4</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 601: Lecture 4
+## Comparing Estimators &amp; Prior/Posterior Checks
+### Merlise Clyde
+### 9/7/2021
+
+---
+
+
+
+
+
+
+---
+## Normal Model Setup from Last Class
+
+-  independent observations 
+`\(\mathbf{y} = (y_1,y_2,\ldots,y_n)^T\)`
+where each `\(y_i \sim \textsf{N}(\theta, 1/\tau)\)`  (iid)
+
+--
+
+- The likelihood for `\(\theta\)` is proportional to the sampling model
+
+
+`$$\begin{split}
+\cal{L}(\theta) &amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \sum_{i=1}^n (y_i-\theta)^2\right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \sum_{i=1}^n \left[ (y_i-\bar{y}) - (\theta - \bar{y}) \right]^2 \right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \left[ \sum_{i=1}^n (y_i-\bar{y})^2 + \sum_{i=1}^n(\theta - \bar{y})^2 \right] \right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \left[ \sum_{i=1}^n (y_i-\bar{y})^2 + n(\theta - \bar{y})^2 \right] \right\}\\
+&amp; \propto \exp\left\{-\frac{1}{2} \tau n(\theta - \bar{y})^2\right\}
+\end{split}$$`
+
+
+
+---
+## Exercises for Practice
+
+&lt;div class="question"&gt;
+Try this
+
+&lt;/div&gt;
+ 
+
+1)  Use `\(\cal{L}(\theta)\)`  based on `\(n\)` observations to find  `\(\pi(\theta \mid y_1, \ldots, y_n)\)` based on the sufficient statistics and prior  `\(\theta \sim \textsf{N}(\theta_0, 1/\tau_0)\)`
+
+--
+
+2)
+Use `\(\pi(\theta \mid y_1, \ldots, y_n)\)` to find the posterior predictive distribution for `\(Y_{n+1}\)`
+
+---
+## After `\(n\)` observations 
+
+Posterior for `\(\theta\)` 
+
+`$$\theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+Posterior Predictive Distribution for `\(Y_{n+1}\)`
+
+`$$Y_{n+1} \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{\tau} + \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+- Shrinkage of the MLE to the prior mean
+
+
+---
+## Results with Jeffreys' Prior
+ - What if `\(\tau_0 \to 0\)`? (or `\(\sigma^2_0 \to \infty\)`)
+ 
+--
+
+- Prior predictive `\(\textsf{N}(\theta_0, \sigma^2_0 + \sigma^2 )\)`  (not  proper in the limit)
+
+--
+
+- Posterior for `\(\theta\)` (formal posterior)
+
+`$$\theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+`$$\to  \qquad \theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \bar{y}, 
+ \frac{1}{n \tau} \right)$$`
+
+
+
+--
+
+Posterior Predictive
+`\(Y_{n+1} \mid y_1, \ldots, y_n \sim \textsf{N}\left( \bar{y}, \sigma^2 (1 + \frac{1}{n} )\right)\)`
+
+
+---
+## Comparing Estimators
+
+Expected loss (from frequentist perspective) of using Bayes Estimator
+
+--
+
+- Posterior mean is optimal under squared error loss (min Bayes Risk)  [also absolute error loss]
+
+--
+
+Compute Mean Square Error (or Expected Average Loss)
+`$$\textsf{E}_{\bar{y} \mid \theta}\left[\left(\hat{\theta} - \theta \right)^2 \mid \theta \right]$$`
+ $$ = \textsf{Bias}(\hat{\theta})^2 + \textsf{Var}(\hat{\theta})$$
+--
+
+- For the MLE `\(\bar{Y}\)` this is just the variance of `\(\bar{Y}\)` or `\(\sigma^2/n\)`
+
+---
+## MSE for Bayes
+
+`$$\textsf{E}_{\bar{y} \mid \theta}\left[\left(\hat{\theta} - \theta \right)^2 \mid \theta \right] = \textsf{MSE} =  \textsf{Bias}(\hat{\theta})^2 + \textsf{Var}(\hat{\theta})$$`
+
+- Bias of Bayes Estimate
+
+`$$\textsf{E}_{\bar{Y} \mid \theta}\left[ \frac{\tau_0 \theta_0 + \tau n \bar{Y}}
+{\tau_0  + \tau n}\right]  - \theta = 
+\frac{\tau_0(\theta_0 - \theta)}{\tau_0 + \tau n}$$`
+
+--
+
+- Variance
+
+`$$\textsf{Var}\left(\frac{\tau_0 \theta_0 + \tau n \bar{Y}}{\tau_0 + \tau n} - \theta  \mid \theta \right)  = \frac{\tau n}{(\tau_0 + \tau n)^2}$$`
+--
+
+(Frequentist) expected Loss  when truth is `\(\theta\)`
+
+`$$\textsf{MSE} = \frac{\tau_0^2(\theta - \theta_0)^2 + \tau n}{(\tau_0 + \tau n)^2}$$`
+--
+
+Behavior ?
+
+---
+## Plot
+
+&lt;img src="04-predictive-checks-handout_files/figure-html/MSE-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+## Exercise
+
+
+&lt;div class="question"&gt;
+Repeat this for estimating a future Y under squared error loss using a proper prior and Jeffreys' prior
+
+&lt;/div&gt;
+
+`$$\textsf{E}_{Y_{n+1} \mid \theta}\left[(Y_{n+1} - \textsf{E}[Y_{n+1} \mid y_1, \ldots, n])^2]\right]$$`
+---
+## Uses of Posterior Predictive
+
+- Plot the entire density or summarize
+
+--
+ 
+- Available analytically for conjugate families
+
+--
+
+- Monte Carlo Approximation
+
+`$$p(y_{n+1} \mid y_1, \ldots y_n) \approx \frac 1 T \sum_{t = 1}^T  p(y_{n+t} \mid \theta^{(t)})$$`
+
+where `\(\theta^{(t)} \sim \pi(\theta \mid y_1, \ldots y_n)\)` for `\(t = 1, \ldots, T\)` 
+
+--
+
+- T samples from the posterior distribution
+
+--
+
+- Empirical Estimates &amp; Quantiles from Monte Carlo Samples
+
+
+---
+## Model Diagnostics
+
+- Need an accurate specification of likelihood function  (and reasonable prior)
+
+--
+
+- George Box:  _All models are wrong but some are useful_
+
+--
+
+- "Useful" `\(\rightarrow\)` model provides a good approximation; there aren't clear aspects of the data that are ignored or misspecified
+
+---
+## Example
+
+`$$Y_i \sim \textsf{Poisson}(\theta) \qquad i = 1, \ldots, n$$`
+How might our model be misspecified?
+
+--
+
+- Poisson assumes that `\(\textsf{E}(Y_i) = \textsf{Var}(Y_i) = \theta\)`
+
+--
+
+- it's _very_ common for data to be **over-dispersed** `\(\textsf{E}(Y_i) &lt;  \textsf{Var}(Y_i)\)`
+
+--
+
+- **zero-inflation**  many more zero values than consistent with the poisson model 
+
+--
+
+-  Can we use the Posterior Predictive to diagnose whether these are issues with our observed data?
+
+---
+## Posterior Predictive  (PP) Checks
+
+- `\(y^{(n)}\)` is observed &amp; fixed training data
+
+--
+
+- `\(p(y_{n+1} \mid y^{(n)})\)` is PP distributoin
+
+--
+
+- `\(\tilde{y}^{(n)}_t\)` is `\(t^{\text{th}}\)` new dataset sampled from the PP of size `\(n\)`  (same as training)
+
+--
+
+- `\(p(\tilde{y}^{(n)}_t \mid y^{(n)})\)` is PP of new data sets
+
+
+--
+
+- compare some feature of the observed data to the datasets simulated from the PP
+
+---
+##  Formally
+
+- choose a "test statistic" `\(t(\cdot)\)`  that captures some summary of the data, e.g. `\(\textsf{Var}(y^{(n)})\)` for over-dispersion
+
+--
+
+- `\(t(y^{(n)}) \equiv t_{\textrm{obs}}\)` value of test statistic in observed data
+
+--
+
+- `\(t(\tilde{y}^{(n)}) \equiv t_{\textrm{pred}}\)` value of test statistic for a random dataset drawn from the posterior predictive 
+
+--
+
+- plot posterior predictive distribution of `\(t(\tilde{y}^{(n)})\)`
+
+--
+
+- add `\(t_{\textrm{obs}}\)` to plot
+
+--
+
+- How _extreme_ is `\(t_{\textrm{obs}}\)` compared to the distribution of `\(t(\tilde{y}^{(n)})\)`
+
+---
+##  Example Over Dispersion
+
+&lt;img src="04-predictive-checks-handout_files/figure-html/overdispersion-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Posterior Predictive p-values (PPPs)
+
+- p-value is probability of seeing something  as extreme or more so under a hypothetical  "null" model &amp; are uniformally distributed under the "null" model
+
+--
+
+- PPPs advocated by Gelman &amp; Rubin in papers and BDA are not **valid** p-values.  They are do not have a  uniform  distribution under the hypothesis that the model is correctly specified
+
+--
+
+- the PPPs tend to be concentrated around 0.5, tends not to reject  (conservative)
+
+--
+
+- theoretical reason for the incorrect distribution is due to double use of the data
+
+--
+
+**DO NOT USE as a formal test!**
+use as a diagnostic plot to see how model might fall flat
+
+--
+
+Better approach is to split the data use one piece to learn `\(\theta\)` and the other to calculate `\(t_{\textrm{obs}}\)`  
+
+
+---
+## Zero Inflated Distribution
+
+&lt;img src="04-predictive-checks-handout_files/figure-html/zero-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- Let the `\(t()\)` be the proportion of zeros
+
+`$$t(y) = \frac{\sum_{i = 1}^{n}1(y_i = 0)}{n}$$`
+
+---
+##  Posterior Predictive Distribution
+
+
+&lt;img src="04-predictive-checks-handout_files/figure-html/zeroPP-1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+## Modeling Over-Dispersion
+
+- Original Model  `\(Y_i \mid \theta \sim \textsf{Poisson}(\theta)\)`
+
+--
+
+- cause of overdispersion is variation in the rate
+
+--
+
+
+$$ Y_i \mid \theta \sim \textsf{Poisson}(\theta_i)$$
+
+--
+
+`$$\theta_i \sim \pi_\theta()$$`
+
+--
+
+- `\(\pi_\theta()\)` characterizes variation in the rate parameter across inviduals
+
+--
+
+- Simple Two Stage Hierarchical Model
+
+---
+## Example
+
+`$$\theta_i \sim \textsf{Gamma}(\phi \mu, \phi)$$`
+--
+
+- Find pmf for `\(Y_i \mid \mu, \phi\)`
+
+--
+
+- Find `\(\textsf{E}[Y_i \mid \mu, \phi]\)` and `\(\textsf{Var}[Y_i \mid \mu, \phi]\)` 
+
+--
+
+- Homework: 
+`$$\theta_i \sim \textsf{Gamma}(\phi, \phi/\mu)$$`
+           
+--
+
+- Can either of these model zero-inflation?
+
+
+
+
+--
+
+- See Bayarri &amp; Berger (2000) for more discussion about why PPP should not be used as a test
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

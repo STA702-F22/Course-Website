@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lecture 12: Normal Means &amp; Multiple Testing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 12: Normal Means &amp; Multiple Testing
+### Merlise Clyde
+### October 11
+
+---
+
+
+
+
+
+
+
+
+## Normal Means Model
+Suppose we have normal data with 
+`$$Y_i \mid \mu_i, \sigma^2 \overset{iid}{\sim} \textsf(\mu_i, \sigma^2)$$`
+--
+
+
+- Means Model `\(\mu_i \overset{iid}{\sim} g\)`,  "random effects" distribution
+
+--
+
+**Multiple Testing**
+
+- `\(H_{0i}: \mu_i = 0\)` versus `\(H_{1i}: \mu_i \neq 0\)` 
+
+--
+
+- `\(n\)` hypotheses that may potentially be closely related,  e.g. `\(H_{01}\)` no difference in expression  gene `\(i\)` between cases and controls, for `\(n\)` genes
+
+---
+## Strategy Ia
+
+- p-value, `\(p_i\)`, or testing `\(H_{0i}\)` versus `\(H_{1i}\)` for each `\(i\)`
+
+--
+- `\(p_i &lt; \alpha\)` implies reject `\(H_{0i}\)` in favor of `\(H_{1i}\)`,   e.g `\(\alpha = 0.05\)`
+
+--
+
+Limitations?
+
+--
+
+- overall lots of type I errors potentially  in testing over and over again 
+
+--
+
+- `\(\alpha\)` is the probabibility of making a type I error in an individual test, but not the probability of the family-wise type 1 error, e.g the probability of making at least one type 1 error in the `\(n\)` tests)
+
+---
+## Power
+
+-  very low power (high type II error rate)  because we have a single observation per hypothesis
+
+
+&lt;img src="12-multiple-testing_files/figure-html/low_power-1.png" style="display: block; margin: auto;" /&gt;
+
+--
+
+- low power unless we have good separation between the two distributions (large difference relative to noise)
+
+--
+
+- low power may actually lead to very few type I errors even in multiple testing  but often still lots of type I and type II errors
+
+
+---
+## Strategy Ib
+
+Adjust the level of each test to reflect how many tests you are conducting
+
+--
+
+- Probability of at least one Type I error  if tests are independent
+
+$$ 1 - \Pr(\text{ 0 Type I errors in } n \text{ tests}) = 1 - (1 - \alpha)^{n}$$
+
+&lt;img src="12-multiple-testing_files/figure-html/family_wise-1.png" style="display: block; margin: auto;" /&gt;
+
+- to control the increase in Type I errors with `\(n\)` we may need to decrease the `\(\alpha\)` threshold with `\(n\)`
+
+---
+## Classical Strategy
+
+-   control the family-wise error rate.  Assuming independence across tests (reality ?) replace `\(\alpha\)` with `\(\alpha/n\)` 
+
+--
+
+**Bonferroni correction**:  keeps overall family wise error at `\(\alpha\)`
+
+--
+
+- if we have 10,000 tests `\(\alpha_{\textsf{Bon}} = 0.05/10000\)` very small
+
+--
+
+- in the extremely low power setting, probably very few tests exceed the new threshhold   (conservative)
+
+
+
+---
+##  False Discovery Rate  (FDR)
+
+- FDR threshhold `\(\alpha_{\textsf{FDR}}\)`
+
+--
+
+- if `\(p_i &lt; \alpha_{\textsf{FDR}}\)`, call this is a "discovery" 
+
+--
+ 
+- collect all of our discoveries, say 100 out of 10,000 genes
+
+--
+ 
+-  we want that the proportion of discoveries that are false (i.e `\(H_{0}\)` was actually true) to be small
+
+--
+ 
+- control the proportion of false discoveries at level `\(\alpha\)` instead of individual p-values
+
+--
+
+- Benjamini &amp; Hochberg (BH) (1995 JRSS-B)  propose a simple choice for `\(\alpha_{\textsf{FDR}}\)` based on `\(n\)` and assuming `\(n\)` independent tests
+
+--
+
+- Issue: we will still have lower power in this low data scenario!  
+
+--
+
+- Borrow strength!
+
+
+---
+##  Strategy II: Hierarchical Model
+
+`$$\begin{align*} Y_i \mid \mu_i, \sigma^2  &amp; \overset{iid}{\sim} \textsf(\mu_i, \sigma^2)\\
+\mu_i &amp; \overset{iid}{\sim} g
+\end{align*}$$`
+
+--
+
+- naive approach: choose `\(g\)` as `\(N(\mu, \sigma^2_{\mu})\)` &amp; estimate `\(\mu\)` and `\(\sigma^2_\mu\)`  (Empirical Bayes)
+`\(\hat{\mu} = \bar{y}\)` and `\(s^2_y = 1 + \hat{\sigma}^2_\mu\)`, so `\(\hat{\sigma}^2_\mu = \max(0, 1 - s^2_y)\)`
+
+--
+
+&lt;img src="12-multiple-testing_files/figure-html/EB-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+## Informal approach to testing
+
+- Conclude in favor of `\(H_{1i}\)` if `\(0 \notin (\mu_{Li}, \mu_{Ui})\)`
+
+--
+
+- otherwise fail to reject
+
+--
+
+**Question**:  Do we expect this approach to have a huge Type I error rate exploding with `\(n\)` (# tests)?   Why or why not?
+
+- shrinkage and borrowing of information leads to narrower CI
+
+--
+
+- information from the other `\(y_i\)`s enters into the posterior for `\(\mu_i\)` through the estimates of `\(\mu\)` and `\(\sigma^2_\mu\)`
+
+--
+
+`$$\mu_i \mid y_1, \ldots, y_n \sim N\left(\frac{y_i +  \hat{\mu}/\hat{\sigma}^2_\mu}{ 1 + 1/\hat{\sigma}^2_\mu}, 
+\frac{1}{  1 + 1/\hat{\sigma}^2_\mu} \right)$$`
+
+--
+
+-  when `\(\sigma^2_\mu\)` is small credible intervals are much narrower than with MLE
+
+
+---
+## Hypothetical Setting
+
+- first  `\(i = 1, 2, 3\)` "signals"  ( `\(H_{1i}\)` is true)
+
+--
+
+-  add `\(n - 3\)`  nulls   ( `\(H_{0i}\)` is true)
+
+--
+
+Does throwing in more nulls lead to  more Type I errors?
+
+
+- what happens to `\(\hat{\mu}\)` and `\(\hat{\sigma}^2_{\mu}\)`?
+
+- what happens to the credible intervals?
+
+---
+## Informal Approach B
+
+-  an issue with the `\(N(\mu, \sigma^2_\mu)\)` for `\(g\)` in the hypothetical setting is that it can capture only noise and not the signals.  (signals are outliers under normal model)
+
+--
+
+- choose a more flexible `\(g\)` to capture both noise and signal!
+
+--
+
+&lt;img src="12-multiple-testing_files/figure-html/heavy-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+## Local-Global Scale Mixtures of Normals
+
+Local scale
+
+`$$\begin{align*} \mu_i \mid \lambda_i, \tau &amp; \sim N(0, \lambda_i \tau) \\
+\lambda_i &amp; \sim f \qquad \text{   local-scale }\\
+\tau &amp; \sim h  \qquad \text{   global-scale}
+\end{align*}$$`
+
+
+
+--
+
+-  density that  is concentration around zero to shrink  noise to zero
+
+--
+
+-  heavy tails avoid over-shrinkage of signals  (want heavier than normal)
+
+
+--
+
+- Includes:
+
+  - horseshoe
+  - generalized double pareto
+  - Dirichlet Laplace
+  
+---
+## Note
+
+- a single Gaussian or Double Exponential prior (Bayes Lasso)  have exponential tails same as likelihood (in the normal means problem)
+
+--
+
+- single parameter controls tail behaviour and concentration at zero
+
+--
+
+-  will overshrink the signal if there are many noise cases
+
+--
+
+-  Good shrinkage prior allows separate control of the concentration around zero and tails
+
+--
+
+- tails need to exhibit bounded influence
+
+--
+
+- continous versions/relaxations of a spike and slab prior
+
+`$$\mu_i \sim \pi_0 \delta_0 + (1 - \pi) g$$`
+
+--
+
+- allows formal Bayes multiple testing `\(H_{0i}: \mu = 0\)`
+
+--
+
+- `\(\pi_0 = \Pr(H_{0i} \text{ is true})\)` another unknown to learn from the data; provides automatic adjustment for multiple testing error!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

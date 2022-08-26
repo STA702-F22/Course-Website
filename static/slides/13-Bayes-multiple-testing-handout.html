@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lecture 13: Bayesian Multiple Testing</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 13: Bayesian Multiple Testing
+### Merlise Clyde
+### October 14
+
+---
+
+
+
+
+
+
+
+
+## Normal Means Model
+
+Recall normal model with 
+`$$Y_i \mid \mu_i, \sigma^2 \overset{ind}{\sim} \textsf{N}(\mu_i, \sigma^2)$$`
+- `\(H_{0i}: \mu_i = 0\)` versus `\(H_{1i}: \mu_i \neq 0\)` 
+
+--
+
+- Spike &amp; Slab Prior:
+
+ `$$\mu_i \overset{iid}{\sim} \pi_0 \delta_0 + (1 - \pi_0)g(\mu_i \mid 0,  \tau, H_{i1})$$` 
+
+--
+
+-  need to specify 
+
+  - `\(\pi_0\)`
+  - `\(g\)`
+  
+--
+
+- concern: is that # errors blows up with `\(n\)` 
+($n$ = # tests = dimension of `\(\{\mu_i\}\)` )
+
+  
+
+
+---
+## Approach 1: Prespecify `\(\pi_0\)`
+
+`\(\pi_0 = \Pr(H_{0i})\)` 
+
+--
+
+- seemingly non-informative choice?  
+
+--
+
+`$$\pi_0 = 0.5$$`
+
+--
+
+- What does imply about the "model size" prior?  The number of times `\(H_{1i}\)` is true?
+
+--
+
+- Let 
+
+`$$\gamma_i = \left\{ \begin{array}{c} 1 \text{ if }  H_{1i} \text{ is true } \\
+0 \text{ if }  H_{0i} \text{ is true } \end{array} \right.$$`
+
+--
+
+`$$\gamma^{(n)} = (\gamma_1, \gamma_2, \ldots, \gamma_n)^2$$`
+
+- e.g. `\(\gamma^{(n)} = (0,1,0,0, \ldots, 1)^T\)`
+
+--
+
+- model size `\(p_\gamma  = \sum_{i = 1}^n \gamma\)` is the number of non-zero values
+
+--
+
+-  Distribution of `\(p_\gamma\)`?
+
+---
+##  Induced Distribution
+
+`$$p_\gamma \sim \textsf{Binomial(n, 1/2)}$$`
+--
+
+- Expected 1/2 of the hypotheses to be true a priori
+
+--
+
+&lt;img src="13-Bayes-multiple-testing-handout_files/figure-html/unnamed-chunk-2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+---
+## Probabities of no or at least 1 signal
+
+`$$p_\gamma \sim \textsf{Binomial(n, 1/2)}$$`
+
+- probability of observing no signals `\(\gamma^{(n)} = (0,0,0,\ldots, 0)^T\)` or `\(p_\gamma = 0\)`
+
+`$$\Pr(p_\gamma = 0) = \pi_0^n = 0.5^n$$`
+--
+
+- approximately `\(0\)` for large `\(n\)`
+
+--
+
+-  probability of at least one signal is  `\(1 - 0.5^n \approx 1\)`
+
+---
+## Control  Type I Errors
+
+- Suppose we want to fix `\(\pi_0\)` that protexts against Type I errors blowing up as `\(n\)` increases
+
+--
+
+`$$\Pr( p_\gamma = \mathbf{0}_n) =  \frac{1}{2} = \pi_0^n$$`
+--
+
+- "Bayesian Bonferroni Prior" 
+
+--
+
+- so `\(\pi_0 = 0.5^{1/n}\)`  very close to 1 !   Need overwhelming evidence in the data for `\(\Pr(H_{1i} \mid y^{(n)})\)` to not be `\(\approx 0\)`!
+
+--
+
+- not a great idea to prespecify `\(\pi_0\)`!
+
+---
+## Approach 2: Empirical Bayes
+
+- We could try to maximize the marginal likelihood  
+
+--
+
+`$$Y_i \mid \mu_i, \sigma^2 \overset{ind}{\sim} \textsf{N}(\mu_i, \sigma^2)$$`
+
+
+ `$$\mu_i \overset{iid}{\sim} \pi_0 \delta_0 + (1 - \pi_0)\textsf{N}(\mu_i; 0,  \tau)$$` 
+ 
+--
+
+`$$\begin{align*} \cal{L}(\pi_0, \tau) &amp; =  \int_{\mathbb{R}^n} \prod_{i = 1}^n  \textsf{N}(y_i ; \mu_i, \sigma^2) \left\{\pi_0 \delta_0(\mu_i) + (1 - \pi_0)\textsf{N}(\mu_i; 0,  \tau) \right\} d\mu_1 \ldots d\mu_n
+\\
+&amp; =  \prod_{i = 1}^n  \int_\mathbb{R}  \textsf{N}(y_i ; \mu_i, \sigma^2) \left\{\pi_0 \delta_0(\mu_i) + (1 - \pi_0)\textsf{N}(\mu_i; 0,  \tau) \right\} d\mu_i
+\end{align*}$$`
+
+--
+
+- Conjugate or nice setups we can integrate out `\(\mu_i\)` and then maximize marginal likelihood for `\(\pi_0\)` and `\(\tau\)`
+
+--
+
+- Numerical integration or EM algorithms to get `\(\hat{\pi}_0^{\textsf{EB}}\)` and `\(\hat{\tau}^{\textsf{EB}}\)`
+
+- Clyde &amp; George (2000)  Silverman &amp; Johnstone (2004) for wavelet regression
+---
+## Expectation-Maximization
+
+- introduce latent variables so that "complete" data likelihood is nice!  e.g. `\(\gamma\)`:
+
+$$ y_i \mid \gamma_i, \tau \overset{ind}{\sim} \textsf{N}(0, 1)^{1 - \gamma_i} \textsf{N}(0, 1 + \tau)^{\gamma_i}$$
+`$$\gamma_i \overset{iid}{\sim} \textsf{Ber}(1 - \pi_0)$$`
+
+--
+
+- Iterate: For `\(t = 1, \ldots\)`
+
+--
+ -  M-step:  Solve for `\((\hat{\pi}_0^{(t)}, \hat{\tau}^{(t)}) = \arg \max\cal{L}(\pi_0, \tau \mid \hat{\gamma}^{(t-1)})\)`
+  
+--
+ -  E-step:  find the expected values of the latent sufficient statistics given the data, `\(\hat{\pi}_0^{(t)}\)` , `\(\hat{\tau}^{(t)}\)`
+ 
+ `$$\hat{\gamma}^{(t)} = \textsf{E} [\gamma_i \mid y, \hat{\pi}^{(t)}_0, \hat{\tau}^{(t)}]$$`
+  
+ 
+   
+
+
+
+---
+## Adding Noise
+
+
+What happens to `\(\hat{\pi}_0^{\textsf{EB}}\)` as we add more and more noise to a fixed number of signals?
+
+--
+
+- `\(\hat{\pi}_0^{\textsf{EB}}\)` becomes closer to one as `\(n \to \infty\)` for a fixed number of  true signals
+
+--
+
+- This is good as it protects against Type I errors blowing up as `\(n\)` increases!
+
+--
+
+- However it becomes more and more difficult to find the few needles in a haystack!
+
+
+---
+## Approach 3:  Fully Bayes
+
+Choose a prior for `\(\pi_0\)`:
+`\(\pi_0 \sim \textsf{Beta}(a,b)\)`
+
+--
+
+Consider the thought experiment ...
+
+`$$\gamma^{(n)} = (?, 0,,\ldots, 0)^T$$`
+
+where we don't know the first hypothesis but we know that the others  are all null  `\(\gamma_j = 0\)` for `\(j = 2, \ldots, n\)`
+
+--
+
+- `\(\gamma_i \sim \textsf{Bernoulli}(1 - \pi_0)\)`
+
+--
+
+- Update the prior for `\(\pi_0\)` to include the info  `\(\gamma_j = 0\)` for `\(j = 2, \ldots, n\)`
+
+`$$\pi(\pi_0 \mid \gamma_2, \ldots, \gamma_n) \propto \pi_0^{a - 1} (1 - \pi_0)^{b -1} \prod_{j = 2}^n \pi_0^{1 - \gamma_j} (1 - \pi_0)^{\gamma_j}$$`
+
+`$$\pi(\pi_0  \mid \gamma_2, \ldots, \gamma_n) \propto \pi_0^{a + n -1  -1} (1 - \pi_0)^{b - 1}$$`
+---
+## Beta Posterior
+
+`$$\pi_0 \mid \gamma_2, \ldots, \gamma_n \sim \textsf{Beta(a + n - 1, b)}$$`
+with mean 
+`$$\textsf{E}[\pi_0 \mid \gamma_2, \ldots, \gamma_n] = \frac{a + n - 1}{a + n - 1 + b}$$`
+--
+
+- suppose `\(a = b = 1\)`   (Uniform prior)
+
+--
+ 
+ `$$\textsf{E}[\pi_0 \mid \gamma_2, \ldots, \gamma_n] = \frac{n}{n + 1}$$`
+ 
+--
+ 
+- implies probability of `\(H_{01} \to 1\)` and  `\(H_{11} \to 0\)` as `\(n \to \infty\)`  borrowing strength from other nulls
+
+--
+
+- Multiplicity adjustment as in the EB case
+
+--
+
+- Scott &amp; Berger (2006 JSPI, 2010 AoS) show that above framework protects against increasing Type I errors with `\(n\)`; We also get FDR control automatically
+
+---
+## Induced Prior on `\(p_{\gamma}\)`
+
+Exercise:   If `\(p_{\gamma} \mid \pi_0 \sim \textsf{Binomial}(n, 1 - \pi_0)\)` and `\(\pi_0 \sim \textsf{Beta}(1,1)\)`
+
+-- 
+
+
+- What is the probability that `\(p_\gamma = 0\)`
+
+--
+
+- What is the probability  that `\(p_\gamma = n\)`
+ 
+--
+
+- What is the distribution of `\(p_\gamma\)` ?    
+ 
+ 
+ 
+ This is a Beta-Binomial and in the special case  `\(a = b = 1\)` this is a discrete uniform on model size!
+ 
+ 
+ 
+--
+ 
+
+Bottomline:  We need to  "learn" key parameters  in our hierarchical prior or the magic doesn't work!   Borrowing comes through using all the data to inform about "global" parameters in the prior, in this case `\(\pi_0\)`
+
+ 
+---
+##  Posteriors, Inference and Decisions
+
+- Joint posterir distribution of `\(\mu_1, \ldots, \mu_n\)` averaged over hypotheses  "Model averaging"
+
+--
+
+ - distribution is a spike at 0 and continous distribution
+
+--
+
+- select a hypothesis
+
+--
+
+- report posterior (summaries)  conditional on a hypothesis  
+
+--
+
+- issue **winner's curse** !  
+
+- need to have coherent conditional inference given that you selected a hypothesis.   
+ 
+--
+
+- Don't report selected hypotheses but report results under model averaging! 
+
+---
+## Choice of `\(g\)`
+
+
+`$$\mu_i \overset{iid}{\sim} \pi_0 \delta_0 + (1 - \pi_0)g(\mu_i \mid 0,  \tau, H_{i1})$$` 
+--
+
+- growing literature on posterior contraction in high dimensional settings as `\(n \to \infty\)` with "sparse signals"
+
+--
+
+- posterior `\(\pi(\mu^{(n)}) \mid y^{(n)})\)`
+
+--
+
+Want 
+`$$\Pr(\mu^{(n)} \in \cal{N}_{\epsilon_n}(\mu_0^{(n)}) \mid y^{(n)})\to 1$$`
+
+--
+
+- assume that there are `\(s\)` signals (fixed or growing slowly)
+
+--
+
+- signal values are bounded away from zero
+
+--
+
+- Want the posterior under the Spike and Slab prior to concentrate on this neighborhood (ie. probability 1 )
+
+--
+
+- active area of research!  
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

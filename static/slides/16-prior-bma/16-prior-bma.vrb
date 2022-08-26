@@ -1,0 +1,26 @@
+\frametitle{Selection}
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{pred.bas} \hlkwb{=} \hlkwd{predict}\hlstd{(diabetes.bas,}
+                   \hlkwc{newdata}\hlstd{=diabetes.test,}
+                   \hlkwc{estimator}\hlstd{=}\hlstr{"BPM"}\hlstd{,}
+                   \hlkwc{se}\hlstd{=}\hlnum{TRUE}\hlstd{)}
+\hlcom{#MSE}
+\hlkwd{mean}\hlstd{((pred.bas}\hlopt{$}\hlstd{fit}\hlopt{-} \hlstd{diabetes.test}\hlopt{$}\hlstd{y)}\hlopt{^}\hlnum{2}\hlstd{)}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.4740667
+\end{verbatim}
+\begin{alltt}
+\hlcom{#Coverage}
+\hlstd{ci.bas} \hlkwb{=} \hlkwd{confint}\hlstd{(pred.bas)}
+\hlkwd{mean}\hlstd{(diabetes.test}\hlopt{$}\hlstd{y} \hlopt{>} \hlstd{ci.bas[,}\hlnum{1}\hlstd{]} \hlopt{&}
+     \hlstd{diabetes.test}\hlopt{$}\hlstd{y} \hlopt{<} \hlstd{ci.bas[,}\hlnum{2}\hlstd{])}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.98
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+

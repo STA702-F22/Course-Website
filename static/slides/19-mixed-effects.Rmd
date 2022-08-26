@@ -1,0 +1,365 @@
+---
+title: "STA 601: Linear Mixed Effects Models"
+subtitle: "STA 601 Fall 2021"
+author: "Merlise Clyde"
+date: "Nov 4, 2021"
+header-includes:
+  - \include{macros.tex}
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/class_logo.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+# R options
+options(
+  htmltools.dir.version = FALSE, # for blogdown
+  show.signif.stars = FALSE,     # for regression output
+  warm = 1
+  )
+# Set dpi and height for images
+library(knitr)
+knitr::opts_chunk$set(fig.height = 2.65, dpi = 300,fig.align='center',fig.show='hold',size='footnotesize', small.mar=TRUE) 
+# For nonsese...
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rvest)
+```
+
+## Linear Mixed Effects Models
+
+$$\begin{align*}y_{ij} & = \beta^T x_{ij}+ \gamma ^T z_{ij} + \epsilon_{ij}, \qquad
+\epsilon_{ij}  \overset{iid}{\sim}  N(0, \sigma^2) \\
+\gamma_j & \overset{iid}{\sim} N_p(0, \Sigma)
+\end{align*}$$
+
+--
+
+- Fixed effects contribution $\beta^T x_{ij}$, $x_{ij}$ is a $d \times 1$ vector with $\beta$ is constant across groups $j$, $j = 1, \ldots, J$
+
+--
+
+- Random effects $\gamma^T_j z_{ij}$,  $z_{ij}$ is a $p \times 1$ vector with $\gamma_j \overset{iid}{\sim} N_p(0, \Sigma)$ for groups  $j = 1, \ldots, J$
+
+--
+
+- Designed to accomodate correlated data due to nested/hierarchical structure/repeated measurements
+
+--
+
+- students w/in schools; patients w/in hospitals; additional covariates
+
+--
+
+- As before not inherently Bayesian!   It's just a model/likelihood specification!
+  Population parameters, $\theta = (\beta, \Sigma, \sigma^2)$
+
+---
+## Likelihoods 
+
+- Complete Data Likelihood $(\{\gamma_i\}, \theta)$
+
+$$L(\{\beta_i\}, \theta)) \propto \prod_j N(\gamma_j; 0, \Sigma) \prod_i N(y_{ij}; \beta^T x_{ij} + \gamma_j^Tz_{ij}, \sigma^2 )$$
+--
+
+- Marginal likelihood based on just observed data $(\{y_{ij}\}, \{x_{ij}\}, \{z_{ij}\})$ 
+
+--
+
+$$L(\{\beta_i\}, \theta)) \propto \prod_j \int N(\gamma_j; 0, \Sigma) \prod_i N(y_{ij}; \beta^T x_{ij} + \gamma_j^Tz_{ij}, \sigma^2 ) \, d \gamma_j$$
+--
+
+- Option A: we can calculate this integral by brute force algebraically
+
+--
+
+- Option B: (lazy option) We can calculate marginal exploiting properties of Gaussians as sums will be normal -  just read off the first two moments!
+
+
+---
+# Marginal Distribution
+
+- Express observed data as vectors for each group $j$:  $(Y_j, X_j, Z_j)$ where  $Y_j$ is $n_j \times 1$, $X_j$ is $n_j \times d$ and $Z_j$ is $n_j \times p$;
+
+--
+
+- Group Specific Model (1):
+
+$$\begin{align}Y_j  & = X_j \beta + Z_j \gamma + \epsilon_j, \qquad
+\epsilon_j  \sim N(0, \sigma^2 I_{n_j})\\
+\gamma_j & \overset{iid}{\sim} N(0, \Sigma)
+\end{align}$$
+
+
+
+--
+
+- Population Mean $E[Y_j] = E[X_j \beta + Z_j \gamma_j + \epsilon_j] = X_j \beta$
+
+
+--
+
+- Covariance $V[Y_j] = V[X_j \beta + Z_j \gamma_j + \epsilon_j] = Z_j \Sigma Z_j^T + \sigma^2 I_{n_j}$
+
+
+--
+
+- Group Specific Model (2)
+$$Y_j \mid  \beta, \Sigma, \sigma^2 \overset{ind}{\sim}N(X_j \beta, Z_j \Sigma Z_j^T + \sigma^2 I_{n_j})$$
+
+
+---
+## Priors
+
+- Model (1) leads to a simple Gibbs sampler if we use conditional (semi-) conjugate priors on $\theta = (\beta, \Sigma, \phi = 1/\sigma^2)$
+
+$$\begin{align*}
+\beta & \sim N(\mu_0, \Psi_0^{-1}) \\
+\phi & \sim \textsf{Gamma}(v_0/2, v_o \sigma^2_0/2)
+\end{align*}$$
+
+--
+
+
+
+- One complication is that the covariance matrix $\Sigma$ must be **positive definite and symmetric**.
+
+--
+
+
+
+- "Positive definite" means that for all $x \in \mathcal{R}^p$, $x^T \Sigma x > 0$.
+
+--
+
+- Basically ensures that the diagonal elements of $\Sigma$ (corresponding to the marginal variances) are positive.
+
+--
+
+- Also, ensures that the correlation coefficients for each pair of variables are between -1 and 1.
+
+--
+
+- Our prior for $\Sigma$ should thus assign probability one to set of positive definite matrices.
+
+
+
+---
+## Inverse-Wishart distribution
+
+
+
+- Analogous to the univariate case, the **inverse-Wishart distribution** is the corresponding conditionally conjugate prior for $\Sigma$ (multivariate generalization of the inverse-gamma).
+
+--
+
+- Hoff covers the construction of Wishart and inverse-Wishart random variables in Chapter 7.
+
+--
+
+- A random variable $\Sigma \sim \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1})$, where $\Sigma$ is positive definite and $p \times p$, has pdf
+
+$$p(\Sigma) \propto  \left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \textsf{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\}$$
+--
+
+where
+ + $\eta_0 > p - 1$ is the "degrees of freedom", and 
+ + $\boldsymbol{S}_0$ is a $p \times p$ positive definite matrix.
+  
+---
+## Mean
+
+- For this distribution, $E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0$, for $\eta_0 > p + 1$.
+
+
+--
+
+- If we are very confident in a prior guess $\Sigma_0$, for $\Sigma$, then we might set
+  + $\eta_0$, the degrees of freedom to be very large, and
+  + $\boldsymbol{S}_0 = (\eta_0 - p - 1)\Sigma_0$. 
+  
+  In this case, $E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0 = \frac{1}{\eta_0 - p - 1}(\eta_0 - p - 1)\Sigma_0 = \Sigma_0$, and $\Sigma$ is tightly (depending on the value of $\eta_0$) centered around $\Sigma_0$.
+  
+--
+
+- If we are not at all confident but we still have a prior guess $\Sigma_0$, we might set
+  + $\eta_0 = p + 2$, so that the $E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0$ is finite.
+  + $\boldsymbol{S}_0 = \Sigma_0$
+  
+  
+  
+
+---
+## Wishart distribution
+
+- Just as we had with the gamma and inverse-gamma relationship in the univariate case, we can also work in terms of the **Wishart distribution** (multivariate generalization of the gamma) instead.
+
+--
+
+- The **Wishart distribution** provides a conditionally-conjugate prior for the precision matrix $\Sigma^{-1}$ in a multivariate normal model.
+
+--
+
+- Specifically, if $\Sigma \sim \textrm{IW}_p(\eta_0, \boldsymbol{S}_0)$, then $\Phi = \Sigma^{-1} \sim \textrm{W}_p(\eta_0, \boldsymbol{S}_0^{-1})$.
+
+--
+
+- A random variable $\Phi \sim \textrm{W}_p(\eta_0, \boldsymbol{S}_0^{-1})$, where $\Phi$ has dimension $(p \times p)$, has pdf
+
+$$\begin{align*}
+f(\Phi) \ \propto \ \left|\Phi\right|^{\frac{\eta_0 - p - 1}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Phi) \right\}.
+\end{align*}$$
+
+
+--
+
+- Here, $E[\Phi] = \eta_0 \boldsymbol{S}_0$.
+
+
+  
+---
+## Conditional posterior for $\Sigma$
+
+$$\begin{align}Y_j  \mid \beta, \gamma_j, \sigma^2 & \overset{ind}{\sim} N(X_j \beta + Z_j \gamma_j , \sigma^2 I_{n_j})\\
+\gamma_j  \mid \Sigma & \overset{iid}{\sim} N(0, \Sigma) \\
+\Sigma  & \sim  \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1}) \\
+\beta & \sim N(\mu_0, \Psi_0^{-1}) \\
+\phi & \sim \textsf{Gamma}(v_0/2, v_o \sigma^2_0/2)
+\end{align}$$
+
+- The conditional posterior (full conditional) $\Sigma \mid \boldsymbol{\gamma}, \boldsymbol{Y}$, is then
+
+$$\begin{align*}
+\pi(\Sigma & \mid \boldsymbol{\gamma}, \boldsymbol{Y})\propto \pi(\Sigma) \cdot \pi( \boldsymbol{\gamma} \mid \Sigma)\\
+& \propto \underbrace{\left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\}}_{\pi(\Sigma)} \cdot \underbrace{\prod_{j = 1}^{J}\left|\Sigma\right|^{-\frac{1}{2}} \ \textrm{exp} \left\{-\frac{1}{2}\left[\boldsymbol{\gamma}_j^T \Sigma^{-1} \gamma_j\right] \right\}}_{\pi(\boldsymbol{\gamma} \mid \Sigma)}  
+\end{align*}$$
+
+--
+
+- $\Sigma \mid \{\gamma_j\}, \boldsymbol{Y} \sim \textrm{IW}_p\left(\eta_0 + J, (\boldsymbol{S}_0+ \sum_{j=1}^J \gamma_j \gamma_j^T)^{-1} \right)$ 
+---
+## Posterior Continued
+
+$$\begin{align*}
+\pi(\Sigma & \mid \boldsymbol{\gamma}, \boldsymbol{Y})\propto \pi(\Sigma) \cdot \pi( \boldsymbol{\gamma} \mid \Sigma)\\
+& \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\} \cdot \prod_{j = 1}^{J}\left|\Sigma\right|^{-\frac{1}{2}} \ \textrm{exp} \left\{-\frac{1}{2}\left[\boldsymbol{\gamma}_j^T \Sigma^{-1} \gamma_j\right] \right\}  \\
+& \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + J + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \left[\text{tr}\left[\boldsymbol{S}_0\Sigma^{-1} \right] +\sum_{j=1}^J\gamma_j^T \Sigma^{-1} \gamma_j \right]\right\} ,\\
+\\
+& \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + J + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \left[\text{tr}\left[\boldsymbol{S}_0\Sigma^{-1} \right] +\sum_{j=1}^J \text{tr}\left[\gamma_j \gamma_j^T \Sigma^{-1} \right]\right]\right\} ,\\
+\\
+& \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + J + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}\left[\boldsymbol{S}_0\Sigma^{-1}  +\sum_{j=1}^J \gamma_j \gamma_j^T \Sigma^{-1} \right]\right\} ,\\
+\\
+& \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + J + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}\left[ \left(\boldsymbol{S}_0  +\sum_{j=1}^J \gamma_j \gamma_j^T \right)\Sigma^{-1} \right]\right\} ,\\
+\\
+\end{align*}$$
+
+
+---
+## MCMC Sampling
+
+- Model (1) leads to a simple Gibbs sampler if we use conditional (semi-) conjugate priors on $\theta = (\beta, \Sigma, \phi = 1/\sigma^2)$
+
+--
+
+- Model (2) can be challenging to update the variaance components!  no conjugacy and need to ensure that MH updates maintain the positive-definiteness of $\Sigma$  (can reparameterize)
+
+
+--
+
+- Is Gibbs always more efficient?
+
+--
+
+- No -  because the Gibbs sampler can have high autocorrelation in updating the $\{\gamma_j \}$ from their full conditional and then updating $\theta$ from their full full conditionals given the $\{ \gamma_j\}$
+
+--
+
+- slow mixing
+
+--
+- update $\beta$ using (2) instead of (1)  (marginalization so is independent of $\gamma_j$'s
+
+
+---
+##  Marginal update for $\beta$
+
+$$\begin{align*}Y_j \mid  \beta, \Sigma, \sigma^2 & \overset{ind}{\sim}N(X_j \beta, Z_j \Sigma Z_j^T + \sigma^2 I_{n_j}) \\
+\beta & \sim N(\mu_0, \Psi_0^{-1})
+\end{align*}$$
+
+--
+- Let $\Phi_j = (Z_j \Sigma Z_j^T + \sigma^2 I_{n_j})^{-1}$  (precision in model 2)
+
+--
+
+$$\begin{align*}
+\pi(\beta  & \mid \Sigma, \sigma^2, \boldsymbol{Y})  \propto |\Psi_0|^{1/2} 
+\exp\left\{- \frac{1}{2} (\beta - \mu_0)^T \Psi_0 (\beta - \mu_0)\right\} \cdot \\
+& \qquad \qquad \qquad\prod_{j=1}^{J} |\Phi_j|^{1/2} \exp \left\{ - \frac{1}{2} (Y_j - X_j \beta)^T \Phi_j (Y_j - X_j \beta ) \right\} \\
+\\
+& \propto \exp\left\{- \frac{1}{2} \left( (\beta - \mu_0)^T \Psi_0 (\beta - \mu_0) +
+\sum_j (Y_j - X_j \beta)^T \Phi_j (Y_j - X_j \beta ) \right) \right\}
+\end{align*}$$
+
+---
+## Marginal Posterior for $\beta$
+
+$$\begin{align*}
+\pi(\beta  & \mid \Sigma, \sigma^2, \boldsymbol{Y})  \\
+& \propto \exp\left\{- \frac{1}{2} \left( (\beta - \mu_0)^T \Psi_0 (\beta - \mu_0) +
+\sum_j (Y_j - X_j \beta)^T \Phi_j (Y_j - X_j \beta ) \right) \right\}
+\end{align*}$$
+
+--
+
+- Expand, read off precision and fix up mean so that it is a function of MLE's
+
+--
+
+- precision
+
+$$\Psi_n = \Psi_0 + \sum_{j=1}^J X_j^T \Phi_j X_j$$
+
+
+- mean 
+
+$$\mu_n = \left(\Psi_0 + \sum_{j=1}^J X_j^T \Phi_j X_j\right)^{-1} \left(\Psi_0 \mu_0 + 
+\sum_{j=1}^J X_j^T \Phi_j X_j \hat{\beta}_j\right)$$
+
+where 
+$\hat{\beta}_j = (X_j^T \Phi X_j)^{-1} X_j^T \Phi_j Y_j\right)$ is the generalized least squares estimate of $\beta$ for group $j$
+
+
+---
+## Full conditional for $\sigma^2$ or $\phi$
+
+$$\begin{align}Y_j  \mid \beta, \gamma_j, \sigma^2 & \overset{ind}{\sim} N(X_j \beta + Z_j \gamma_j , \sigma^2 I_{n_j})\\
+\gamma_j  \mid \Sigma & \overset{iid}{\sim} N(0, \Sigma) \\
+\Sigma  & \sim  \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1}) \\
+\beta & \sim N(\mu_0, \Psi_0^{-1}) \\
+\phi & \sim \textsf{Gamma}(v_0/2, v_o \sigma^2_0/2)
+\end{align}$$
+
+$$\pi(\phi \mid \beta, \{\gamma_j\} \{Y_j\}) \propto \textsf{Gamma}(\phi; v_0/2, v_o \sigma^2_0/2) \prod_j N(Y_j; X_j \beta + Z_j \gamma_j , \phi^{-1} I_{n_j}))$$
+$$\phi \mid \{Y_j \}, \beta, \{\gamma_j\} \sim \textsf{Gamma}\left(\frac{v_0 + \sum_j n_j}{2}, \frac{v_o \sigma^2_0  + \sum_j \|Y_j - X_j\beta - Z_j\gamma_j \|^2}{2}\right)$$
+---
+## Full conditional for $\{ \gamma_j \}$
+
+$$\begin{align}Y_j  \mid \beta, \gamma_j, \sigma^2 & \overset{ind}{\sim} N(X_j \beta + Z_j \gamma_j , \sigma^2 I_{n_j})\\
+\gamma_j  \mid \Sigma & \overset{iid}{\sim} N(0, \Sigma) \\
+\Sigma  & \sim  \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1}) \\
+\beta & \sim N(\mu_0, \Psi_0^{-1}) \\
+\phi & \sim \textsf{Gamma}(v_0/2, v_o \sigma^2_0/2)
+\end{align}$$
+
+$$\pi(\gamma \mid \beta, \phi, \Sigma) \propto \textsf{N}(\gamma_j; 0, \Sigma) \prod_j N(Y_j; X_j \beta + Z_j \gamma_j , \phi^{-1} I_{n_j}))$$
+

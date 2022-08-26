@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 360/602L: Module 6.3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Olanrewaju Michael Akande" />
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 360/602L: Module 6.3
+## Bayesian linear regression: weakly informative priors
+### Dr. Olanrewaju Michael Akande
+
+---
+
+
+
+
+
+
+
+## Bayesian linear regression recap
+
+- Sampling model:
+.block[
+`$$\boldsymbol{Y} \sim \mathcal{N}_n(\boldsymbol{X}\boldsymbol{\beta}, \sigma^2\boldsymbol{I}_{n\times n}).$$`
+]
+
+--
+
+- Semi-conjugate prior for `\(\boldsymbol{\beta}\)`:
+.block[
+`$$\pi(\boldsymbol{\beta}) = \mathcal{N}_p(\boldsymbol{\mu}_0, \Sigma_0).$$`
+]
+
+--
+
+- Semi-conjugate prior for `\(\sigma^2\)`:
+.block[
+`$$\pi(\sigma^2) = \mathcal{IG} \left(\dfrac{\nu_0}{2}, \dfrac{\nu_0\sigma_0^2}{2}\right)$$`
+]
+
+
+
+---
+## Full conditional
+
+.block[
+$$
+`\begin{split}
+\pi(\boldsymbol{\beta} | \boldsymbol{y}, \boldsymbol{X}, \sigma^2) &amp; = \ \mathcal{N}_p(\boldsymbol{\mu}_n, \Sigma_n),\\
+\end{split}`
+$$
+]
+
+--
+  where
+.block[
+$$
+`\begin{split}
+\Sigma_n &amp; = \left[\Sigma_0^{-1} + \frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{X} \right]^{-1}\\
+\boldsymbol{\mu}_n &amp; = \Sigma_n \left[\Sigma_0^{-1}\boldsymbol{\mu}_0 + \frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{y} \right],
+\end{split}`
+$$
+]
+
+--
+  and
+.block[
+$$
+`\begin{split}
+\pi(\sigma^2 | \boldsymbol{y}, \boldsymbol{X}, \boldsymbol{\beta}) &amp; = \mathcal{IG} \left(\dfrac{\nu_n}{2}, \dfrac{\nu_n\sigma_n^2}{2}\right), \\
+\end{split}`
+$$
+]
+
+--
+  where
+.block[
+$$
+`\begin{split}
+\nu_n &amp; = \nu_0 + n\\
+\sigma_n^2  &amp; = \dfrac{1}{\nu_n} \left[ \nu_0 \sigma_0^2 + (\boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta})^T (\boldsymbol{y} - \boldsymbol{X}\boldsymbol{\beta}) \right] = \dfrac{1}{\nu_n} \left[ \nu_0 \sigma_0^2 + \text{SSR}(\boldsymbol{\beta}) \right].
+\end{split}`
+$$
+]
+
+
+
+
+---
+## Weakly informative priors
+
+- Specifying hyperparameters that represent actual prior information can be challenging, especially for `\(\boldsymbol{\beta}\)`.
+
+--
+
+- It can therefore be desirable use weakly informative priors when possible. The Hoff book discusses a few different options, one of which is the Zellner's g-prior (there are other options but we will not cover them in this course).
+
+--
+
+- Note that we can also use Jefferys prior here to be completely non-informative.
+
+--
+
+- Zellner's g-prior is
+.block[
+.small[
+$$
+`\begin{split}
+\pi(\boldsymbol{\beta} | \sigma^2) &amp; = \mathcal{N}_p\left(\boldsymbol{\mu}_0= \boldsymbol{0}, \Sigma_0 = g\sigma^2 \left[\boldsymbol{X}^T \boldsymbol{X} \right]^{-1} \right)\\
+\pi(\sigma^2) &amp; = \mathcal{IG} \left(\dfrac{\nu_0}{2}, \dfrac{\nu_0\sigma_0^2}{2}\right)\\
+\end{split}`
+$$
+]
+]
+
+  for some positive value `\(g\)`, which is often commonly set to the sample size `\(n\)`.
+
+
+
+---
+## Weakly informative priors
+
+- Note that the g-prior uses a part of the data. As I have mentioned before, using your data to construct your prior is usually a no-no.
+
+--
+
+- However, the g-prior actually does not use the information in `\(\boldsymbol{y}\)`, the response variable of interest, just the information in `\(\boldsymbol{X}\)`.
+
+--
+
+- Observe that the prior specification actually looks like the conjugate prior we first used for the univariate normal model, that is, with
+.block[
+.small[
+$$
+`\begin{split}
+\sigma^2 \ &amp; \sim \mathcal{IG}\left(\dfrac{\nu_0}{2}, \dfrac{\nu_0\sigma_0^2}{2}\right)\\
+\mu|\sigma^2 &amp; \sim \mathcal{N}\left(\mu_0, \dfrac{\sigma^2}{\kappa_0}\right).\\
+\end{split}`
+$$
+]
+]
+
+--
+
+- Turns out that we also have conjugacy with the g-prior, so that we don't actually need Gibbs sampling to obtain posterior samples. `\(\pi(\boldsymbol{\beta} | \boldsymbol{y}, \boldsymbol{X}, \sigma^2)\)` takes the same form as before but now we also have `\(\pi(\sigma^2 | \boldsymbol{y}, \boldsymbol{X})\)`.
+
+
+---
+## Weakly informative priors
+
+- With the g-prior, we have
+.block[
+.small[
+$$
+`\begin{split}
+\pi(\boldsymbol{\beta} | \boldsymbol{y}, \boldsymbol{X}, \sigma^2) &amp; = \mathcal{N}_p(\boldsymbol{\mu}_n, \Sigma_n)\\
+\pi(\sigma^2 | \boldsymbol{y}, \boldsymbol{X}) &amp; = \mathcal{IG} \left(\dfrac{\nu_n}{2}, \dfrac{\nu_n\sigma_n^2}{2}\right)\\
+\end{split}`
+$$
+]
+]
+
+  where
+.block[
+.small[
+$$
+`\begin{split}
+\Sigma_n &amp; = \left[\Sigma_0^{-1} + \frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{X} \right]^{-1} = \left[\dfrac{1}{g\sigma^2} \boldsymbol{X}^T \boldsymbol{X} + \frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{X} \right]^{-1} = \dfrac{g}{g+1} \sigma^2 \left[\boldsymbol{X}^T \boldsymbol{X} \right]^{-1}\\
+\\
+\boldsymbol{\mu}_n &amp; = \Sigma_n \left[\Sigma_0^{-1}\boldsymbol{\mu}_0 + \frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{y} \right] = \dfrac{g}{g+1} \sigma^2 \left[\boldsymbol{X}^T \boldsymbol{X} \right]^{-1} \left[\frac{1}{\sigma^2} \boldsymbol{X}^T \boldsymbol{y} \right]\\
+&amp; = \dfrac{g}{g+1}  \left[\boldsymbol{X}^T \boldsymbol{X} \right]^{-1} \boldsymbol{X}^T \boldsymbol{y} = \dfrac{g}{g+1} \hat{\boldsymbol{\beta}}_{\text{ols}}\\
+\\
+\nu_n &amp; = \nu_0 + n; \ \ \ \ \ \ \ \sigma_n^2  = \dfrac{1}{\nu_n} \left[ \nu_0 \sigma_0^2 + \text{SSR}(g) \right],
+\end{split}`
+$$
+]
+]
+
+  where `\(\text{SSR}(g) = \boldsymbol{y}^T (\boldsymbol{I} - \frac{g}{g+1} \boldsymbol{X} \left(\boldsymbol{X}^T \boldsymbol{X}\right)^{-1} \boldsymbol{X}^T) \boldsymbol{y}\)`. See the Hoff book for the proof, and see homework for illustration.
+  
+  
+---
+## Example
+
+- Health plans use many tools to try to control the cost of prescription medicines.
+
+--
+
+- For older drugs, generic substitutes that are the equivalent to name-brand drugs are available at considerable savings. 
+
+--
+
+- Another tool that may lower costs is restricting drugs that the physician may prescribe.
+
+--
+
+- For example if three similar drugs for treating the same condition are available, a health plan may require the physician to prescribe only one of them, allowing the plan to negotiate discounts based on a higher volume of sales.
+
+--
+
+- We have data from 29 health plans can be used to explore the effectiveness of these two strategies in controlling drug costs.
+
+--
+
+- The response is COST, the average cost of the prescriptions to the plan per day (in dollars).
+
+
+
+---
+## Example
+
+
+- Explanatory variables are:
+  + RXPM: Average number of prescriptions per member per year
+  + GS: Percent generic substitute used by the plan
+  + RI: Restrictiveness Index, from 0 (no restrictions) to 100 (total restrictions on the physician)
+  + COPAY: Average member copay on prescriptions
+  + AGE: Average member age
+  + F: percent female members
+  + MM: Member months, a measure of the size of the plan
+  + ID: an identifier for the name of the plan
+
+--
+
+- The data is in the file `costs.txt` on Sakai.
+
+--
+
+- For this illustration, we will restrict ourselves to GS and AGE. We will use the other variables later.
+
+
+---
+## Data
+
+
+```r
+#require(lattice)
+#library(pls)
+#library(calibrate)
+#library(mvtnorm)
+
+###### Data
+Data &lt;- read.table("data/costs.txt",header=TRUE)[,-9]
+head(Data)
+```
+
+```
+##   COST RXPM GS   RI COPAY  AGE    F      MM
+## 1 1.34  4.2 36 45.6 10.87 29.7 52.3 1158096
+## 2 1.34  5.4 37 45.6  8.66 29.7 52.3 1049892
+## 3 1.38  7.0 37 45.6  8.12 29.7 52.3   96168
+## 4 1.22  7.1 40 23.6  5.89 28.7 53.4  407268
+## 5 1.08  3.5 40 23.6  6.05 28.7 53.4   13224
+## 6 1.16  7.2 46 22.3  5.05 29.1 52.2  303312
+```
+
+
+
+---
+## Very basic EDA
+
+&lt;img src="6-3-linear-regression-III_files/figure-html/unnamed-chunk-3-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Very basic EDA
+
+
+```r
+levelplot(cor(Data[,c("COST","GS","AGE")])) #Check correlation
+```
+
+&lt;img src="6-3-linear-regression-III_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Very basic EDA
+
+Without outlier:
+&lt;img src="6-3-linear-regression-III_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Very basic EDA
+
+Without outlier:
+
+```r
+levelplot(cor(Data[-19,c("COST","GS","AGE")])) #Check correlation
+```
+
+&lt;img src="6-3-linear-regression-III_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Posterior computation
+
+
+```r
+###### g-Prior: with g=n using full model
+# Data summaries
+X &lt;- cbind(1,as.matrix(Data[-19,c("GS","AGE")])) #remove potential outlier
+Y &lt;- matrix(Data$COST[-19],ncol=1)
+n &lt;- length(Y)
+p &lt;- ncol(X)
+g &lt;- n
+
+# OLS estimates
+beta_ols &lt;- solve(t(X)%*%X)%*%t(X)%*%Y
+round(t(beta_ols),4)
+```
+
+```
+##                GS     AGE
+## [1,] 2.7047 -0.02 -0.0231
+```
+
+```r
+SSR_beta_ols &lt;- (t(Y - (X%*%beta_ols)))%*%(Y - (X%*%beta_ols))
+sigma_ols &lt;- SSR_beta_ols/(n-p)
+sigma_ols
+```
+
+```
+##             [,1]
+## [1,] 0.005247074
+```
+
+```r
+# Hyperparameters for the priors
+#sigma_0_sq &lt;- sigma_ols
+sigma_0_sq &lt;- 1/100
+nu_0 &lt;- 1
+
+# Set number of iterations
+S &lt;- 10000
+```
+
+
+
+
+---
+## Posterior computation
+
+
+```r
+set.seed(1234)
+
+# Sample sigma_sq
+nu_n &lt;- nu_0 + n
+Hg &lt;- (g/(g+1))* X%*%solve(t(X)%*%X)%*%t(X)
+SSRg &lt;- t(Y)%*%(diag(1,nrow=n) - Hg)%*%Y
+nu_n_sigma_n_sq &lt;- nu_0*sigma_0_sq + SSRg
+sigma_sq &lt;- 1/rgamma(S,(nu_n/2),(nu_n_sigma_n_sq/2))
+
+# Sample beta
+mu_n &lt;- g*beta_ols/(g+1)
+beta &lt;- matrix(nrow=S,ncol=p)
+for(s in 1:S){
+  Sigma_n &lt;- g*sigma_sq[s]*solve(t(X)%*%X)/(g+1)
+  beta[s,] &lt;- rmvnorm(1,mu_n,Sigma_n)
+}
+
+#posterior summaries
+colnames(beta) &lt;- colnames(X)
+mean_beta &lt;- apply(beta,2,mean)
+round(mean_beta,4)
+```
+
+```
+##              GS     AGE 
+##  2.6057 -0.0193 -0.0221
+```
+
+```r
+round(apply(beta,2,function(x) quantile(x,c(0.025,0.975))),4) 
+```
+
+```
+##                   GS     AGE
+## 2.5%  0.4392 -0.0432 -0.0935
+## 97.5% 4.7903  0.0044  0.0460
+```
+
+
+
+
+---
+
+class: center, middle
+
+# What's next? 
+
+### Move on to the readings for the next module!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

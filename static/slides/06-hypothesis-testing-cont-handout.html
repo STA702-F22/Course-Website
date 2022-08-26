@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lecture 6: Bayesian Hypothesis Testing Continued</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <meta name="date" content="2021-09-14" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 6: Bayesian Hypothesis Testing Continued
+### Merlise Clyde
+### September 14, 2021
+
+---
+
+
+
+
+
+
+
+## Hypothesis Testing Setup Recap
+
+
+- univariate data `\(y_i \overset{iid}{\sim} \mathcal{N}(\theta, 1)\)` 
+
+--
+
+- test `\(\mathcal{H}_0: \theta = 0; \ \ \text{vs } \mathcal{H}_1: \theta \neq 0\)` 
+
+--
+1. Put a prior on `\(\theta \mid \cal{H}_i\)`, 
+`$$\pi(\theta \mid \cal{H}_1) = \mathcal{N}(0, 1/\tau_0)$$` `$$p(\theta \mid \cal{H}_0) = \delta_o(\theta)$$`
+
+--
+2. Put a prior on the hypotheses `\(\pi(\mathcal{H}_0)\)` and `\(\pi(\mathcal{H}_1)\)`.
+      
+--
+3. Likelihood of the hypotheses  `\(p(y^{(n)} \mid \cal{H}_i)\)`
+   
+
+--
+4. Obtain posterior probabilities of `\(\cal{H}_0\)` and `\(\cal{H}_1\)` via Bayes Theorem or Bayes Factors
+
+--
+5. Report based on loss (optional)
+
+
+---
+## Bayes factors
+
+- **Bayes factor**: is a ratio of marginal likelihoods and it provides a weight of evidence in the data in favor of one model over another.
+
+--
+
+- **Rule of thumb**: `\(\mathcal{BF}_{10} &gt; 10\)` is strong evidence for `\(\mathcal{H}_1\)`;  `\(\mathcal{BF}_{10} &gt; 100\)` is decisive evidence for `\(\mathcal{H}_1\)`.  
+
+--
+**Not worth a bare mention**
+`\(1 &lt; \mathcal{BF}_{10} &lt; 3\)`  
+
+--
+
+- Posterior probabilities 
+$$
+`\begin{split}
+\pi(\mathcal{H}_1 \mid Y) = \frac{ 1 }{\frac{\pi(\cal{H}_0)}{\pi(\cal{H}_1)} \frac{p(y^{(n)} \mid \mathcal{H}_0)}{p(y^{(n)} \mid \mathcal{H}_1)} + 1 } = \frac{ 1 }{ \cal{O}_{01} \mathcal{BF}_{01} + 1 } \\
+\end{split}`
+$$
+
+-  `\(\cal{O}_{01}\)` prior odds of `\(\cal{H}_0\)` to `\(\cal{H}_1\)`
+  
+--
+
+Alternative expression for Bayes Factor
+
+`$$\cal{BF}_{10} = \frac{p(y^{(n)} \mid \cal{H}_1)}
+       {p(y^{(n)} \mid \cal{H}_0)} =
+  \frac{\pi_\theta(0 \mid \cal{H}_1)} 
+       {\pi_\theta(0 \mid  y^{(n)}, \cal{H}_1)}$$`
+
+  
+---
+##  Marginal Likelihoods &amp; Evidence
+
+&lt;img src="06-hypothesis-testing-cont-handout_files/figure-html/marglik-1.png" style="display: block; margin: auto;" /&gt;
+
+  `\(\cal{BF}_{10}\)` = 1.73
+  Posterior Probability of `\(\cal{H}_0\)` = 0.3665 versus p-value of `\(0.05\)`
+---
+## Decisions
+
+- Selection 0-1 loss; 
+   + if `\(\pi(\cal{H}_1 \mid y^{(n)}) &gt; .5\)` choose `\(\cal{H}_1\)`, 
+   + otherwise `\(\cal{H}_0\)`
+
+--
+
+- Estimation of `\(\theta\)` under squared error loss 
+
+- report `\(\hat{\theta}\)` that minimizes Bayes expected loss
+
+$$
+\textsf{E}_{\theta \mid y^{(n)}} \left[(\theta - \hat{\theta})^2\right]
+$$
+
+--
+
+- Bayes optimal estimator under squared error is the posterior mean  `\(\textsf{E}[\theta \mid y^{(n)}]\)`
+
+--
+
+- no `\(\cal{H}_i\)`!
+
+--
+
+- marginal posterior distribution of `\(\theta\)`
+
+---
+## Averaging over Hypotheses
+
+Prior on `\(\theta\)` is a mixture model:
+
+`$$p(\theta) = \pi_0 \delta_0(\theta) + (1 - \pi_0) \pi(\theta \mid \cal{H}_1)$$`
+--
+
+- Dirac delta - degenerate distribution at 0
+
+
+--
+- "spike &amp; slab" prior
+
+&lt;img src="06-hypothesis-testing-cont-handout_files/figure-html/unnamed-chunk-2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+--
+
+- how to sample from prior?
+
+---
+## Posterior under Spike &amp; Slab Prior
+
+`$$\pi(\theta \mid y^{(n)}) =  \Pr( \cal{H}_0 \mid y^{(n)}) \pi(\theta \mid \cal{H}_0, y^{(n)}) + \Pr( \cal{H}_1 \mid y^{(n)}) \pi(\theta \mid \cal{H}_1, y^{(n)})$$`
+--
+
+`$$\pi(\theta \mid y^{(n)}) =  \Pr( \cal{H}_0 \mid y^{(n)}) \delta_0(\theta) + \Pr( \cal{H}_1 \mid y^{(n)}) \pi(\theta \mid \cal{H}_1, y^{(n)})$$`
+
+- posterior also has a spike &amp; slab
+
+--
+
+- mixture weights are updated
+
+--
+
+- updated "slab" hyperparameters
+
+&lt;img src="06-hypothesis-testing-cont-handout_files/figure-html/postBMA-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+## Prior
+An important issue with hypothesis testing and using Spike &amp; Slab prior is choice of hyperparameters  ( `\(\tau_0\)` in this case)
+
+--
+- Bayes Factor and posterior probabilities of `\(\cal{H}_i\)` depend on `\(\tau_0\)`  through `\(p(y^{(n)} \mid \cal{H_1})\)`
+
+--
+
+1. What is impact of  `\(\tau_0\)` on `\(\cal{BF}_{01}\)` ?
+
+--
+2.  How do we choose `\(\tau_0\)`?
+
+---
+## Question 1.
+
+`$$\cal{BF}_{01} = \frac{\pi(0 \mid \cal{H}_1, y^{(n)})}{\pi(0 \mid \cal{H_1})}$$`
+
+---
+## Precision
+
+&lt;img src="06-hypothesis-testing-cont-handout_files/figure-html/marglik2-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+- `\(\tau_0 = 1/10\)`
+
+--
+- Bayes Factor for `\(\cal{H}_0\)` to `\(\cal{H}_1\)` is `\(1.5\)`
+
+--
+
+- Posterior Probability of `\(\cal{H}_0\)` = 0.6001
+
+What about even more vague priors?
+---
+## Vague Priors &amp; Hypothesis Testing
+
+
+
+- As `\(\tau_0 \to 0\)` the `\(\cal{BF}_{01} \to \infty\)` and  `\(\Pr(\cal{H}_0 \mid y^{(n)}) \to 1\)`! 
+
+--
+
+- As we use a less &amp; less informative prior under `\(\cal{H}_1\)` we obtain more &amp; more evidence for `\(\cal{H}_0\)` over `\(\cal{H}_1\)`!
+
+--
+
+Known as **Bartlett's Paradox** - the paradox is that a seemingly non-informative prior for `\(\theta\)` is very informative about `\(\cal{H}\)`!
+
+--
+
+- General problem with nested sequence of models.  If we choose vague priors on the additional parameter in the larger model we will be favoring the smaller models under consideration!
+
+--
+
+**Bottom Line** Don't use vague priors!
+
+--
+
+--
+
+What then?
+
+---
+## Objective Bayes
+
+- Conventional Priors
+
+--
+
+- Simplest is Unit Information Prior  (UIP)
+
+--
+
+- center prior at MLE ( `\(\bar{y}\)` ) but choose prior precision to be the equivalent of a sample size of 1
+
+--
+
+- center prior at 0,  but choose prior precision to be the equivalent of a sample size of 1  (UIP)
+
+--
+
+Default UIP
+`$$\theta  \mid\cal{H}_1 \sim \textsf{N}(0, 1)$$`
+
+---
+## UIP &amp; BIC
+
+Note:  UIP is the basis for the Bayes Information Criterion (BIC)
+
+--
+
+- BIC is derived in more general settings by taking a Laplace approximation to the marginal likelihood and making some simplifying assumptions
+   
+--
+  
+- BIC  chooses model with highest marginal likelihood
+   
+--
+
+- BIC has a well known tendency to choose/favor simpler models due to UIP containing very little information
+   
+--
+
+- consistent for model selection i.e. `\(\Pr(\cal{H}_i \mid y^{(n)})\)` goes to 1 for the true model as `\(n \to \infty\)`
+
+
+--
+
+-  Is a fixed `\(\tau_0\)` consistent as `\(n \to \infty\)`?
+
+---
+## Other Options
+
+- Place a prior on `\(\tau_0\)`
+
+--
+
+`$$\tau_0 \sim \textsf{Gamma}(1/2, 1/2)$$`
+`$$p(\tau_0 \mid \cal{H}_1) = \frac{(1/2)^{1/2}}{\Gamma(1/2)} \tau_0^{1/2 -1} \exp{(-\tau_0/2)}$$`
+--
+
+- If `\(\theta \mid \tau_0, \cal{H}_1 \sim \textsf{N}(0, 1/\tau_0)\)`,  then `\(\theta_0  \mid \cal{H}_1\)` has a `\(\textsf{Cauchy}(0,1)\)` distribution!  Recommended by Jeffreys (1961)
+
+--
+
+- no closed form expressions for marginal likelihood!
+
+
+
+
+---
+## Intrinsic Bayes Factors &amp; Priors  (Berger &amp; Pericchi)
+
+- Can't use improper priors under `\(\cal{H}_1\)`
+
+--
+
+-  use part of the data `\(y(l)\)` to update an improper prior on `\(\theta\)` to get a proper posterior  `\(\pi(\theta \mid \cal{H}_i, y(l))\)`
+
+--
+
+- use `\(\pi(\theta \mid y(l), \cal{H}_i)\)` to obtain the posterior for `\(\theta\)` based on the rest of the training data
+
+--
+
+- Calculate a Bayes Factor (avoids arbitrary normalizing constants!)
+
+--
+
+- Choice of training sample `\(y(l)\)`? 
+
+- Berger &amp; Pericchi (1996) propose "averaging" over training samples  **intrinsic Bayes Factors**
+
+
+--
+
+- **intrinsic prior** on `\(\theta\)` that leads to the IBF  
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+*key.R
+*.key
+.rdb
+docs/*
+docs/*/*
+docs
+website.Rproj

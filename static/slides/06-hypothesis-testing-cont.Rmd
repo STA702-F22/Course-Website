@@ -1,0 +1,410 @@
+---
+title: "Lecture 6: Bayesian Hypothesis Testing Continued"
+author: "Merlise Clyde"
+date: "September 14, 2021"
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/class_logo.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+# R options
+options(
+  htmltools.dir.version = FALSE, # for blogdown
+  show.signif.stars = FALSE,     # for regression output
+  warm = 1
+  )
+# Set dpi and height for images
+library(knitr)
+knitr::opts_chunk$set(fig.height = 2.65, dpi = 300,fig.align='center',fig.show='hold',size='footnotesize', small.mar=TRUE) 
+# For nonsese...
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rvest)
+```
+
+
+## Hypothesis Testing Setup Recap
+
+
+- univariate data $y_i \overset{iid}{\sim} \mathcal{N}(\theta, 1)$ 
+
+--
+
+- test $\mathcal{H}_0: \theta = 0; \ \ \text{vs } \mathcal{H}_1: \theta \neq 0$ 
+
+--
+1. Put a prior on $\theta \mid \cal{H}_i$, 
+$$\pi(\theta \mid \cal{H}_1) = \mathcal{N}(0, 1/\tau_0)$$ $$p(\theta \mid \cal{H}_0) = \delta_o(\theta)$$
+
+--
+2. Put a prior on the hypotheses $\pi(\mathcal{H}_0)$ and $\pi(\mathcal{H}_1)$.
+      
+--
+3. Likelihood of the hypotheses  $p(y^{(n)} \mid \cal{H}_i)$
+   
+
+--
+4. Obtain posterior probabilities of $\cal{H}_0$ and $\cal{H}_1$ via Bayes Theorem or Bayes Factors
+
+--
+5. Report based on loss (optional)
+
+
+---
+## Bayes factors
+
+- **Bayes factor**: is a ratio of marginal likelihoods and it provides a weight of evidence in the data in favor of one model over another.
+
+--
+
+- **Rule of thumb**: $\mathcal{BF}_{10} > 10$ is strong evidence for $\mathcal{H}_1$;  $\mathcal{BF}_{10} > 100$ is decisive evidence for $\mathcal{H}_1$.  
+
+--
+**Not worth a bare mention**
+$1 < \mathcal{BF}_{10} < 3$  
+
+--
+
+- Posterior probabilities 
+$$
+\begin{split}
+\pi(\mathcal{H}_1 \mid Y) = \frac{ 1 }{\frac{\pi(\cal{H}_0)}{\pi(\cal{H}_1)} \frac{p(y^{(n)} \mid \mathcal{H}_0)}{p(y^{(n)} \mid \mathcal{H}_1)} + 1 } = \frac{ 1 }{ \cal{O}_{01} \mathcal{BF}_{01} + 1 } \\
+\end{split}
+$$
+
+-  $\cal{O}_{01}$ prior odds of $\cal{H}_0$ to $\cal{H}_1$
+  
+--
+
+Alternative expression for Bayes Factor
+
+$$\cal{BF}_{10} = \frac{p(y^{(n)} \mid \cal{H}_1)}
+       {p(y^{(n)} \mid \cal{H}_0)} =
+  \frac{\pi_\theta(0 \mid \cal{H}_1)} 
+       {\pi_\theta(0 \mid  y^{(n)}, \cal{H}_1)}$$
+
+  
+---
+##  Marginal Likelihoods & Evidence
+
+```{r marglik, fig.height=4.5, echo=F}
+n = 10; y = 1.96/sqrt(n)
+th <- seq(y - 3/sqrt(n), y + 3/sqrt(n), length=1000)
+v0 = 1; tau0 = 1/v0
+marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
+theta.n = n*y/(n + tau0)
+tau.n = n + tau0
+plot(th,dnorm(th,y,sqrt(1/n)),
+      type="l", lwd=2, ylim=c(0, dnorm(theta.n, theta.n, sqrt(1/tau.n))),
+      col="blue",xlab=expression(theta),
+      ylab=expression(pi(theta)))
+lines(th, dnorm(th, 0, sqrt(v0)), col="red", lwd=2)
+marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
+segments(0, 0, 0, marg.H1, lty=2, lwd=2, col="purple")
+abline(h =marg.H1, lty=2, lwd=3, col="purple")
+#m = integrate(f = function(x) {dbinom(y,n,x)}, low=0.00001, upper=.99999)
+#abline(h=m$value, lty=4, lwd=2, col="red")
+lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=3,  lwd=3, col="purple")
+marg.H0 = dnorm(0, y, sqrt(1/n))
+segments(0, 0, 0, marg.H0, lty=2, lwd=2, col="blue")
+abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="blue")
+bf10 = marg.H1/marg.H0
+bf01 = 1/bf10
+post.prob.H1 = 1/(1 + bf01)
+
+#cand = dnorm(0,0, sqrt(v0))/dnorm(0, theta.n, sqrt(1/tau.n))
+```
+
+  $\cal{BF}_{10}$ = `r round(bf10, 2)`
+  Posterior Probability of $\cal{H}_0$ = `r round(1 - post.prob.H1, 4)` versus p-value of $0.05$
+---
+## Decisions
+
+- Selection 0-1 loss; 
+   + if $\pi(\cal{H}_1 \mid y^{(n)}) > .5$ choose $\cal{H}_1$, 
+   + otherwise $\cal{H}_0$
+
+--
+
+- Estimation of $\theta$ under squared error loss 
+
+- report $\hat{\theta}$ that minimizes Bayes expected loss
+
+$$
+\textsf{E}_{\theta \mid y^{(n)}} \left[(\theta - \hat{\theta})^2\right]
+$$
+
+--
+
+- Bayes optimal estimator under squared error is the posterior mean  $\textsf{E}[\theta \mid y^{(n)}]$
+
+--
+
+- no $\cal{H}_i$!
+
+--
+
+- marginal posterior distribution of $\theta$
+
+---
+## Averaging over Hypotheses
+
+Prior on $\theta$ is a mixture model:
+
+$$p(\theta) = \pi_0 \delta_0(\theta) + (1 - \pi_0) \pi(\theta \mid \cal{H}_1)$$
+--
+
+- Dirac delta - degenerate distribution at 0
+
+
+--
+- "spike & slab" prior
+
+```{r, fig=TRUE, echo=FALSE, fig.height=4, fig.width=5,out.width="50%"}
+th = seq(-3, 3, length=1000)
+d = dnorm(th, 0, 1)
+pi.0 = 0.65
+
+d = (1 - pi.0)*d/dnorm(0,0,1)
+plot(th, d, type="l", col = 1, 
+     xlab=expression(theta),
+     ylab = expression(p(theta)),
+     ylim=c(0, pi.0))
+segments(0, 0, 0, pi.0, lty=2)     
+```
+
+
+--
+
+- how to sample from prior?
+
+---
+## Posterior under Spike & Slab Prior
+
+$$\pi(\theta \mid y^{(n)}) =  \Pr( \cal{H}_0 \mid y^{(n)}) \pi(\theta \mid \cal{H}_0, y^{(n)}) + \Pr( \cal{H}_1 \mid y^{(n)}) \pi(\theta \mid \cal{H}_1, y^{(n)})$$
+--
+
+$$\pi(\theta \mid y^{(n)}) =  \Pr( \cal{H}_0 \mid y^{(n)}) \delta_0(\theta) + \Pr( \cal{H}_1 \mid y^{(n)}) \pi(\theta \mid \cal{H}_1, y^{(n)})$$
+
+- posterior also has a spike & slab
+
+--
+
+- mixture weights are updated
+
+--
+
+- updated "slab" hyperparameters
+
+```{r postBMA, fig.height=4.5, out.width="60%",echo=F}
+n = 10; y = 1.96/sqrt(n)
+th <- seq(y - 3/sqrt(n), y + 3/sqrt(n), length=1000)
+v0 = 1; tau0 = 1/v0
+marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
+marg.H0 = dnorm(0, y, sqrt(1/n))
+theta.n = n*y/(n + tau0)
+tau.n = n + tau0
+bf10 = marg.H1/marg.H0
+bf01 = 1/bf10
+post.prob.H1 = 1/(1 + bf01)
+d.post = post.prob.H1*dnorm(th, theta.n, sqrt(1/tau.n))/
+         dnorm(theta.n, theta.n, sqrt(1/tau.n))
+
+plot(th, d.post,
+      type="l", lwd=2,
+      col=1,xlab=expression(theta),
+      ylab=expression(pi(theta)))
+
+segments(0, 0, 0, 1 - post.prob.H1, lty=2, lwd=2, col=1)
+```
+
+---
+## Prior
+An important issue with hypothesis testing and using Spike & Slab prior is choice of hyperparameters  ( $\tau_0$ in this case)
+
+--
+- Bayes Factor and posterior probabilities of $\cal{H}_i$ depend on $\tau_0$  through $p(y^{(n)} \mid \cal{H_1})$
+
+--
+
+1. What is impact of  $\tau_0$ on $\cal{BF}_{01}$ ?
+
+--
+2.  How do we choose $\tau_0$?
+
+---
+## Question 1.
+
+$$\cal{BF}_{01} = \frac{\pi(0 \mid \cal{H}_1, y^{(n)})}{\pi(0 \mid \cal{H_1})}$$
+
+---
+## Precision
+
+```{r marglik2, fig.height=4.5, echo=F, out.width="50%"}
+v0 = 10; tau0 = 1/v0
+marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
+theta.n = n*y/(n + tau0)
+tau.n = n + tau0
+plot(th,dnorm(th,y,sqrt(1/n)),
+      type="l", lwd=2, ylim=c(0, dnorm(theta.n, theta.n, sqrt(1/tau.n))),
+      col="blue",xlab=expression(theta),
+      ylab=expression(pi(theta)))
+lines(th, dnorm(th, 0, sqrt(v0)), col="red", lwd=2)
+marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
+segments(0, 0, 0, marg.H1, lty=2, lwd=2, col="purple")
+abline(h=marg.H1, lty=2, lwd=3, col="purple")
+lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=3,  lwd=3, col="purple")
+marg.H0 = dnorm(0, y, sqrt(1/n))
+segments(0, 0, 0, marg.H0, lty=2, lwd=2, col="blue")
+abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="blue")
+bf10 = marg.H1/marg.H0
+bf01 = 1/bf10
+post.prob.H1 = 1/(1 + bf01)
+```
+
+- $\tau_0 = 1/`r v0`$
+
+--
+- Bayes Factor for $\cal{H}_0$ to $\cal{H}_1$ is $`r round(bf01, 2)`$
+
+--
+
+- Posterior Probability of $\cal{H}_0$ = `r round(1 - post.prob.H1, 4)`
+
+What about even more vague priors?
+---
+## Vague Priors & Hypothesis Testing
+
+
+
+- As $\tau_0 \to 0$ the $\cal{BF}_{01} \to \infty$ and  $\Pr(\cal{H}_0 \mid y^{(n)}) \to 1$! 
+
+--
+
+- As we use a less & less informative prior under $\cal{H}_1$ we obtain more & more evidence for $\cal{H}_0$ over $\cal{H}_1$!
+
+--
+
+Known as **Bartlett's Paradox** - the paradox is that a seemingly non-informative prior for $\theta$ is very informative about $\cal{H}$!
+
+--
+
+- General problem with nested sequence of models.  If we choose vague priors on the additional parameter in the larger model we will be favoring the smaller models under consideration!
+
+--
+
+**Bottom Line** Don't use vague priors!
+
+--
+
+--
+
+What then?
+
+---
+## Objective Bayes
+
+- Conventional Priors
+
+--
+
+- Simplest is Unit Information Prior  (UIP)
+
+--
+
+- center prior at MLE ( $\bar{y}$ ) but choose prior precision to be the equivalent of a sample size of 1
+
+--
+
+- center prior at 0,  but choose prior precision to be the equivalent of a sample size of 1  (UIP)
+
+--
+
+Default UIP
+$$\theta  \mid\cal{H}_1 \sim \textsf{N}(0, 1)$$
+
+---
+## UIP & BIC
+
+Note:  UIP is the basis for the Bayes Information Criterion (BIC)
+
+--
+
+- BIC is derived in more general settings by taking a Laplace approximation to the marginal likelihood and making some simplifying assumptions
+   
+--
+  
+- BIC  chooses model with highest marginal likelihood
+   
+--
+
+- BIC has a well known tendency to choose/favor simpler models due to UIP containing very little information
+   
+--
+
+- consistent for model selection i.e. $\Pr(\cal{H}_i \mid y^{(n)})$ goes to 1 for the true model as $n \to \infty$
+
+
+--
+
+-  Is a fixed $\tau_0$ consistent as $n \to \infty$?
+
+---
+## Other Options
+
+- Place a prior on $\tau_0$
+
+--
+
+$$\tau_0 \sim \textsf{Gamma}(1/2, 1/2)$$
+$$p(\tau_0 \mid \cal{H}_1) = \frac{(1/2)^{1/2}}{\Gamma(1/2)} \tau_0^{1/2 -1} \exp{(-\tau_0/2)}$$
+--
+
+- If $\theta \mid \tau_0, \cal{H}_1 \sim \textsf{N}(0, 1/\tau_0)$,  then $\theta_0  \mid \cal{H}_1$ has a $\textsf{Cauchy}(0,1)$ distribution!  Recommended by Jeffreys (1961)
+
+--
+
+- no closed form expressions for marginal likelihood!
+
+
+
+
+---
+## Intrinsic Bayes Factors & Priors  (Berger & Pericchi)
+
+- Can't use improper priors under $\cal{H}_1$
+
+--
+
+-  use part of the data $y(l)$ to update an improper prior on $\theta$ to get a proper posterior  $\pi(\theta \mid \cal{H}_i, y(l))$
+
+--
+
+- use $\pi(\theta \mid y(l), \cal{H}_i)$ to obtain the posterior for $\theta$ based on the rest of the training data
+
+--
+
+- Calculate a Bayes Factor (avoids arbitrary normalizing constants!)
+
+--
+
+- Choice of training sample $y(l)$? 
+
+- Berger & Pericchi (1996) propose "averaging" over training samples  **intrinsic Bayes Factors**
+
+
+--
+
+- **intrinsic prior** on $\theta$ that leads to the IBF  
+
+

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 601: Lecture 3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 601: Lecture 3
+## The Normal Model &amp; Prior/Posterior Predictive Distributions
+### Merlise Clyde
+### 9/1/2021
+
+---
+
+
+
+
+
+
+## Outline
+
+
+- Normal Model
+
+--
+
+
+- Predictive Distributions
+
+--
+
+ - Prior Predictive; useful for prior elicitation 
+
+--
+
+- Posterior Predictive
+
+--
+  + Predicting/forecasting future events
+  
+--
+
+- Comparing Estimators
+  
+---
+## Normal Model Setup
+
+- Suppose we have independent observations 
+`$$\mathbf{y} = (y_1,y_2,\ldots,y_n)^T$$`
+
+--
+ 
+where each `\(y_i \sim \textsf{N}(\theta, \sigma^2)\)`  (iid)
+
+--
+
+- We will see that it is more convenient to work with `\(\tau = 1/\sigma^2\)`   (precision)
+
+
+--
+
+
+- reparameterizing the model for the data we have
+`$$y_i \sim \mathcal{N}(\theta, \tau^{-1})$$`
+--
+
+- for simplicity  we will treat `\(\tau\)` as known initially.  
+
+
+
+
+---
+## Marginal  Distribution
+
+- Recall that the **marginal distribution** is
+
+`$$p({y}) = p(y_1,\ldots,y_n) = \int_\Theta p(y_1,\ldots,y_n \mid \theta) \pi(\theta)\, d\theta$$`
+
+--
+
+- this is also called the **prior predictive ** distribution and is independent of any unknown parameters
+
+
+- We may care about making predictions before we even see any data.
+
+--
+
+- This is often useful as a way to see if the sampling distribution or prior we have chosen is appropriate, after integrating out all unknown parameters.
+
+
+--
+
+- Need to specify a prior for `\(\theta\)` on `\(\mathbb{R}\)` 
+
+---
+## Prior for a Normal Mean
+
+- Natural choice is a Normal/Gaussian distribution  (Conjugate prior)
+
+
+`$$\theta \sim \textsf{N}(\theta_0, 1/\tau_0)$$`
+--
+
+- `\(\theta_0\)` is the prior mean - best guess for `\(\theta\)` using information other than `\(\mathbf{y}\)`
+
+
+--
+
+- Prior variance `\(\sigma^2_0 = 1/\tau_0\)`
+
+--
+- `\(\tau_0\)` is the prior precision and expresses our certainty about this guess
+
+--
+
+- one notion of non-informative is to let `\(\tau_0 \to 0\)`
+ 
+--
+
+- better justification is as Jeffreys' prior (uniform measure)  ** Derive**
+
+`$$\pi(\theta) \propto 1$$`
+
+--
+
+- parameterization invariant and invariant to shift changes in the data  (group invariance)
+
+---
+## Prior Predictive  for a Single Case
+
+`$$\begin{split} p(y) &amp; \propto \int_\mathbb{R} p(y \mid \theta) \pi(\theta) \, d\theta \\
+&amp; \propto \int_\mathbb{R}\exp\left\{- \frac 1 2 \tau (y - \theta) ^2 \right\} \exp\left\{-  \frac 1 2 \tau_0(\theta - \theta_0) ^2 \right\} \, d\theta
+\end{split}$$`
+
+--
+
+Quadratic
+`\(\tau_0(\theta - \theta_0)^2 = \tau_0 \theta^2 - 2 \tau_0 \theta_0 \theta + \tau_0 \theta_0^2\)`
+
+--
+
+Steps:
+
+1) **Expand** quadratics 
+
+--
+
+2) **Group** terms with `\(\theta^2\)` and `\(\theta\)`
+
+--
+
+3) Read off **posterior precision** and **posterior mean**
+
+--
+
+4) **Complete the square** 
+
+--
+
+5) **Integrate** out `\(\theta\)` to obtain marginal!
+
+---
+&lt;div class="question"&gt;
+Try it!
+&lt;/div&gt;
+
+
+`$$p(y) \propto \int_\mathbb{R}\exp\left\{- \frac 1 2 [\tau (y - \theta) ^2 + \tau_0(\theta - \theta_0) ^2 \right\} \, d\theta$$`
+
+
+
+---
+## Results
+
+Posterior for `\(\theta\)` based on a single observation (Conjugate family)
+
+`$$\theta \mid y \sim \textsf{N} \left(\hat{\theta}, \frac{1}{\tau_0 + \tau} \right)$$`
+--
+
+- posterior mean `\(\hat{\theta} = \frac{\tau_0} {\tau_0 + \tau} \theta_0 + \frac{\tau}{\tau_0 + \tau} y\)`
+
+--
+
+- precision weighted average of prior mean and MLE (based on 1 observation)
+
+--
+
+- posterior precision is the sum of prior precision and data precision 
+
+--
+
+- marginal distribution for `\(Y\)` (prior predictive)
+
+`$$Y \sim \textsf{N}\left(\theta_0, \frac{1}{\tau_0} + \frac{1}{\tau}\right) \text{ or } \textsf{N}(\theta_0, \sigma^2 + \sigma^2_0)$$`
+
+--
+
+- two sources of variability: variability from the model for the data and prior variability
+
+---
+## Prior Predictive
+
+
+- useful to think about observable quantities when choosing the prior
+
+--
+
+- sample directly  from the prior predictive and assess whether the samples are consistent with our prior knowledge
+
+--
+
+- if not, go back and  modify the prior &amp; repeat
+
+--
+
+- sequential substitution sampling  (repeat `\(T\)` times)
+
+  1) draw `\(\theta^{(t)} \sim \pi(\theta)\)`
+
+  2) draw `\(y^{(t)} \sim p(y \mid \theta^{(t)})\)`
+
+
+--
+
+- takes into account uncertain about `\(\theta\)` and variability in `\(Y\)`!
+
+
+---
+## Posterior Updating
+
+
+
+- Sequential updating using the previous result as our prior!
+
+--
+
+- New prior after seeing 1 observation is `$$\textsf{N}(\theta_1, 1/\tau_1)$$`
+
+--
+
+- prior mean weighted average
+  `$$\theta_1 \equiv \frac{\tau_0 \theta_0 + \tau y_1}{\tau_0 + \tau_1}$$`
+  
+--
+
+- prior precision after 1 observation
+  `$$\tau_1 \equiv \tau_0 + \tau$$`
+
+--
+
+
+- prior variance is now `\(\sigma^2_1 = 1/\tau_1\)`
+
+---
+## Posterior Predictive for `\(y_2\)` given `\(y_1\)` 
+
+- Conditional `\(p(y_2 \mid y_1) = p(y_2, y_1)/p(y_1)\)`   (Hard way!)
+
+--
+
+- Use latent variable representation
+
+`$$p(y_2 \mid y_1) = \int_\Theta \frac{p(y_2, \mid \theta) p( y_1 \mid \theta ) \pi(\theta) \, d\theta}{p(y_1)}$$`
+--
+
+- simplify to previous problem and use results
+`$$p(y_2 \mid y_1) =  \int_\Theta p(y_2 \mid \theta) \pi(\theta \mid y_1) \, d\theta$$`
+--
+
+- (Posterior) Predictive
+
+`$$y_2 \mid y_1 \sim \textsf{N}(\theta_1, \sigma^2 + \sigma^2_1)$$`
+---
+## Iterated Expectations  
+
+Based on expressions we have an exponential of a quadratic in `\(y_2\)` so know that distribution is Gaussian
+
+--
+
+- Find the mean and variance using iterated expectations:
+
+--
+
+- mean 
+`$$\textsf{E}[Y_2 \mid y_1] = \textsf{E}_{\theta \mid y_1}[\textsf{E}_{Y_2 \mid y_1, \theta} [Y_2 \mid y_1, \theta] \mid y_1]$$`
+---
+## Variance via Iterated Expectations
+
+`\(\textsf{Var}[Y_2  \mid y_1] =\)`
+
+`$$\textsf{E}_{\theta \mid y_1}[\textsf{Var}_{Y_2 \mid y_1, \theta} [Y_2 \mid y_1, \theta] \mid y_1] + \textsf{Var}_{\theta \mid y_1}[\textsf{E}_{Y_2 \mid y_1, \theta} [Y_2 \mid y_1, \theta] \mid y_1]$$`
+
+
+---
+## Updated Posterior for `\(\theta\)`
+
+`$$p(\theta \mid y_1, y_2) \propto p(y_2 \mid \theta) p(y_1 \mid \theta) \pi(\theta)$$`
+
+--
+
+`$$p(\theta \mid y_1, y_2) \propto  p(y_2 \mid \theta) p(\theta \mid y_1)$$`
+--
+
+
+Apply previous updating rules
+
+--
+
+- new posterior mean 
+
+`$$\theta_2 = \frac{\tau_1 \theta_1  + \tau y_2}{\tau_1 + \tau} = \frac{\tau_0 \theta_0 + 2 \tau \bar{y}}
+{\tau_0 + 2 \tau}$$`
+--
+
+- new precision
+
+$$ \tau_2 = \tau_1 + \tau = \tau_0 + 2 \tau$$
+
+---
+## After `\(n\)` observations 
+
+Posterior for `\(\theta\)` 
+
+`$$\theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+Posterior Predictive Distribution for `\(Y_{n+1}\)`
+
+`$$Y_{n+1} \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{\tau} + \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+- Shrinkage of the MLE to the prior mean
+
+--
+
+- More accurate estimation of `\(\theta\)` as `\(n \to \infty\)` (reducible error)
+
+--
+
+- Cannot reduce the error for prediction `\(Y_{n+1}\)` due to `\(\sigma^2\)`
+
+--
+
+- predictive distribution for a next observation given _everything_ we know - prior and likelihood
+
+---
+## Results with Jeffreys' Prior
+ - What if `\(\tau_0 \to 0\)`? (or `\(\sigma^2_0 \to \infty\)`)
+ 
+--
+
+- Prior predictive `\(\textsf{N}(\theta_0, \sigma^2_0 + \sigma^2 )\)`  (not  proper in the limit)
+
+--
+
+- Posterior for `\(\theta\)` (formal posterior)
+
+`$$\theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+`$$\to  \qquad \theta \mid y_1, \ldots, y_n \sim \textsf{N}\left( \bar{y}, 
+ \frac{1}{n \tau} \right)$$`
+--
+
+- Recovers the MLE as the posterior mode!
+
+--
+
+- Posterior variance of `\(\theta = \sigma^2/n\)` (same as variance of the MLE)
+ 
+
+---
+## Posterior Predictive Distribution
+
+ Posterior predictive distribution for `\(Y_{n+1}\)`
+
+`$$Y_{n+1} \mid y_1, \ldots, y_n \sim \textsf{N}\left( \frac{\tau_0 \theta_0 + n \tau \bar{y}}
+{\tau_0 + n \tau}, \frac{1}{\tau} + \frac{1}{ \tau_0 + n \tau} \right)$$`
+
+--
+
+Under Jeffreys' prior
+
+`$$Y_{n+1} \mid y_1, \ldots, y_n \sim \textsf{N}\left( \bar{y}, \sigma^2 (1 + \frac{1}{n} )\right)$$`
+--
+
+Captures extra uncertainty due to not knowing `\(\theta\)` (compared to plug-in approach where we plug in MLE in sampling model!
+
+---
+## Comparing Estimators
+
+Expected loss (from frequentist perspective) of using Bayes Estimator
+
+--
+
+- Posterior mean is optimal under squared error loss (min Bayes Risk)  [also absolute error loss]
+
+--
+
+Compute Mean Square Error (or Expected Average Loss)
+`$$\textsf{E}_{\bar{y} \mid \theta}\left[\left(\hat{\theta} - \theta \right)^2 \mid \theta \right]$$`
+ $$ = \textsf{Bias}(\hat{\theta})^2 + \textsf{Var}(\hat{\theta})$$
+--
+
+- For the MLE `\(\bar{Y}\)` this is just the variance of `\(\bar{Y}\)` or `\(\sigma^2/n\)`
+
+---
+## MSE for Bayes
+
+`$$\textsf{E}_{\bar{y} \mid \theta}\left[\left(\hat{\theta} - \theta \right)^2 \mid \theta \right] = \textsf{MSE} =  \textsf{Bias}(\hat{\theta})^2 + \textsf{Var}(\hat{\theta})$$`
+
+- Bias of Bayes Estimate
+
+`$$\textsf{E}_{\bar{Y} \mid \theta}\left[ \frac{\tau_0 \theta_0 + \tau n \bar{Y}}
+{\tau_0  + \tau n}\right] = 
+\frac{\tau_0(\theta_0 - \theta)}{\tau_0 + \tau n}$$`
+
+--
+
+- Variance
+
+`$$\textsf{Var}\left(\frac{\tau_0 \theta_0 + \tau n \bar{Y}}{\tau_0 + \tau n} - \theta  \mid \theta \right)  = \frac{\tau n}{(\tau_0 + \tau n)^2}$$`
+--
+
+(Frequentist) expected Loss  when truth is `\(\theta\)`
+
+`$$\textsf{MSE} = \frac{\tau_0^2(\theta - \theta_0)^2 + \tau n}{(\tau_0 + \tau n)^2}$$`
+--
+
+Behavior ?
+
+---
+## Plot
+
+&lt;img src="03-normal-predictive-distributions_files/figure-html/MSE-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Updating with `\(n\)` Observations
+ 
+ -  We can use the `\(\cal{L}(\theta)\)` based on `\(n\)` observations  and repeat completing the square with the original prior  `\(\theta \sim \textsf{N}(\theta_0, 1/\tau_0)\)`
+
+
+---
+## Likelihood Function
+
+- The likelihood for `\(\theta\)` is proportional to the sampling model
+
+`$$p(y \mid \theta,\tau)  = 
+\prod_{i=1}^n \frac{1}{\sqrt{2\pi}} \tau^{\frac{1}{2}}  \exp{\left\{-\frac{1}{2} \tau (y_i-\theta)^2\right\}}$$`
+
+--
+
+ &lt;div class="question"&gt;
+Rewrite in terms of sufficient statistics!
+&lt;/div&gt;
+
+
+---
+## Simplification
+
+
+`$$\begin{split}
+\cal{L}(\theta) &amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \sum_{i=1}^n (y_i-\theta)^2\right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \sum_{i=1}^n \left[ (y_i-\bar{y}) - (\theta - \bar{y}) \right]^2 \right\}\\
+\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \left[ \sum_{i=1}^n (y_i-\bar{y})^2 + \sum_{i=1}^n(\theta - \bar{y})^2 \right] \right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau \left[ \sum_{i=1}^n (y_i-\bar{y})^2 + n(\theta - \bar{y})^2 \right] \right\}\\
+&amp; \propto \tau^{\frac{n}{2}} \ \exp\left\{-\frac{1}{2} \tau s^2(n-1) \right\} \ \exp\left\{-\frac{1}{2} \tau n(\theta - \bar{y})^2 \right\}.\\
+&amp; \propto \exp\left\{-\frac{1}{2} \tau n(\theta - \bar{y})^2\right\}
+\end{split}$$`
+
+---
+## Exercises for Practice
+
+&lt;div class="question"&gt;
+Try this
+
+&lt;/div&gt;
+ 
+1)  Use `\(\cal{L}(\theta)\)`  based on `\(n\)` observations and `\(\pi(\theta)\)` to find  `\(\pi(\theta \mid y_1, \ldots, y_n)\)` based on the sufficient statistics
+
+--
+
+2)
+Use `\(\pi(\theta \mid y_1, \ldots, y_n)\)` to find the posterior predictive distribution for `\(Y_{n+1}\)`
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

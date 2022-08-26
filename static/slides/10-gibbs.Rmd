@@ -1,0 +1,355 @@
+---
+title: "Lecture 10: More MCMC:  Blocked Metropolis-Hastings and Gibbs"
+author: "Merlise Clyde"
+date: "September 27"
+output:
+  xaringan::moon_reader:
+    css: "slides.css"
+    logo: img/class_logo.png
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+# R options
+options(
+  htmltools.dir.version = FALSE, # for blogdown
+  show.signif.stars = FALSE,     # for regression output
+  warm = 1
+  )
+# Set dpi and height for images
+library(knitr)
+knitr::opts_chunk$set(fig.height = 2.65, dpi = 300,fig.align='center',fig.show='hold',size='footnotesize', small.mar=TRUE) 
+# For nonsese...
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+require(lattice)
+require(MCMCpack)
+require(hdrcde)
+require(coda)
+require(mvtnorm)
+#require(rethinking)
+set.seed(42)
+```
+
+
+
+## Blocked Metropolis-Hastings
+
+So far all algorithms update all of the parameters simultaneously
+
+--
+
+- convenient to break problems in to $K$ blocks and update them separately
+
+--
+
+- $\theta = (\theta_{[1]}, \ldots, \theta_{[K]}) = (\theta_1, \ldots, \theta_p)$
+
+
+
+--
+
+At iteration $s$, for $k = 1, \ldots, K$ Cycle thru blocks: (fixed order or random order)
+   + propose $\theta^*_{[k]} \sim q_k(\theta_{[k]} \mid \theta_{[<k]}^{(s)}, \theta_{[>k]}^{(s-1)})$
+   
+   + set $\theta_{[k]}^{(s)} = \theta^*_{[k]}$ with probability
+   
+$$\min \left\{ 1, \frac{
+   \pi(\theta_{[<k]}^{(s)},\theta_{[k]}^*, 
+        \theta_{[>k]}^{(s-1)})
+   \cal{L}(\theta_{[<k]}^{(s)},\theta_{[k]}^*,
+           \theta_{[>k]}^{(s-1)})/
+   q_k(\theta_{[k]}^* \mid \theta_{[<k]}^{(s)},    
+       \theta_{[>k]}^{(s-1)})}
+  {\pi(\theta_{[<k]}^{(s)},\theta_{[k]}^{(s-1)}, 
+        \theta_{[>k]}^{(s-1)})
+   \cal{L}(\theta_{[<k]}^{(s)},\theta_{[k]}^{(s-1)},
+           \theta_{[>k]}^{(s-1)})/
+   q_k(\theta_{[k]}^{(s-1)} \mid \theta_{[<k]}^{(s)},    
+       \theta_{[>k]}^{(s-1)})} \right\}$$
+---
+## Gibbs Sampler
+
+special case of Blocked MH
+
+--
+
+- proposal distribution $q_k$ for the $k$th block is the **full conditional** distribution for $\theta_{[k]}$
+
+$$\pi(\theta_{[k]} \mid \theta_{[-k]}, y) = \frac{\pi(\theta_{[k]} , \theta_{[-k]} \mid y)}{ \pi(\theta_{[-k]} \mid y))} \propto \pi(\theta_{[k]} , \theta_{[-k]} \mid y)$$
+--
+
+$$\pi(\theta_{[k]} \mid \theta_{[-k]}, y)  \propto \cal{L}(\theta_{[k]} , \theta_{[-k]})\pi(\theta_{[k]} , \theta_{[-k]})$$
+--
+
+$$\min \left\{ 1, \frac{
+   \pi(\theta_{[<k]}^{(s)},\theta_{[k]}^*, 
+        \theta_{[>k]}^{(s-1)})
+   \cal{L}(\theta_{[<k]}^{(s)},\theta_{[k]}^*,
+           \theta_{[>k]}^{(s-1)})/
+   q_k(\theta_{[k]}^* \mid \theta_{[<k]}^{(s)},    
+       \theta_{[>k]}^{(s-1)})}
+  {\pi(\theta_{[<k]}^{(s)},\theta_{[k]}^{(s-1)}, 
+        \theta_{[>k]}^{(s-1)})
+   \cal{L}(\theta_{[<k]}^{(s)},\theta_{[k]}^{(s-1)},
+           \theta_{[>k]}^{(s-1)})/
+   q_k(\theta_{[k]}^{(s-1)} \mid \theta_{[<k]}^{(s)},    
+       \theta_{[>k]}^{(s-1)})} \right\}$$
+       
+--
+
+- acceptance probability is always 1!
+
+--
+
+- even though joint distribution is messy, full conditionals may be (conditionally) conjugate and easy to sample from!
+
+
+---
+##  Univariate Normal Example
+
+Model
+$$\begin{align*}
+Y_i \mid \mu, \sigma^2 & \overset{iid}{\sim} \textsf{N}(\mu, 1/\phi) \\
+\mu & \sim \textsf{N}(\mu_0, 1/\tau_0) \\
+\phi & \sim  \textsf{Gamma}(a/2, b/2)
+\end{align*}$$
+
+--
+-  Joint prior is a product of independent  Normal-Gamma
+
+--
+-  Is  $\pi(\mu, \phi \mid y_1, \ldots, y_n)$ also a Normal-Gamma family?
+
+
+
+---
+## Full Conditional for the  Mean
+
+The full conditional distributions  $\mu \mid \phi, y_1, \ldots, y_n$ 
+  
+
+$$\begin{align*}
+\mu & \mid \phi, y_1, \ldots, y_n \sim \textsf{N}(\hat{\mu}, 1/\tau_n) \\
+\hat{\mu} & = \frac{\tau_0 \mu_0  + n \phi \bar{y}}{\tau_0 + n \phi} \\
+\tau_n & = \tau_0 + n \phi
+\end{align*}$$
+  
+  
+  
+---
+## Full Conditional for the Precision
+
+$$\begin{align*}
+\phi  \mid \mu, y_1, \ldots, y_n & \sim \textsf{Gamma}( a_n/2, b_n/2) \\
+a_n & = a + n \\
+b_n & = b + \sum_i (y_i - \mu)^2
+\end{align*}$$
+
+--
+
+$$\textsf{E}[\phi \mid \mu, y_1, \ldots, y_n] = \frac{(a + n)/2}{(b + \sum_i (y_i - \mu)^2 )/2}$$
+
+--
+What happens with a non-informative prior  i.e
+
+$a = b = \epsilon$ as $\epsilon \to 0$?
+
+
+--
+Note: Proper full conditionals do not ensure proper joint posterior!
+
+---
+## Normal Linear Regression Example
+
+Model
+$$\begin{align*}
+Y_i \mid \beta, \phi & \overset{iid}{\sim} \textsf{N}(x_i^T\beta, 1/\phi) \\
+Y \mid \beta, \phi & \sim \textsf{N}(X \beta, \phi^{-1} I_n) \\
+\beta & \sim \textsf{N}(b_0, \Phi_0^{-1}) \\
+\phi & \sim \textsf{N}(v_0/2, s_0/2)
+\end{align*}$$
+
+--
+
+$x_i$ is a $p \times 1$ vector of predictors and $X$ is $n \times p$ matrix
+
+--
+
+$\beta$ is a $p \times 1$ vector of coefficients
+
+--
+
+$\Phi_0$ is a $p \times p$ prior precision matrix 
+
+--
+
+Multivariate Normal density for $\beta$
+$$\pi(\beta \mid b_0, \Phi_0) = \frac{|\Phi_0|^{1/2}}{(2 \pi)^{p/2}}\exp\left\{- \frac{1}{2}(\beta - b_0)^T \Phi_0 (\beta - b_0)  \right\}$$
+---
+## Full Conditional for $\beta$
+
+$$\begin{align*}
+\beta & \mid \phi, y_1, \ldots, y_n \sim \textsf{N}(b_n, \Phi_n^{-1}) \\
+b_n & =  (\Phi_0 + \phi X^TX)^{-1}(\Phi_0 b_0  +  \phi X^TX \hat{\beta})\\
+\Phi_n & = \Phi_0 + \phi X^TX
+\end{align*}$$
+
+---
+## Derivation continued
+
+
+---
+## Full Conditional for $\phi$
+
+$$ \phi \mid \beta, y_1, \ldots, y_n \sim \textsf{Gamma}((v_0 + n)/2, (s_0 + \sum_i(y_i - x^T_i \beta)))$$
+
+
+
+---
+##  Choice of Prior Precision
+
+Non-Informative $\Phi_0 \to 0$ 
+
+--
+
+- Formal Posterior given $\phi$
+  $$\beta \mid \phi, y_1, \ldots, y_n \sim \textsf{N}(\hat{\beta}, \phi^{-1} (X^TX)^{-1})$$
+  
+--
+
+- needs $X^TX$ to be full rank for distribution to be unique
+
+---
+## Invariance and Choice of Mean/Precision
+
+-  the model in vector form
+
+$$ Y \sim \textsf{N}_n (X\beta, \phi^{-1} I_n)$$
+
+--
+
+- What if we transform the $X$ matrix by $\tilde{X} = X H$ where $H$ is $p \times p$ and invertible
+
+--
+
+- obtain the posterior for $\tilde{\beta}$ using $Y$ and $\tilde{X}$  
+
+$$ Y \sim \textsf{N}_n (\tilde{X}\tilde{\beta}, \phi^{-1} I_n)$$
+
+- since $\tilde{X} \tilde{\beta} = X H  \tilde{\beta} = X \beta$  invariance suggests that the posterior for $\beta$ and $H \tilde{\beta}$ should be the same 
+
+--
+- or the posterior of $H^{-1} \beta$
+and $\tilde{\beta}$ should be the same
+
+--
+
+- with some linear algebra we can show that this is true if $b_0 = 0$ and $\Phi_0$ is $k X^TX$ for some $k$  (show!)
+
+---
+## Zellner's g-prior
+
+Popular choice is to take $k = \phi/g$ which is a special case of Zellner's g-prior
+
+$$\beta \mid \phi, g \sim \textsf{N}\left(0, \frac{g}{\phi} (X^TX)^{-1}\right)$$
+
+--
+
+- Full conditional 
+
+$$\beta \mid \phi, g \sim \textsf{N}\left(\frac{g}{1 + g} \hat{\beta}, \frac{1}{\phi} \frac{g}{1 + g} (X^TX)^{-1}\right)$$
+--
+
+- one parameter $g$ controls shrinkage
+
+--
+
+if $\phi \sim \textsf{Gamma}(v_0/2, s_0/2)$ then posterior is
+$$\phi \mid y_1, \ldots, y_n \sim \textsf{Gamma}(v_n/2, s_n/2)$$
+--
+
+Conjugate so we could skip Gibbs sampling and sample directly from gamma and then conditional normal!
+
+---
+## Ridge Regression 
+
+If $X^TX$ is nearly singular, certain  elements of $\beta$ or (linear combinations of $\beta$) may have huge variances under the $g$-prior (or flat prior) as the MLEs are highly unstable!
+
+--
+
+**Ridge regression** protects against the explosion of variances and ill-conditioning with the conjugate priors:
+
+
+$$\beta \mid \phi \sim \textsf{N}(0, \frac{1}{\phi \lambda} I_p)$$
+--
+
+Posterior for $\beta$  (conjugate case)
+
+$$\beta \mid \phi, \lambda, y_1, \ldots, y_n \sim 
+\textsf{N}\left((\lambda I_p + X^TX)^{-1} X^T Y,  \frac{1}{\phi}(\lambda I_p + X^TX)^{-1}
+\right)$$
+
+
+
+
+---
+##  Bayes Regression
+
+- Posterior mean (or mode) given $\lambda$ is biased, but can show that there **always** is a value of $\lambda$  where the frequentist's expected squared error loss is smaller for the Ridge estimator than MLE!
+
+--
+
+- related to penalized maximum likelihood estimation 
+
+--
+
+-  Choice of $\lambda$
+
+--
+
+-  Bayes Regression and choice of $\Phi_0$ in general is a very important problem and provides the foundation  for many variations on shrinkage estimators, variable selection, hierarchical models, nonparameteric regression and more!
+
+--
+
+- Be sure that you can derive the full conditional posteriors for $\beta$ and $\phi$ as well as the joint posterior in the conjugate case!
+
+
+---
+## Comments
+
+
+
+- Why don't we treat each individual $\beta_j$ as a separate block?
+
+--
+
+-  Gibbs always accepts, but can mix slowly if parameters in different blocks are highly correlated!
+
+--
+
+- Use block sizes in Gibbs that are as big as possible to improve  mixing (proven faster convergence)
+
+--
+
+- Collapse the sampler by integrating out as many parameters as possible  (as long as resulting sampler has good mixing)
+
+--
+
+- can use Gibbs steps and (adaptive) Metropolis Hastings steps together
+
+--
+
+
+-  Introduce latent variables (data augmentation) to allow Gibbs steps  (Next class)
+
+
+
+
+

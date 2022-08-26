@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 360/602L: Module 8.5</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Olanrewaju Michael Akande" />
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 360/602L: Module 8.5
+## Finite mixture models: multivariate categorical data
+### Dr. Olanrewaju Michael Akande
+
+---
+
+
+
+
+
+
+
+## Categorical data: bivariate case
+  
+- Suppose we have data `\((y_{i1},y_{i2})\)`, for `\(i = 1, \ldots, n\)`, where
+  + `\(y_{i1} \in \{1,\ldots, D_1\}\)`
+  + `\(y_{i2} \in \{1,\ldots, D_2\}\)`.
+  
+--
+
+- This is just a two-way contingency table, so that we are interested in estimating the probabilities `\(\Pr(y_{i1} = d_1, y_{i2} = d_2) = \theta_{d_1d_2}\)`.
+    
+--
+      
+- Write `\(\boldsymbol{\theta} = \{\theta_{d_1d_2}\}\)`, which is a `\(D_1 \times D_2\)` matrix of all the probabilities.
+
+
+
+---
+## Categorical data: bivariate case
+        
+- The likelihood is therefore
+.block[
+.small[
+$$
+`\begin{split}
+p[Y| \boldsymbol{\theta}] &amp; = \prod_{i=1}^n \prod_{d_2=1}^{D_2} \prod_{d_1=1}^{D_1} \theta_{d_1d_2}^{\mathbb{1}[y_{i1} = d_1, y_{i2} = d_2]}\\
+\\
+&amp; = \prod_{d_2=1}^{D_2} \prod_{d_1=1}^{D_1} \theta_{d_1d_2}^{\sum\limits_{i=1}^n \mathbb{1}[y_{i1} = d_1, y_{i2} = d_2]}\\
+\\
+&amp; = \prod_{d_2=1}^{D_2} \prod_{d_1=1}^{D_1} \theta_{d_1d_2}^{n_{d_1d_2}}
+\end{split}`
+$$
+]
+]
+
+  where `\(n_{d_1d_2} = \sum\limits_{i=1}^n \mathbb{1}[y_{i1} = d_1, y_{i2} = d_2]\)` is just the number of observations in cell `\((d_1,d_2)\)` of the contingency table.
+      
+      
+      
+---
+## Posterior inference
+        
+- How can we do Bayesian inference?
+
+--
+
+- Several options! Most common are:
+
+--
+        
+- .hlight[Option 1:] Follow the univariate approach.
+
+  + Rewrite the bivariate data as univariate data, that is, `\(y_i \in \{1,\ldots, D_1 D_2\}\)`.
+
+--
+
+  + Write `\(\Pr(y_i = d) = \nu_d\)` for each `\(d = 1,\ldots, D_1 D_2\)`.
+  
+--
+
+  + Specify Dirichlet prior as `\(\boldsymbol{\nu} = (\nu_1,\ldots,\nu_{D_1 D_2}) \sim \textrm{Dirichlet}(\alpha_1,\ldots,\alpha_{D_1 D_2})\)`.
+  
+--
+
+  + Then, posterior is also Dirichlet with parameters updated with the number in each cell of the contingency table.
+      
+
+
+---
+## Posterior inference
+
+- .hlight[Option 2:] Assume independence, then follow the univariate approach.
+
+  + Write `\(\Pr(y_{i1} = d_1, y_{i2} = d_2) = \Pr(y_{i1} = d_1)\Pr(y_{i2} = d_2)\)`, so that `\(\theta_{d_1d_2} = \lambda_{d_1} \psi_{d_2}\)`.
+  
+--
+
+  + Specify independent Dirichlet priors on `\(\boldsymbol{\lambda} = (\lambda_1,\ldots,\lambda_{D_1})\)` and `\(\boldsymbol{\psi} = (\psi_1,\ldots,\psi_{D_2})\)`.
+  
+--
+
+  + That is,
+      + `\(\boldsymbol{\lambda} \sim \textrm{Dirichlet}(a_1,\ldots,a_{D_1})\)`
+      
+      + `\(\boldsymbol{\psi} \sim \textrm{Dirichlet}(b_1,\ldots,b_{D_2})\)`.
+
+--
+  + This reduces the number of parameters from `\(D_1 D_2 - 1\)` to `\(D_1 + D_2 - 2\)`.
+      
+
+---
+## Posterior inference
+        
+- .hlight[Option 3:] Log-linear model
+  + `\(\theta_{d_1d_2} = \dfrac{e^{ \alpha_{d_1} + \beta_{d_2} + \gamma_{d_1d_2} }}{ \sum\limits_{d_2=1}^{D_2} \sum\limits_{d_1=1}^{D_1} e^{ \alpha_{d_1} + \beta_{d_2} + \gamma_{d_1d_2} }}\)`;
+  
+--
+
+  + Specify priors (perhaps normal) on the parameters.
+      
+
+
+---
+## Posterior inference
+        
+- .hlight[Option 4:] Latent structure model
+  + Assume conditional independence given a .hlight[latent variable];
+  
+--
+
+  + That is, write
+  .block[
+.small[
+$$
+`\begin{split}
+\theta_{d_1d_2} &amp; = \Pr(y_{i1} = d_1, y_{i2} = d_2)\\
+&amp; = \sum_{k=1}^K \Pr(y_{i1} = d_1, y_{i2} = d_2 | z_i = k) \cdot \Pr(z_i = k)\\
+&amp; = \sum_{k=1}^K \Pr(y_{i1} = d_2| z_i = k) \cdot \Pr(y_{i2} = d_2 | z_i = k) \cdot \Pr(z_i = k)\\
+&amp; = \sum_{k=1}^K \lambda_{k,d_1} \psi_{k,d_2} \cdot \omega_k .\\
+\end{split}`
+$$
+]
+]
+
+--
+
+  + This is once again, a .hlight[finite mixture of multinomial distributions].
+     
+
+
+---
+## Categorical data: extensions
+
+- For categorical data with more than two categorical variables, it is relatively easy to extend the framework for latent structure models.
+
+--
+
+- Clearly, there will be many more parameters (vectors and matrices) to keep track of, depending on the number of clusters and number of variables!
+
+--
+
+- If interested, read up on .hlight[finite mixture of products of multinomials]. 
+
+--
+
+- Can also go full Bayesian nonparametrics with a .hlight[Dirichlet process mixture of products of multinomials]. 
+
+--
+
+- Happy to provide resources for those interested!
+
+
+
+
+---
+
+class: center, middle
+
+# What's next? 
+
+### Move on to the readings for the next module!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

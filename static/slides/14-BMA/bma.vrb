@@ -1,0 +1,28 @@
+\frametitle{Posterior Probabilities}
+  \begin{itemize}
+  \item What is the probability that there is no pollution effect? \pause
+\item Sum posterior model probabilities over all models that include
+  at least one pollution variable \pause
+
+\begin{knitrout}
+\definecolor{shadecolor}{rgb}{0.969, 0.969, 0.969}\color{fgcolor}\begin{kframe}
+\begin{alltt}
+\hlstd{models} \hlkwb{=} \hlkwd{list2matrix.which}\hlstd{(mort.bma)}
+\hlstd{poll.inclusion} \hlkwb{=} \hlstd{(models[,} \hlnum{14}\hlopt{:}\hlnum{16}\hlstd{]} \hlopt{%*%} \hlkwd{rep}\hlstd{(}\hlnum{1}\hlstd{,} \hlnum{3}\hlstd{))} \hlopt{>} \hlnum{0}
+\hlstd{prob.poll} \hlkwb{=} \hlkwd{sum}\hlstd{(poll.inclusion} \hlopt{*} \hlstd{mort.bma}\hlopt{$}\hlstd{postprobs)}
+\hlstd{prob.poll}
+\end{alltt}
+\begin{verbatim}
+## [1] 0.9829953
+\end{verbatim}
+\end{kframe}
+\end{knitrout}
+
+
+\pause
+\item Posterior probability no effect is 0.017 \pause
+\item Odds that there is an effect 0.983/0.017 = 57.8073 \pause
+\item Prior Odds $7 = (1 - .5^3)/.5^3$ \pause
+
+\end{itemize}
+

@@ -1,0 +1,4 @@
+\beamer@sectionintoc {1}{Nonparametric Regression}{2}{0}{1}
+\beamer@subsectionintoc {1}{1}{Stochastic Expansions}{4}{0}{1}
+\beamer@sectionintoc {2}{Examples}{60}{0}{2}
+\beamer@sectionintoc {3}{Summary}{64}{0}{3}

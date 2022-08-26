@@ -1,0 +1,251 @@
+lessons:
+  
+  - week: "WEEK 0"
+    date: "Tues, Aug 24"
+    title: "Lecture 0: Course Overview and Introduction"
+    reading: "00-reading.html"
+    slides: "00-course-overview.html"
+    slidespdf: "00-course-overview-handout.pdf"
+    
+  - date: "Thur, Aug 26"
+    title: "Lecture 1: Basics of Bayesian Inference"
+    reading: "01-reading.html"
+    slides: "01-basics-of-bayes.html"
+    slidespdf: "01-basics-of-bayes-handout.pdf"
+    lab:  "lab-00-getting-started.html"
+
+  - week: "WEEK 1"
+    date: "Mon, Aug 30"
+    title: "Lab 1: R and Monte Carlo Review + HW 1"
+    lab: "lab-01-r-review-blank.html"
+    hw: "hw-01.html"
+
+  - date: "Tues, Aug 31"
+    title: "Lecture 2: Loss Functions & Summaries"
+    reading: "02-reading.html"
+    slides: "02-loss-functions.html"
+    slidespdf: "02-loss-functions-handout.pdf"
+
+    
+  - date: "Thur, Sept 2"
+    title: "Lecture 3: Normal Model & Predictive Distributions"
+    slides: "03-normal-predictive-distributions.html"
+    slidespdf: "03-normal-predictive-distributions-handout.pdf"
+    reading: "03-reading.html"
+    
+  - title: "Drop/Add Ends"
+    date: "Fri, Sept 3"
+    
+  - week: "WEEK 2" 
+    date: "Mon, Sept 6"
+    title: "Lab 2: Beta-Binomial Model and Introduction to stan + HW 2"
+    lab: "lab-02-beta-binomial.html"
+    hw: "hw-02.html"
+    
+  - date: "Tues, Sept 7"
+    title: "Lecture 4: Predictive Checks"
+    reading: "04-reading.html"
+    slides: "04-predictive-checks.html"
+    slidespdf: "04-predictive-checks-handout.pdf"
+    
+
+  - date: "Thurs, Sept 9"
+    title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
+    reading: "05-reading.html"
+    slides: "05-hypothesis-testing.html"
+    slidespdf: "05-hypothesis-testing-handout.pdf"
+ 
+    
+  - week: "WEEK 3"
+    date: "Mon, Sept 13"
+    title: "Lab 3 + HW 3"
+    lab: "lab-03-posterior-predictive-checks.html"
+    hw: "hw-03.html"
+    
+  - date: "Tues, Sept 14"
+    title: "Lecture 6: Bayesian Hypothesis Testing Continued"
+    reading: "06-reading.html"
+    slides: "06-hypothesis-testing-cont.html"
+    slidespdf: "06-hypothesis-testing-cont-handout.pdf"
+
+  - date:  "Thur, September 16"
+    title: "Lecture 7: Introduction to Hierarchical Models, EB & Metropolis"
+    reading: "07-reading.html"
+    slides: "07-hierarchical-models.html"
+    slidespdf: "07-hierarchical-models-handout.pdf"
+    
+  - week: "WEEK 4"
+    date:  "Mon, Sept 20"
+    title: "Lab 4 + HW 4"
+    lab: "lab-04-metropolis.html"
+    hw: "hw-04.html"
+    
+    
+  - date: "Tues, Sept 21"
+    title: "Lecture 8:  Metropolis Algorithms & Diagnostics"
+    reading: "08-reading.html"
+    slides: "08-metropolis-diagnostics.html"
+    slidespdf: "08-metropolis-diagnostics-handout.pdf"
+  
+  - date: "Thur, Sept 23"
+    title: "Lecture 9: More MCMC - Adaptive Metropolis and Metropolis Hastings"
+    reading: "09-reading.html"
+    slides: "09-adaptive-metropolis.html"
+    slidespdf: "09-adaptive-metropolis-handout.pdf"
+  
+  - week: "WEEK 5"
+    date: "Mon, Sept 27"
+    title: "Lab 5 + HW 5"  
+    hw: "hw-05.html"
+    lab: "lab-05-adaptive-metropolis-Gibbs.html"
+    
+  - date: "Tues: Tues, Sept 28" 
+    title: "Lecture 10: Blocked Samplers and Gibbs" 
+    reading: "10-reading.html"
+    slides: "10-gibbs.html"
+    slidespdf: "10-gibbs-handout.pdf"
+    
+
+  - date: "Thu, Sept 30"
+    title: "Lecture 11: Data Augmentation" 
+    reading: "11-reading.html"
+    slides: "11-gibbs-data-augmentation.html"
+    slidespdf: "11-gibbs-data-augmentation-handout.pdf"
+
+
+  - week: "WEEK 6"
+    date: "Mon, Oct 4"
+    title: "NO LAB FALL BREAK"
+
+  - date: "Tue, Oct 5"
+    title: "NO CLASS FALL BREAK"
+
+  - date: "Thu, Oct 7"
+    title: "Midterm I (***tentative***)"
+  
+  - week: "WEEK 7"
+    date: "Mon, Oct 11"
+    title: "Lab 6 + HW 6"  
+    hw: "hw-06.html"
+    lab: "lab-06-more-binary.html"
+
+  - date: "Tue, Oct 12"
+    title: "Lec 12:  Multiple Testing and Hierachical Models"
+    reading: "12-reading.html"
+    slides: "12-multiple-testing.html"
+    slidespdf: "12-multiple-testing-handout.pdf"
+
+  - date: "Thur, Oct 14"
+    title: "Lec 13:  Bayesian Multiple Testing and Hierachical Models"
+    reading: "13-reading.html"
+    slides: "13-Bayes-multiple-testing.html"
+    slidespdf: "13-Bayes-multiple-testing-handout.pdf"
+
+  - week: "WEEK 8"
+    date: "Mon, Oct 18"
+    title: "Lab 7 + HW 7"  
+    lab: "lab-07-multiple-testing.html"
+    hw: "hw-07.html"
+    
+    
+  - title: "Lec 14: Bayesian Model Choice in Linear Regression"
+    reading: "14-reading.html" 
+    slides: "14-model-selection.html"
+    slidespdf: "14-model-selection-handout.pdf"
+
+  - title: "Lec 15: Bayesian Model Averaging"
+    reading: "15-reading.html"
+    slides: "15-BMA.html"
+    slidespdf: "15-BMA-handout.pdf"
+
+    
+  - week: "WEEK 9"
+    date: "Mon, Oct 25"
+    title: "Lab 8 + HW 8: BMA" 
+    lab:  "lab-08-bma.html"
+    hw:  "hw-08.html"
+
+  - title: "Lec 16:  Prior Choice & BMA;  Implementation"
+    date: "Tues, Oct 26"
+    reading: "16-reading.html"
+    slides: "16-prior-bma/16-prior-bma-handout.pdf"
+    slidespdf: "16-prior-bma/16-prior-bma.pdf"
+
+  - title: "Lec 17:  Outliers & Robust Bayesian Regression"
+    date: "Thur, Oct 28"
+    reading: "17-reading.html"
+    slides: "17-outliers/17-outliers-handout.pdf"
+    slidespdf: "17-outliers/17-outliers.pdf"
+
+  
+  - week: "WEEK 10"
+    date: "Mon, Nov 1"
+    title:  "Lab & HW 9"
+    hw: "hw-09.html"
+    lab: "lab-09-hier.html"
+    
+  - title: "Lec 18:  Random Effects and Hierarchial Models"
+    date: "Tue, Nov 2"
+    slides: "18-random-effects-handout.html"
+    slidespdf: "18-random-effects.pdf"
+    reading: "18-reading.html"
+
+
+  - date: "Thur, Nov 4"
+    title:  "Lec 19: Linear Mixed Effect Models"
+    reading: "19-reading.html"
+    slides: "19-mixed-effects-handout.html"
+    slidespdf: "19-mixed-effects.pdf"
+
+  
+  - week: "WEEK 11"
+    date: "Mon, Nov 8"
+    title:  "Review for Midterm"
+    
+  - date: "Tues, Nov 9"
+    title: "Lec 20: Missing Data"
+    slides:  "20-missing-data-handout.html"
+    slidespdf: "20-missing-data.pdf"
+    
+  - date: "Thu, Nov 11"
+    title: "Midterm II "
+    
+  - week: "WEEK 12"
+    date: "Mon, Nov 15"
+    title:  "Lab & HW 10"
+    lab: "lab-10-HMC.html"
+    hw: "hw-10.html"
+
+    
+  - date: "Tues, Nov 16"
+    title:  "Lec 21, Hamiltonian Monte Carlo"
+    slides: "21-HMC.pdf"
+    slidespdf: "21-HMC-handout.pdf"
+
+
+  - date: "Thur, Nov 18"
+    title: "Lec 22: Nonparametric Regression"
+    slides: "22-BARK/svm.pdf"
+    slidespdf: "22-BARK/svm-handout.pdf"
+    
+  - week: "WEEK 13"
+    date: "Mon, Nov 22"
+    title: "continue HMC"
+    
+  - date: "Tues, Nov 23"
+    title: "Lec 24:  Midterm II Review"
+  
+  - week: "WEEK 14"
+    date: "Mon, Nov 29"
+    title: "Reading week; no class"
+
+  - date: "Tue, Dec 7"
+    title: "Reading period; no class"
+    
+  - week: "WEEK 15"  
+    date: "Sun, Dec 12"
+    title: "Final Exam Perkins LINK 065 (Classroom 2) 2:00-5:00pm"
+    
+
+    
+    

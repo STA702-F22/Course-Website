@@ -1,0 +1,97 @@
+baseurl = "/"
+languageCode = "en-us"
+defaultContentLanguage = "en-us"
+title = "STA601 Fall 2021"
+theme = "material"
+#disqusShortname = ""
+# googleAnalytics = ""
+paginate = 7
+relativeurls = true
+publishDir = "docs"
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
+
+
+[permalinks]
+  post = "/:year/:month/:slug/"
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+  archive = "archives"
+
+[author]
+  name = "Merlise Clyde"
+  bio = ""
+  job = "Professor of Statistical Science"
+  location = "Department of Statistical Science, Duke University"
+  gravatarEmail = "clyde@duke.edu"
+  # Your profile picture
+  picture = "img/avatar-icon.jpg"
+ 
+ 
+# Menu Configuration
+[[menu.main]]
+  weight = 1
+  identifier = "home"
+  name = "Home"
+  pre = "<i class=\"sidebar-button-icon fa fa-lg fa-home\"></i>"
+  url = "/"
+[[menu.main]]
+  weight = 2
+  identifier = "syllabus"
+  name = "Schedule"
+  pre = "<i class=\"material-icons\">date_range</i>"
+  url = "/syllabus"
+[[menu.main]]
+  weight = 3
+  identifier = "policies"
+  name = "Syllabus & Policies"
+  pre = "<i class=\"material-icons\">gavel</i>"
+  url = "/policies"
+[[menu.main]]
+  weight = 4
+  identifier = "resources"
+  name = "Resources"
+  pre = "<i class=\"material-icons\">folder_shared</i>"
+  url = "/resources"
+[[menu.main]]
+  weight = 5
+  identifier = "gradescope"
+  name = "Gradescope"
+  pre = "<i class=\"material-icons\">assignment</i>"
+  url = "https://www.gradescope.com/courses/295827"
+  
+[[menu.main]]
+  weight = 6
+  identifier = "github"
+  name = "Github"
+  pre = "<i class=\"button-icon fa fa-github\"></i>"
+  url = "https://github.com/sta601-F21"
+
+
+[[menu.footer]]
+  weight = 1
+  identifier = "Duke Stats"
+  name = "Statistical Science, Duke University"
+  pre = "<i class=\"button-icon fa fa-2x fa-map-marker\"></i>"
+  url = "https://stat.duke.edu"
+#[[menu.footer]]
+#  weight = 2
+#  name = "RStudio"
+#  pre = "<i class=\"icon-rlogo\" style=\"font-size:150%\"></i>"
+#  url = "https://rstudio.cloud/"
+[[menu.footer]]
+  weight = 3
+  identifier = "GitHub"
+  name = "GitHub"
+  pre = "<i class=\"button-icon fa fa-2x fa-github\"></i>"
+  url = "https://github.com/STA601-F21"
+[[menu.footer]]
+
+
+[params]
+  dateFormat = "January 2, 2006"
+#  background = "https://www2.stat.duke.edu/courses/Fall21/sta601.001/img/Bayes_Theorem.jpg" 
+  background = "https://www2.stat.duke.edu/courses/Fall21/sta601.001/img/Bayes_Theorem.jpg" 
+
+  favicon = "https://github.com/STA601-F21/Course-Website/blob/master/static/img/icon-192.png"

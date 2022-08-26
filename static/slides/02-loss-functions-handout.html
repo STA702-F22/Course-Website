@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>STA 601: Lecture 2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# STA 601: Lecture 2
+## Loss Functions, Bayes Risk and Posterior Summaries
+### Merlise Clyde
+
+---
+
+
+
+
+
+## Last Time ...
+
+- Introduction to   "ingredients" of Bayesian analysis 
+
+- Illustrated a simple Beta-Binomial conjugate example
+
+- Posterior  `\(\pi(\theta \mid y)\)` is a `\(\textsf{Beta}(a + y, b + n - y )\)`
+
+--
+
+Today ...  
+
+ - an introduction to loss functions
+ 
+ - Bayes Risk
+ 
+ - optimal decisions and estimators 
+ 
+
+---
+## Bayes estimate
+
+- As we've seen by now, having posterior distributions instead of one-number summaries is great for capturing uncertainty.
+
+--
+
+- That said, it is still very appealing to have simple summaries, especially when dealing with clients or collaborators from other fields, who desire one.
+
+
+--
+
+1)  What if we want to produce a single "best"  estimate of `\(\theta\)`?
+
+--
+
+2) What if we want to produce an interval estimate `\(( \theta_L, \theta_U )\)`?
+
+--
+
+These would provide alternatives to the frequentist MLEs and confidence intervals
+
+---
+## Heuristically 
+
+
+&lt;img src="02-loss-functions-handout_files/figure-html/post-1.png" width="40%" style="display: block; margin: auto;" /&gt;
+
+1)  "best" estimate of `\(\theta\)` is the maximum _a posteriori estimate_ (**MAP**) or posterior mode 
+
+--
+
+- what do we really mean by "best"?
+
+--
+
+2)  find an interval such that `\(P(\theta \in ( \theta_L, \theta_U ) \mid y) = 1- \alpha\)`
+
+--
+
+- lots of intervals that satisfy this! which one is "best"?
+
+
+---
+## Loss Functions for Estimators
+
+Introduce loss functions for decision making about what to report!
+
+--
+
+-  a loss function provides a summary for how bad an estimator `\(\hat{\theta}\)` is relative to the "true" value of `\(\theta\)`
+
+--
+
+
+- Squared error loss `\((L2)\)`  
+
+`$$l(\theta, \hat{\theta}) = (\hat{\theta} - \theta)^2$$`
+
+--
+
+- Absolute error loss `\((L1)\)`
+
+`$$l(\theta, \hat{\theta}) = |\hat{\theta} - \theta|$$`
+
+--
+
+But how do we deal with the fact that we do not know `\(\theta\)`?
+
+---
+## Bayes Risk
+
+
+- **Bayes risk** is defined as the expected loss of using `\(\hat{\theta}\)` averaging over the posterior distribution.
+
+--
+
+$$ R(\hat{\theta}) = \textsf{E}_{\pi(\theta \mid y)} [l(\theta, \hat{\theta}) ]$$
+--
+
+- the **Bayes optimal estimate** `\(\hat{\theta}\)` is the estimator that has the lowest posterior expected loss or Bayes Risk
+
+
+--
+
+- Depends on choice of loss function
+
+--
+
+- **Frequentist risk** also exists for evaluating a given estimator under true value of `\(\theta\)`
+
+`$$\textsf{E}_{p(y \mid \theta_{\textrm{true}})} [l(\theta_{\textrm{true}} , \hat{\theta}) )]$$`
+
+
+---
+##  Squared Error Loss
+
+A common choice for point estimation is squared error loss:
+ 
+ `$$R(\hat{\theta}) = \textsf{E}_{\pi(\theta \mid y)} [l(\theta, \hat{\theta}) ] = \int_\Theta (\hat{\theta} - \theta)^2 \pi(\theta \mid y) \, d\theta$$`
+--
+
+-  Expand and take derivative of `\(R(\hat{\theta}\)` with respect to `\(\hat{\theta}\)`)
+
+&lt;div class="question"&gt;
+Let's work it out!
+&lt;/div&gt;
+
+
+---
+## Steps
+
+`$$R(\hat{\theta}) = \int_\Theta (\hat{\theta}^2 - 2 \hat{\theta} \theta + \theta^2) \pi(\theta \mid y) \, d \theta$$`
+--
+
+`$$R(\hat{\theta}) = \hat{\theta}^2 - 2 \hat{\theta} \int_\Theta \theta \pi(\theta \mid y) \, d\theta +  \int_\Theta \theta^2  \pi(\theta \mid y) \, d\theta$$`
+--
+
+`$$R(\hat{\theta}) = \hat{\theta}^2 - 2 \hat{\theta} \textsf{E}[\theta \mid y] + \textsf{E}[\theta^2 \mid y]$$`
+
+
+--
+
+- Quadratic in `\(\hat{\theta}\)` minimized when `\(\hat{\theta} = \textsf{E}[\theta \mid y]\)` 
+
+--
+
+- Posterior mean is the **Bayes optimal estimator** for `\(\theta\)` under squared error loss
+
+--
+
+- In the beta-binomial case for example, the optimal Bayes estimate under squared error loss is 
+.block[
+`$$\hat{\theta} = \frac{a+y}{a+b+n},$$`
+]
+
+
+---
+## What about other loss functions?
+
+- Clearly, squared error is only one possible loss function. An alternative is **absolute loss**, which has
+.block[
+`$$l(\theta, \hat{\theta})  = |\theta - \hat{\theta}|$$`
+]
+
+--
+
+- Absolute loss places less of a penalty on large deviations &amp; the resulting Bayes estimate is the **posterior median**.
+
+--
+
+- Median is actually relatively easy to estimate.
+
+
+--
+
+- Recall that for a continuous random variable `\(Y\)` with cdf `\(F\)`, the median of the distribution is the value `\(z\)`, which satisfies
+.block[
+`$$F(z) = \Pr(Y\leq z) = \dfrac{1}{2}= \Pr(Y\geq z) = 1-F(z).$$`
+]
+
+--
+
+- As long as we know how to evaluate the CDF of the distribution we have, we can solve for `\(z\)`. 
+
+
+
+---
+## Beta-Binomial
+
+- For the beta-binomial model, the CDF of the beta posterior can be written as
+.block[
+`$$F(z) = \Pr(\theta\leq z | y) = \int^z_0 \textrm{Beta}(\theta| a+y, b+n-y) d\theta.$$`
+]
+
+--
+
+- Then, if `\(\hat{\theta}\)` is the median, we have that `\(F(\hat{\theta}) = 0.5\)`.
+
+--
+
+- To solve for `\(\hat{\theta}\)`, apply the inverse CDF `\(\hat{\theta} = F^{-1}(0.5)\)`.
+
+--
+
+- In R, that's simply
+    
+    ```r
+    qbeta(0.5,a+y,b+n-y)
+    ```
+
+--
+
+- For other popular distributions, switch out the beta.
+
+---
+## Loss Functions in General 
+
+- A **loss function** `\(l(\theta, \delta(y) )\)` is a function of the  parameter `\(\theta\)` and  `\(\delta(y)\)` based on just the data `\(y\)` 
+
+--
+
+- For example, `\(\delta(y) = \bar{y}\)` can be the decision to use the sample mean to estimate `\(\theta\)`, the true population mean.
+
+--
+
+- `\(l(\theta, \delta(y) )\)` determines the penalty for making the decision `\(\delta(y)\)`, if `\(\theta\)` is the true parameter or state of nature; the loss function characterizes the price paid for errors.
+
+
+--
+
+- Bayes optimal estimator or action is the estimator/action that minimizes the expected posterior loss marginalizing out any unknowns over posterior/predictive distribution.
+
+
+---
+## MAP Estimator
+
+- What about the MAP estimator?  Is it an optimal Bayes estimator &amp; under what  choice of loss function?
+
+--
+
+- `\(L_\infty\)` loss: 
+
+.block[
+`$$R_{\infty}(\hat{\theta}) = \lim_{p \to \infty} \int_\Theta (\theta - \hat{\theta})^p \pi(\theta \mid y) \, d \theta$$` 
+]
+
+
+--
+
+- Essentially saying that we need the estimator to be right on the truth or the error blows up!
+
+--
+
+- Is this a reasonable loss function?  
+
+---
+## Interval Estimates 
+
+ Recall that a frequentist confidence interval  `\([l(y), \ u(y)]\)` has 95% frequentist coverage for a population parameter `\(\theta\)` if, before we collect the data,
+.block[
+`$$\Pr[l(y) &lt; \theta &lt; u(y) | \theta] = 0.95.$$`
+]
+
+
+--
+
+- This means that 95% of the time, our constructed interval will cover the true parameter, and 5% of the time it won't.
+
+--
+
+- There is NOT a 95% chance your interval covers the true parameter once you have collected the data.
+
+--
+
+
+- In any given sample, you don't know whether you're in the lucky 95% or the unlucky 5%.
+You just know that either the interval covers the parameter, or it doesn't (useful, but not too helpful clearly). 
+
+
+--
+
+- Often based on aysmptotics i.e use a Wald or other type of frequentist asymptotic  interval  `\(\hat{\theta} \pm 1.96 \,\text{se}(\hat{\theta})\)`
+
+---
+## Bayesian Intervals 
+
+- We want a Bayesian alternative to confidence intervals
+
+
+
+for some pre-specified value of `\(\alpha\)`
+
+- An interval `\([l(y), \ u(y)]\)` has `\(1 - \alpha\)` 100% Bayesian coverage for `\(\theta\)` if
+.block[
+`$$\Pr(\theta \in [l(y), \ u(y)] \mid y) = 1 - \alpha$$`
+]
+
+--
+
+- This describes our information about where `\(\theta\)` lies _after_ we observe the data.
+
+--
+
+- Fantastic!  This is actually the interpretation people want to give to the frequentist confidence interval.
+
+--
+
+- Bayesian interval estimates are often generally called **credible intervals** or **credible sets**.
+
+--
+
+How to choose `\([l(y), \ u(y)]\)`?
+
+---
+## Bayesian Equal Tail Interval
+
+- The easiest way to obtain a Bayesian interval estimate is to use posterior quantiles with **equal tail areas**.   Often when researchers refer to a credible interval, this is what they mean.
+
+--
+
+
+- To make a `\(100 \times (1-\alpha)%\)` equi-tail quantile-based credible interval, find numbers (quantiles) `\(\theta_{\alpha/2} &lt; \theta_{1-\alpha/2}\)` such that
+
+  1. `\(\Pr(\theta &lt; \theta_{\alpha/2} \mid y) = \dfrac{\alpha}{2}\)`; and
+  
+  2. `\(\Pr(\theta &gt; \theta_{1-\alpha/2} \mid y) = \dfrac{\alpha}{2}\)`.
+  
+
+--
+
+Convenient conceptually and easy as we just take the `\(\alpha/2\)` and `\(1 - \alpha/2\)` quantiles of `\(\pi(\theta \mid y)\)` as `\(l(y)\)` and `\(u(y)\)`, respectively.
+
+
+---
+## Beta-Binomial Equal-tailed Interval
+
+
+```r
+a = 1; b= 1; y = 1; n = 10
+ly = qbeta(0.025, a + y, b + n - y)
+uy = qbeta(0.975, a + y, b + n - y)
+c(ly, uy)
+```
+
+```
+## [1] 0.0228312 0.4127799
+```
+
+
+&lt;img src="02-loss-functions-handout_files/figure-html/equal.tail-1.png" width="50%" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Monte Carlo Version
+
+- Suppose we don't have `\(\pi(\theta \mid y)\)` is a simple form, but we do have samples 
+`\(\theta_1, \ldots, \theta_T\)` from `\(\pi(\theta \mid y)\)`
+
+--
+
+- We can use these samples to obtain Monte Carlo (MC) estimates of posterior summaries
+.block[ .small[
+`$$\hat{\theta} = \textsf{E}[\theta \mid y] \approx \frac{1}{T} \sum_{t= 1}^T \theta_t$$`
+]]
+
+
+--
+
+- what about MC quantile estimates?
+
+
+--
+
+- Find the 2.5th and 97.5th percentile from the empirical distribution
+
+
+```r
+theta = rbeta(1000, a + y, b + n - y)
+quantile(theta, c(0.025, 0.975))
+```
+
+```
+##       2.5%      97.5% 
+## 0.01710151 0.42527760
+```
+
+
+---
+### Equal-Tail Interval
+
+&lt;img src="02-loss-functions-handout_files/figure-html/MC.equal.tail-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+--
+
+**Note**  there are values of `\(\theta\)` outside the quantile-based credible interval, with higher density than some values inside the interval. 
+
+
+
+---
+## HPD region
+
+- A `\(100 \times (1-\alpha)%\)` highest posterior density (HPD) region is a subset `\(s(y)\)` of the parameter space `\(\Theta\)` such that
+
+  1. `\(\Pr(\theta \in s(y) \mid y) = 1-\alpha\)`; and
+  
+  2. If `\(\theta_a \in s(y)\)` and `\(\theta_b \notin s(y)\)`, then `\(p(\theta_a \mid y) &gt; p(\theta_b \mid y)\)`  (highest density set)
+
+--
+
+- `\(\Rightarrow\)` **All** points in a HPD region have higher posterior density than points outside the region. 
+
+--
+
+- The basic idea is to gradually move a horizontal line down across the density, including in the HPD region all values of `\(\theta\)` with a density above the horizontal line.
+
+--
+
+- Stop moving the line down when the posterior probability of the values of `\(\theta\)` in the region reaches `\(1-\alpha\)`.
+
+---
+##  Simulation Based
+
+
+```r
+suppressMessages(library(rjags))
+HPDinterval(as.mcmc(theta))
+```
+
+```
+##           lower     upper
+## var1 0.01010097 0.3697792
+## attr(,"Probability")
+## [1] 0.95
+```
+
+---
+### HPD Intervals
+
+&lt;img src="02-loss-functions-handout_files/figure-html/MC.HPD-1.png" width="75%" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+## Properties of HPD Sets
+
+- Shortest length interval (or volume) for the given coverage
+
+--
+
+- Equivalent to Equal-Tail Intervals if the posterior is unimodal and symmetric
+
+--
+
+- May not be an interval if the posterior distribution is multi-modal 
+
+
+--
+
+
+- In general, not invariant under monotonic transformations of `\(\theta\)`
+
+--
+
+- More computationally intensive to solve!  
+
+
+
+
+---
+##  Loss Functions for Interval Estimation
+
+
+See "The Bayesian Choice"  by Christian Robert [Section 5.5.5 ](https://link-springer-com.proxy.lib.duke.edu/content/pdf/10.1007%2F0-387-71599-1.pdf)
+
+
+---
+## Connections between Bayes and MLE Based Frequentist Inference
+
+** Berstein von Mises** (BvM) Theorems aka Bayesian Central Limit Theorems
+
+--
+
+-   examine limiting form of the posterior distribution `\(\pi(\theta \mid y)\)` as `\(n \to \infty\)`
+
+--
+
+- `\(\pi(\theta \mid y)\)` goes to a Gaussian  under regularity conditions 
+
+--
+
+   - centered at the MLE
+
+--
+
+   - variance given by the inverse of the Expected Fisher Information  (var of MLE)
+
+--
+
+- The most important implication of the BvM is that Bayesian inference is asymptotically correct from a frequentist point of view
+
+
+--
+
+-  Used to justify Normal Approximations to the posterior distribution (eg Laplace approximations)
+
+
+
+---
+## Model Misspecification ?
+
+-  We might have chosen a bad sampling model/likelihood
+
+--
+
+-  posterior still converges to a Gaussian  centered at the MLE under the misspecified model, but wrong variance
+
+--
+
+- 95% Bayesian credible sets do not have correct frequentist coverage
+
+--
+
+- See [Klein &amp; van der Vaart](https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-6/issue-none/The-Bernstein-Von-Mises-theorem-under-misspecification/10.1214/12-EJS675.full) for more rigorous treatment if interested
+
+--
+
+- parametric model is "close" to the true data-generating process
+
+--
+
+- model diagnostics &amp; changing the model can reduce the gap between model we are using and the true data generating process
+
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

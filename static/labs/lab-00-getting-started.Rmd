@@ -1,0 +1,59 @@
+---
+title: "Lab 0: Getting Started with R and Sweave/Knitr"
+author: "STA 601: Bayesian and Modern Statistics"
+date: "Aug, 26 2021"
+output: 
+  tufte::tufte_html:
+    tufte_variant: "envisioned"
+    highlight: pygments
+    toc: true
+link-citations: yes
+---
+
+```{r include=FALSE}
+library(tidyverse)
+library(tufte)
+library(knitr)
+options(
+  htmltools.dir.version = FALSE, # for blogdown
+  show.signif.stars = FALSE,     # for regression output
+  digits = 2
+  )
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+**Due:** 11:59pm, Monday, Aug 30
+
+
+# Housekeeping
+
+## R/RStudio
+
+You all should have R and RStudio installed on your computers If you do not, first install the latest version of R here: https://cran.rstudio.com (remember to select the right installer for your operating system). Next, install the latest version of RStudio here: https://www.rstudio.com/products/rstudio/download/. Scroll down to the "Installers for Supported Platforms" section and find the right installer for your operating system.
+
+## Github
+
+Create a github account if you do not have one here [https://github.com](https://github.com)
+
+## R Sweave
+
+You are required to use R Sweave to type up HW and lab reports.  Don't worry we will guide you along the way!
+
+## Gradescope
+
+You MUST submit both your .Rnw and .pdf files to the course site on Gradescope here: https://www.gradescope.com/courses/295827/assignments. Make sure to knit to pdf and  to submit under the right assignment entry.   For this first lab you do not have to submit, just practice!
+
+# Getting started
+
+For the rest of this lab we are going to redirect you to Github.  At the end of this you should have
+
+1. Cloned a repo based on instructions in the README file
+2. Successfully create an R Project on your personal computer or a department server
+3. Update a Sweave file with your info
+4. Click `knitr` in Rstudio to create a pdf file!
+
+Ready, set Go  to  [https://github.com/STA601-F21/lab0](https://github.com/STA601-F21/lab0) !
+
+# Questions?
+
+If you get stuck on any part - **please** ask a question in Sakai on the Ed Discussion forums!  Everyone can contribute to help (and part of participation points!)
