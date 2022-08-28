@@ -7,7 +7,7 @@ markup: "mmark"
 
 
 ### Prerequisites
-ALL students are expected to be familiar with all the topics covered within the required prerequisites to be in this course. That is, STA 611 or the following: STA 210 and (STA 230 or 240L) and (MATH 202, 202D, 212, or 222) and (MATH 216, 218, or 221, any of which may be taken concurrently). Basically probability and mathematical statistics, plus linear algebra and multivariate calculus. Students are also expected to be familiar with R and are encouraged to learn LaTeX during the course.
+ALL students are expected to be familiar with all the topics covered within the required prerequisites to be in this course. That is - mathematical statistics and probability, linear algebra, and multivariate calculus. Students are also expected to be familiar with R and are encouraged to learn LaTeX during the course.
 
 ### Workload
 
@@ -39,7 +39,7 @@ Grades **may** be curved at the end of the semester. Cumulative averages of 90% 
 #### Problem sets
 Homework will be handed out on a weekly basis. They will be based on both the lectures and labs and will be announced every Thursday or Friday -- be sure to check the website regularly!  **Also, please note that any work that is not legible by the instructor or TAs will not be graded (given a score  of 0). Every write-up must be clearly written in full sentences and clear English. Any assignment that is completely unclear to the instructors and/or TAs, may result in a grade of a 0.** For programming exercises, we will be using R/knitr with $\LaTeX$  for preparing assignments using github classroom for data analysis.
 
-Each student MUST write up and turn in her or his own answers. You are encouraged to talk to each other regarding homework problems or to the instructor/TA. However, the write-up, solution, and code must be entirely your own work. The assignments must be submitted on [Gradescope](https://www.gradescope.com/courses/295827/assignments) under ``Assignments''. Note that you will not be able to make online submissions after the due date, so be sure to submit before or by the Gradescope-specified deadline.
+Each student MUST write up and turn in her or his own answers. You are encouraged to talk to each other regarding homework problems or to the instructor/TA. However, the write-up, solution, and code must be entirely your own work. No sharing of solutions or code!  The assignments must be submitted on [Gradescope](https://www.gradescope.com/courses/295827/assignments) under ``Assignments''. Note that you will not be able to make online submissions after the due date, so be sure to submit before or by the Gradescope-specified deadline.
 
 Solutions will be curated from student solutions with proper attribution. Every week the TAs will select a representative correct solution for the assigned problems and put them together into one solutions set with each answer being attributed to the student who wrote it. **If you would like to OPT OUT of having your homework solutions used for the class solutions, please let the Instructor and TAs know in advance.**
 

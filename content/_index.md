@@ -29,17 +29,17 @@ By the end of this course, students should be able to
 
 <font color="#6CA0DC"><i class="fas fa-calendar-alt fa-lg"></i></font> &nbsp; **Tuesdays and Thursdays (10:15am - 11:30am)**
 
-<font color="#6CA0DC"><i class="fas fa-university fa-lg"></i></font> &nbsp; Perkins LINK 065 (Classroom 2)</font>
+<font color="#6CA0DC"><i class="fas fa-university fa-lg"></i></font> &nbsp; Perkins LINK 060 (Classroom 1)</font>
 
 
 #### Labs
 
 
-<font color="#6CA0DC"><i class="fas fa-user fa-lg"></i></font> &nbsp; **[Rick Presman](https://scholars.duke.edu/person/rick.presman)**
+<font color="#6CA0DC"><i class="fas fa-user fa-lg"></i></font> &nbsp; **[Steven Winter](https://scholars.duke.edu/person/steven.winter)**
 
 <font color="#6CA0DC"><i class="fas fa-calendar-alt fa-lg"></i></font> &nbsp; **Mondays (1:45pm - 3:00pm)**
 
-<font color="#6CA0DC"><i class="fas fa-university fa-lg"></i></font> &nbsp; Perkins LINK 065 (Classroom 2)
+<font color="#6CA0DC"><i class="fas fa-university fa-lg"></i></font> &nbsp; Perkins LINK 060 (Classroom 1)
 
 
 
@@ -60,7 +60,7 @@ The easiest way for you to join the different Zoom meetings is to log in to Saka
 <span></span>     | <span></span>     | <span></span>    | <span></span>    |  <span></span>      
 ------------------|-------------------|------------------|------------------|------------------ 
 Instructor        | [Dr Merlise Clyde](https://www2.stat.duke.edu/~clyde) | <a href="mailto:clyde@duke.edu" title="email"><i class="fa fa-envelope"></i></a> &nbsp; <a href="https://github.com/merliseclyde" title="GitHub"><i class="fa fa-github"></i></a> | TBA <br /> TBA | Zoom Meeting ID: **See Sakai** <br />  223E Old Chem
-TA               | [Rick Presman](https://scholars.duke.edu/person/rick.presman) | <a href="mailto:rick.presman@duke.edu" title="email"><i class="fa fa-envelope"></i></a> | TBA <br /> TBA | Zoom Meeting ID: **See Sakai**
+TA               | [Steven Winter](https://scholars.duke.edu/person/steven.winter) | <a href="mailto:steven.winter@duke.edu" title="email"><i class="fa fa-envelope"></i></a> | TBA <br /> TBA | Zoom Meeting ID: **See Sakai**
 
 
 
@@ -83,13 +83,13 @@ Lecture notes and slides, lab exercises and assigned readings will be posted on 
 {.table .table-condensed .table-striped .text-left}
  <span></span>     | <span></span>
 -----------|---------------------------------
-Tues, Aug 24| Classes begin
-Fri, Sept 3 | Drop/Add ends
-Sat - Tues, Oct 2 - 5	| No classes Fall Break
-Thur, Oct 7 | Midterm I  (*tentative*)
-Thu, Nov 11 | Midterm II (*tentative*)
-Wed, Nov 24 | Graduate Classes End
-Sun, Dec 12 | Final Exam (Perkins 065 2:00-5:00pm)
+Tues, Aug 30| Classes begin
+Fri, Sept 9 | Drop/Add ends
+Sat - Tues, Oct 8 - 11	| No classes Fall Break
+Friday, Oct 7 | Midterm I  (*tentative*)
+Tues, Nov 15 | Midterm II (*tentative*)
+Friday, Dec 2 | Graduate Classes End
+Sun, Dec 19 | Final Exam (Perkins 060 2:00-5:00pm)
 
 
 

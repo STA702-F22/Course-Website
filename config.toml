@@ -1,7 +1,7 @@
 baseurl = "/"
 languageCode = "en-us"
 defaultContentLanguage = "en-us"
-title = "STA601 Fall 2021"
+title = "STA702 Fall 2022"
 theme = "material"
 #disqusShortname = ""
 # googleAnalytics = ""
@@ -59,14 +59,14 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   identifier = "gradescope"
   name = "Gradescope"
   pre = "<i class=\"material-icons\">assignment</i>"
-  url = "https://www.gradescope.com/courses/295827"
+  url = "hhttps://www.gradescope.com/courses/431637"
   
 [[menu.main]]
   weight = 6
   identifier = "github"
   name = "Github"
   pre = "<i class=\"button-icon fa fa-github\"></i>"
-  url = "https://github.com/sta601-F21"
+  url = "https://github.com/sta702-F22"
 
 
 [[menu.footer]]
@@ -85,7 +85,7 @@ ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
   identifier = "GitHub"
   name = "GitHub"
   pre = "<i class=\"button-icon fa fa-2x fa-github\"></i>"
-  url = "https://github.com/STA601-F21"
+  url = "https://github.com/sta702-F22"
 [[menu.footer]]
 
 

@@ -1,6 +1,6 @@
 REMOTEUSER ?= clyde
-HOST ?= gybe.stat.duke.edu
-DIR ?= /web/isds/docs/courses/Fall21/sta601.001
+HOST ?= crunch.stat.duke.edu
+DIR ?= /web/isds/docs/courses/Fall22/sta702.001
 REMOTE ?= $(REMOTEUSER)@$(HOST):$(DIR)
 
 .PHONY: clean
