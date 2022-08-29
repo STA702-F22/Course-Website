@@ -29,7 +29,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ## R/RStudio
 
-You all should have R and RStudio installed on your computers If you do not, first install the latest version of R here: https://cran.rstudio.com (remember to select the right installer for your operating system). Next, install the latest version of RStudio here: https://www.rstudio.com/products/rstudio/download/. Scroll down to the "Installers for Supported Platforms" section and find the right installer for your operating system.
+You all should have R and RStudio installed on your computers or feel free to use the Department servers. If you want a local version of RStudion,  first install the latest version of R here: https://cran.rstudio.com (remember to select the right installer for your operating system). Next, install the latest version of RStudio here: https://www.rstudio.com/products/rstudio/download/. Scroll down to the "Installers for Supported Platforms" section and find the right installer for your operating system.  You may also need to install `git` as well.
 
 ## Github
 
@@ -43,7 +43,7 @@ You are required to use R Sweave/knitr to type up HW and lab reports.  Don't wor
 
 You MUST submit both your .Rnw and .pdf files to the course site on Gradescope here: https://www.gradescope.com/courses/431637/assignments/ Make sure to knit to pdf and  to submit under the right assignment entry.   For this first lab you do not have to submit, just practice!
 
-# Getting started
+# Lab Goals
 
 For the rest of this lab we are going to redirect you to Github.  At the end of this you should have
 
@@ -52,7 +52,18 @@ For the rest of this lab we are going to redirect you to Github.  At the end of 
 3. Update a Sweave file with your info
 4. Click `knitr` in Rstudio to create a pdf file!
 
-Ready, set Go  to  [https://github.com/STA701-F22/lab0](https://github.com/STA702-F22/lab0) !
+
+# Getting Started!
+
+1. Go to Github classroom to create a repository for this assignment  at [lab0](https://classroom.github.com/a/09U-Afjs)
+This will create a private repo in the STA702-F22 organization on Github with your github user name. Note: You may receive an email invitation to join STA702-F22 on your behalf.  Please link your github user name to your profile.
+
+2. Hit refresh, to see the link for the repo, and then click on it to go to the STA702-F22 organization in Github.
+
+3. Follow the instructions in the README in your repo and follow along in lab to complete the assignment. 
+
+Please try to carry this out before lab on Friday!
+
 
 # Questions?
 
