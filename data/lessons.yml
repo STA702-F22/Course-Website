@@ -15,13 +15,14 @@ lessons:
     slidespdf: "01-basics-of-bayes-handout.pdf"
 
   - date: "Fri, Sept 2"
-    title: "Lab 1: R and Monte Carlo Review + HW 1"
+    title: "Lab 1: R and Monte Carlo Review"
     lab: "lab-01-r-review-blank.html"
     
     
   - week: "WEEK 2"
     date: "Tues, Sept 6"
     title: "Lecture 2: Loss Functions & Summaries"
+    reading: "02-reading.html"
     hw: "hw-01.html"
 
  
