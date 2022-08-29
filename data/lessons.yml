@@ -1,25 +1,25 @@
 lessons:
   
-  - week: "WEEK 0"
-    date: "Tues, Aug 24"
+  - week: "WEEK 1"
+    date: "Tues, Aug 30"
     title: "Lecture 0: Course Overview and Introduction"
     reading: "00-reading.html"
     slides: "00-course-overview.html"
     slidespdf: "00-course-overview-handout.pdf"
+    lab:  "lab-00-getting-started.html"
     
-  - date: "Thur, Aug 26"
+  - date: "Thur, Sept 1"
     title: "Lecture 1: Basics of Bayesian Inference"
     reading: "01-reading.html"
     slides: "01-basics-of-bayes.html"
     slidespdf: "01-basics-of-bayes-handout.pdf"
-    lab:  "lab-00-getting-started.html"
-
-  - week: "WEEK 1"
-    date: "Mon, Aug 30"
+    
+    date: "Fri, Sept 2"
     title: "Lab 1: R and Monte Carlo Review + HW 1"
     lab: "lab-01-r-review-blank.html"
     hw: "hw-01.html"
 
+- week: "WEEK 2"
   - date: "Tues, Aug 31"
     title: "Lecture 2: Loss Functions & Summaries"
     reading: "02-reading.html"

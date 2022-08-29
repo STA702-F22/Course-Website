@@ -1,5 +1,5 @@
 ---
-title: "STA 601: Lecture 0"
+title: "STA 702: Lecture 0"
 subtitle: "Course Overview"
 author: "Merlise Clyde"
 date: " "
@@ -35,7 +35,7 @@ library(rvest)
 
 class: center, middle
 
-# Welcome to STA 601!
+# Welcome to STA 702!
 
 
 
@@ -85,7 +85,7 @@ A Bayesian version will usually make things better...
 <i class="fa fa-envelope"></i> &nbsp; [clyde@duke.edu](mailto:clyde@duke.edu) <br>
 <i class="fa fa-home"></i> &nbsp; [https://www2.stat.duke.edu/~clyde](https://www2.stat.duke.edu/~clyde) <br>
 <i class="fa fa-university"></i> &nbsp; 223 Old Chemistry <br>
-<i class="fa fa-home"></i> &nbsp; [https://www2.stat.duke.edu/courses/Fall21/sta601.001](https://www2.stat.duke.edu/courses/Fall21/sta601.001) <br>
+<i class="fa fa-home"></i> &nbsp; [https://www2.stat.duke.edu/courses/Fall22/sta702.001](https://www2.stat.duke.edu/courses/Fall22/sta702.001) <br>
 <i class="fa fa-calendar"></i> &nbsp; See course website for OH <br>
 
 
@@ -107,7 +107,7 @@ A Bayesian version will usually make things better...
 ## FAQs
 
 All materials and information will be posted on the course webpage:
-[https://www2.stat.duke.edu/courses/Fall21/sta601.001/](https://www2.stat.duke.edu/courses/Fall21/sta601.001/)
+[https://www2.stat.duke.edu/courses/Fall22/sta702.001/](https://www2.stat.duke.edu/courses/Fall22/sta702.001/)
 
 --
 
@@ -142,7 +142,7 @@ All materials and information will be posted on the course webpage:
 --
 
 - What if I don't know R? This course assumes you already know R but you can still learn on the fly (you must be self-motivated). Here are some resources for you:
-   + [https://www2.stat.duke.edu/courses/Fall21/sta601.001/resources/](https://www2.stat.duke.edu/courses/Fall21/sta601.001/resources/).
+   + [https://www2.stat.duke.edu/courses/Fall22/sta702.001/resources/](https://www2.stat.duke.edu/courses/Fall22/sta702.001/resources/).
    + Resources for the StaSci BootCamp 2021
 
 --
@@ -156,7 +156,7 @@ All materials and information will be posted on the course webpage:
 
 --
 
--  What is the difference between this course and STA360, STA602 or the old STA601?
+-  What is the difference between this course and STA360 or STA602 ?
 
 
 ---
@@ -169,7 +169,7 @@ class: center, middle
 ---
 ## Course structure and policies
 
-- See: [https://www2.stat.duke.edu/courses/Fall21/sta601.001/policies/](https://www2.stat.duke.edu/courses/Fall21/sta601.001/policies/)
+- See: [https://www2.stat.duke.edu/courses/Fall22/sta702.001/policies/](https://www2.stat.duke.edu/courses/Fall22/sta702.001/policies/)
 
 --
 
@@ -205,7 +205,7 @@ class: center, middle
 
 --
 
-Also refer to the  [Class Schedule](https://www2.stat.duke.edu/courses/Fall21/sta-601.001/syllabus/).
+Also refer to the  [Class Schedule](https://www2.stat.duke.edu/courses/Fall22/sta-702.001/syllabus/).
 
 ---
 ## Other details
@@ -230,13 +230,13 @@ Also refer to the  [Class Schedule](https://www2.stat.duke.edu/courses/Fall21/st
 ## Important Dates
 
 
-<i class="fa fa-calendar"></i>  Tues, Aug 24   &nbsp; Classes begin <br>
-<i class="fa fa-calendar"></i>  Fri, Sept 3    &nbsp; Drop/Add ends <br>
-<i class="fa fa-calendar"></i>  Thur, Sept 30  &nbsp; Midterm I  (*tentative*) <br>
-<i class="fa fa-calendar"></i>  Sat - Tues, Oct 2 - 5	&nbsp; No classes Fall Break |<br>
-<i class="fa fa-calendar"></i> Thu, Nov 11    &nbsp; Midterm II (*tentative*) <br>
-<i class="fa fa-calendar"></i>  Wed, Nov 24    &nbsp;Graduate Classes End <br>
-<i class="fa fa-calendar"></i>  Sun, Dec 12    &nbsp; Final Exam (Perkins 065 2:00-5:00pm) <br>
+<i class="fa fa-calendar"></i>  Tues, Aug 30  &nbsp; Classes begin <br>
+<i class="fa fa-calendar"></i>  Fri, Sept 9   &nbsp; Drop/Add ends <br>
+<i class="fa fa-calendar"></i>  Fri, Oct 7  &nbsp; Midterm I  (*tentative*) <br>
+<i class="fa fa-calendar"></i>  Sat - Tues, Oct 8 - 11	&nbsp; No classes Fall Break |<br>
+<i class="fa fa-calendar"></i> Tue, Nov 15    &nbsp; Midterm II (*tentative*) <br>
+<i class="fa fa-calendar"></i>  Friday Dec 2    &nbsp;Graduate Classes End <br>
+<i class="fa fa-calendar"></i>  Mon, Dec 19    &nbsp; Final Exam (Perkins 060 2:00-5:00pm) <br>
 
 --
 
@@ -436,7 +436,7 @@ prior research.
 ---
 ## Next Steps
 
-Finally, here are some readings to entertain you. Make sure to glance through them within the next week. See here: [Course Resources](https://www2.stat.duke.edu/courses/Fall21/sta601.001/resources) 
+Finally, here are some readings to entertain you. Make sure to glance through them within the next week. See here: [Course Resources](https://www2.stat.duke.edu/courses/Fall22/sta702.001/resources) 
   1. Efron, B., 1986. Why isn't everyone a Bayesian?. The American Statistician, 40(1), pp. 1-5.
   2. Gelman, A., 2008. Objections to Bayesian statistics. Bayesian Analysis, 3(3), pp. 445-449.
   3. Diaconis, P., 1977. Finite forms of de Finetti's theorem on exchangeability. Synthese, 36(2), pp. 271-281.
