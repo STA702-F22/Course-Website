@@ -32,6 +32,7 @@ jobs:
       - name: Install packages
         run: |
           R -e 'install.packages("renv")'
+          R -e 'install.packages("xaringan")'
           R -e 'install.packages("blogdown")'
           R -e 'install.packages("BAS")'
           R -e 'renv::restore()'
