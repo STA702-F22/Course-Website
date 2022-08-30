@@ -93,9 +93,9 @@ A Bayesian version will usually make things better...
 ---
 ## TAs
 
-[Rick Presman](https://scholars.duke.edu/person/rick.presman)
+[Steven Winter](https://scholars.duke.edu/person/steven.winter)
 
-<i class="fa fa-envelope"></i> &nbsp; [rick.presman@duke.edu](mailto:rick.presman@duke.edu) <br>
+<i class="fa fa-envelope"></i> &nbsp; [steven.winter@duke.edu](mailto:steven.winter@duke.edu) <br>
 <i class="fa fa-calendar"></i> &nbsp; See course website for OH <br>
 <i class="fa fa-university"></i> &nbsp; See course website for location <br>
 
@@ -435,6 +435,8 @@ prior research.
   
 ---
 ## Next Steps
+
+Work on [Lab 0](https://www2.stat.duke.edu/courses/Fall22/sta702.001/syllabus/)
 
 Finally, here are some readings to entertain you. Make sure to glance through them within the next week. See here: [Course Resources](https://www2.stat.duke.edu/courses/Fall22/sta702.001/resources) 
   1. Efron, B., 1986. Why isn't everyone a Bayesian?. The American Statistician, 40(1), pp. 1-5.
