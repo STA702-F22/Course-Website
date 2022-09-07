@@ -37,7 +37,7 @@ By the end of this course, students should be able to
 
 <font color="#6CA0DC"><i class="fas fa-user fa-lg"></i></font> &nbsp; **[Steven Winter](https://scholars.duke.edu/person/steven.winter)**
 
-<font color="#6CA0DC"><i class="fas fa-calendar-alt fa-lg"></i></font> &nbsp; **Mondays (1:45pm - 3:00pm)**
+<font color="#6CA0DC"><i class="fas fa-calendar-alt fa-lg"></i></font> &nbsp; **Fridays (1:45pm - 3:00pm)**
 
 <font color="#6CA0DC"><i class="fas fa-university fa-lg"></i></font> &nbsp; Perkins LINK 060 (Classroom 1)
 

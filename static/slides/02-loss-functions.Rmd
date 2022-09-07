@@ -1,5 +1,5 @@
 ---
-title: "STA 601: Lecture 2"
+title: "STA 702: Lecture 2"
 subtitle: "Loss Functions, Bayes Risk and Posterior Summaries"
 author: "Merlise Clyde"
 date: " "

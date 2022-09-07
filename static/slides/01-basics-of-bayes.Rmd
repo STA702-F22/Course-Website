@@ -1,5 +1,5 @@
 ---
-title: "STA 601: Lecture 1"
+title: "STA 702: Lecture 1"
 subtitle: "Basics of Bayesian Statistics"
 author: "Merlise Clyde"
 date: " "
@@ -445,6 +445,6 @@ Find information matrix for $\rho$ from  $I(\theta)$
 
 --
 
-Show that the prior satisfies the invariance property that 
+Show that the prior satisfies the invariance property!   
 
 

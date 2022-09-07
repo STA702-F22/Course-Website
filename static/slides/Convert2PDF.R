@@ -1,6 +1,6 @@
-remotes::install_github("jhelvy/renderthis")
-remotes::install_github('rstudio/chromote')
-install.packages('pdftools')
+#remotes::install_github("jhelvy/renderthis")
+#remotes::install_github('rstudio/chromote')
+#install.packages('pdftools')
 
 library(renderthis)
 
@@ -18,10 +18,10 @@ setwd("/Users/clyde/Dropbox/sta702/Course-Website/static/slides")
 
 # Lectures
 
-convert("00-course-overview")
+#convert("00-course-overview")
 #convert("01-basics-of-bayes")
 #convert("02-loss-functions")
-#convert("03-normal-predictive-distributions")
+convert("03-normal-predictive-distributions")
 #convert("04-predictive-checks")
 #convert("05-hypothesis-testing")
 #convert("06-hypothesis-testing-cont")

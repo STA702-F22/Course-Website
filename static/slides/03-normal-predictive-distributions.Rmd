@@ -1,8 +1,8 @@
 ---
-title: "STA 601: Lecture 3"
+title: "STA 702: Lecture 3"
 subtitle: "The Normal Model & Prior/Posterior Predictive Distributions"
 author: "Merlise Clyde"
-date: "9/1/2021"
+date: "9/8/2022"
 output:
   xaringan::moon_reader:
     css: "slides.css"

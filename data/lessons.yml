@@ -24,5 +24,78 @@ lessons:
     title: "Lecture 2: Loss Functions & Summaries"
     reading: "02-reading.html"
     hw: "hw-01.html"
+    slides: "02-loss-functions.html"
+    slidespdf: "02-loss-functions-handout.pdf"
+
+    
+  - date: "Thur, Sept 8"
+    title: "Lecture 3: Normal Model & Predictive Distributions"
+    reading: "03-reading.html"
+    slides: "03-normal-predictive-distributions.html"
+    slidespdf: "03-normal-predictive-distributions-handout.pdf"
+    
+  - date: "Fri, Sept 9"
+    title: "Lab 2: Beta-Binomial Model and Introduction to stan"
+    lab: "lab-02-beta-binomial.html"
+
+    
+  - week: "WEEK 3"  
+    date: "Tues, Sept 13"
+    title: "Lecture 4: Predictive Checks"
+    reading: "04-reading.html"
+
+  - date: "Thurs, Sept 15"
+    title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
+    reading: "05-reading.html"
+    
+  - date: "Fri, Sept 16"
+    title: "Lab 3: Posterior Predictive Checks"
+
+  - week: "WEEK 4"  
+    date: "Tues, Sept 20"
+    title: "Lecture 6: Bayesian Hypothesis Testing Continued"
+    reading: "06-reading.html"
+    
+  - date:  "Thur, September 22"
+    title: "Lecture 7: Introduction to Hierarchical Models, EB & Metropolis"
+    reading: "07-reading.html"
+    
+  - date:  "Fri, Sept 23"
+    title: "Lab 4: Metropolis Hastings"
+  
+  - week: "WEEK 5"
+
+  - date: "Tues, Sept 27"
+    title: "Lecture 8:  Metropolis Algorithms & Diagnostics"
+    reading: "08-reading.html"
+
+  - date: "Thur, Sept 29"
+    title: "Lecture 9: More MCMC - Adaptive Metropolis and Metropolis Hastings"
+    reading: "09-reading.html"
+  
+  - date: "Fri, Sept 30"
+    title: "Lab 5: Adaptive Metropolis Hastings"    
+  
+  - week: "WEEK 6"
+  - date: "Tues, Oct 4" 
+    title: "Lecture 10: Blocked Samplers and Gibbs" 
+    reading: "10-reading.html"
+
+  - date: "Thu, Oct 6"
+    title: "Lecture 11: Data Augmentation" 
+    reading: "11-reading.html"
+    
+  - date: "Fri, Oct 7"
+    title: "Midterm I (***tentative***)"
+ 
+
+
+ 
+ 
+
+    
+    
+     
+  
 
  
