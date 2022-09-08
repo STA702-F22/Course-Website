@@ -1,8 +1,8 @@
 ---
 title: "Homework  2"
-author: "STA 601L: Bayesian and Modern Statistics"
+author: "STA 702: Bayesian and Modern Statistics"
 #date: "`r format(Sys.time(), '%d %B, %Y')`"
-date: "Sept 6, 2021"
+date: "Sept 13, 2022"
 output: 
   tufte::tufte_html:
     tufte_variant: "envisioned"
@@ -23,7 +23,7 @@ options(
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
-**Due:** 5:00pm, Tues, Sept 14
+**Due:** 11:00pm, Tues, Sept 20
 
 
 # Housekeeping
@@ -39,17 +39,17 @@ You are required to use R knitr with the Rnw format to type up this lab report. 
 
 # Getting started
 
-Go to Github classroom to  accept the invitation to create a repository for this assignment  at [HW2](https://classroom.github.com/a/ODweiPk2)
+Go to Github classroom to  accept the invitation to create a repository for this assignment  at [HW2](https://classroom.github.com/a/rzxjV8v7)
 
-This will create a private repo in the STA601-F21 organization on Github with your github user name. Note: You may receive an email invitation to join STA601-F21 on your behalf. 
+This will create a private repo in the course organization on Github with your github user name. Note: You may receive an email invitation to join organization on your behalf. 
 
-Hit refresh, to see the link for the repo, and then click on it to go to the STA601-F21 organization in Github.
+Hit refresh, to see the link for the repo, and then click on it to go to your repo in the organization in Github.
 
 Follow the instructions in the README in your repo and in the hw2.Rnw file to complete the assignment. 
 
 ## Github Classroom & Gradescope
 
-You MUST submit both your final .Rnw and .pdf files to the repo on Github and upload the pdf to Gradescope here: https://www.gradescope.com/courses/295827/assignments. 
+You MUST submit both your final .Rnw and .pdf files to the repo on Github and upload the pdf to Gradescope here: https://www.gradescope.com/courses/431637/ . 
 
 Make sure to knit to pdf ; ask the TA about knitting to pdf if you cannot figure it out. Be sure to submit under the right assignment entry by the due date!
 
