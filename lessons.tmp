@@ -1,26 +1,8 @@
 
- - week: "WEEK 2"
-
-    title: "Lecture 3: Normal Model & Predictive Distributions"
-    slides: "03-normal-predictive-distributions.html"
-    slidespdf: "03-normal-predictive-distributions-handout.pdf"
-    reading: "03-reading.html"
-    
-    date: "Fri, Sept 6"
-    title: "Lab 2: Beta-Binomial Model and Introduction to stan + HW 2"
-    lab: "lab-02-beta-binomial.html"
-    hw: "hw-02.html"
-    
   
  - week: "WEEK 3"  
-  - date: "Tues, Sept 7"
-    title: "Lecture 4: Predictive Checks"
-    reading: "04-reading.html"
-    slides: "04-predictive-checks.html"
-    slidespdf: "04-predictive-checks-handout.pdf"
-    
 
-  - date: "Thurs, Sept 9"
+  - date: "Thurs, Sept 15"
     title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
     reading: "05-reading.html"
     slides: "05-hypothesis-testing.html"

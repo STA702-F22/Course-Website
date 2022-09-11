@@ -1,8 +1,8 @@
 ---
-title: "STA 601: Lecture 4"
+title: "STA 702: Lecture 4"
 subtitle: "Comparing Estimators & Prior/Posterior Checks"
 author: "Merlise Clyde"
-date: "9/7/2021"
+date: "9/13/2022"
 output:
   xaringan::moon_reader:
     css: "slides.css"
