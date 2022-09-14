@@ -1,54 +1,28 @@
 
-  
- - week: "WEEK 3"  
-
-  - date: "Thurs, Sept 15"
-    title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
-    reading: "05-reading.html"
-    slides: "05-hypothesis-testing.html"
-    slidespdf: "05-hypothesis-testing-handout.pdf"
  
     
-
-    date: "Fri, Sept 13"
-    title: "Lab 3 + HW 3"
-    lab: "lab-03-posterior-predictive-checks.html"
-    hw: "hw-03.html"
-    
-  - date: "Tues, Sept 14"
-    title: "Lecture 6: Bayesian Hypothesis Testing Continued"
-    reading: "06-reading.html"
-    slides: "06-hypothesis-testing-cont.html"
-    slidespdf: "06-hypothesis-testing-cont-handout.pdf"
-
-  - date:  "Thur, September 16"
-    title: "Lecture 7: Introduction to Hierarchical Models, EB & Metropolis"
-    reading: "07-reading.html"
-    slides: "07-hierarchical-models.html"
-    slidespdf: "07-hierarchical-models-handout.pdf"
-    
   - week: "WEEK 4"
-    date:  "Fri, Sept 20"
-    title: "Lab 4 + HW 4"
-    lab: "lab-04-metropolis.html"
-    hw: "hw-04.html"
     
     
-  - date: "Tues, Sept 21"
-    title: "Lecture 8:  Metropolis Algorithms & Diagnostics"
-    reading: "08-reading.html"
+  - date: "Tues, Sept 20"
+    title: "Lecture 6:  Metropolis Algorithms & Diagnostics"
     slides: "08-metropolis-diagnostics.html"
     slidespdf: "08-metropolis-diagnostics-handout.pdf"
   
-  - date: "Thur, Sept 23"
+  - date: "Thur, Sept 22"
     title: "Lecture 9: More MCMC - Adaptive Metropolis and Metropolis Hastings"
-    reading: "09-reading.html"
     slides: "09-adaptive-metropolis.html"
     slidespdf: "09-adaptive-metropolis-handout.pdf"
+    
+  - date:  "Fri, Sept 23"
+    title: "Lab 4"
+    lab: "lab-04-metropolis.html"
+    hw: "hw-04.html"
+
   
   - week: "WEEK 5"
     date: "Fri, Sept 27"
-    title: "Lab 5 + HW 5"  
+    title: "Lab 5"  
     hw: "hw-05.html"
     lab: "lab-05-adaptive-metropolis-Gibbs.html"
     
@@ -64,6 +38,18 @@
     reading: "11-reading.html"
     slides: "11-gibbs-data-augmentation.html"
     slidespdf: "11-gibbs-data-augmentation-handout.pdf"
+
+    title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
+    reading: "05-reading.html"
+    slides: "05-hypothesis-testing.html"
+    slidespdf: "05-hypothesis-testing-handout.pdf"
+    
+    - date: "Tues, Sept 14"
+    title: "Lecture 6: Bayesian Hypothesis Testing Continued"
+    reading: "06-reading.html"
+    slides: "06-hypothesis-testing-cont.html"
+    slidespdf: "06-hypothesis-testing-cont-handout.pdf"
+
 
 
   - week: "WEEK 6"

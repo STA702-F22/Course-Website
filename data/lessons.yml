@@ -18,7 +18,6 @@ lessons:
     title: "Lab 1: R and Monte Carlo Review"
     lab: "lab-01-r-review-blank.html"
     
-    
   - week: "WEEK 2"
     date: "Tues, Sept 6"
     title: "Lecture 2: Loss Functions & Summaries"
@@ -46,43 +45,48 @@ lessons:
     hw: "hw-02.html"
     slides: "04-predictive-checks.html"
     slidespdf: "04-predictive-checks-handout.pdf"
-    
 
-  - date: "Thurs, Sept 15"
-    title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
-    reading: "05-reading.html"
+  - date:  "Thur, September 15"
+    title: "Lecture 5: Introduction to Hierarchical Models, EB & Metropolis"
+    reading: "05-hier-reading.html"
+    slides: "05-hierarchical-models.html"
+    slidespdf: "05-hierarchical-models-handout.pdf"
     
   - date: "Fri, Sept 16"
     title: "Lab 3: Posterior Predictive Checks"
-
+    lab: "lab-03-posterior-predictive-checks.html"
+    
   - week: "WEEK 4"  
     date: "Tues, Sept 20"
-    title: "Lecture 6: Bayesian Hypothesis Testing Continued"
-    reading: "06-reading.html"
-    
+    title: "Lecture 6:  Metropolis Algorithms & Diagnostics"
+    reading: "06-metropolis.html"
+ 
   - date:  "Thur, September 22"
-    title: "Lecture 7: Introduction to Hierarchical Models, EB & Metropolis"
-    reading: "07-reading.html"
+    title: "Lecture 7: More MCMC - Metropolis Hastings and Adaptive Metropolis"
+    reading: "07-MH-reading.html"
     
   - date:  "Fri, Sept 23"
     title: "Lab 4: Metropolis Hastings"
-  
+   
   - week: "WEEK 5"
-
-  - date: "Tues, Sept 27"
-    title: "Lecture 8:  Metropolis Algorithms & Diagnostics"
-    reading: "08-reading.html"
-
+    date: "Tues, Sept 27"
+    title: "Lecture 8:  Blocked Samplers and Gibbs"
+    reading: "08-Gibbs-reading.html"
+    
   - date: "Thur, Sept 29"
-    title: "Lecture 9: More MCMC - Adaptive Metropolis and Metropolis Hastings"
-    reading: "09-reading.html"
+    title: "Lecture 9: Data Augmentation" 
+    reading: "09-DA-reading.html"
+  
+  - date: "Thur, Sept 29"
+    title: "Lecture 9: Data Augmentation" 
+    reading: "09-DA-reading.html"
   
   - date: "Fri, Sept 30"
-    title: "Lab 5: Adaptive Metropolis Hastings"    
-  
+    title: "Lab 5: Adaptive Metropolis Hastings"  
+    
   - week: "WEEK 6"
-  - date: "Tues, Oct 4" 
-    title: "Lecture 10: Blocked Samplers and Gibbs" 
+    date: "Tues, Oct 4" 
+    title: "Lecture 10: Basics of Hypothesis Testing" 
     reading: "10-reading.html"
 
   - date: "Thu, Oct 6"
@@ -92,6 +96,15 @@ lessons:
   - date: "Fri, Oct 7"
     title: "Midterm I (***tentative***)"
  
+     
+  
+
+
+    
+
+   
+
+
 
 
  

@@ -56,7 +56,7 @@ The easiest way for you to join the different Zoom meetings is to log in to Saka
 {.table .table-condensed .table-striped .text-left}
 <span></span>     | <span></span>     | <span></span>    | <span></span>    |  <span></span>      
 ------------------|-------------------|------------------|------------------|------------------ 
-Instructor        | [Dr Merlise Clyde](https://www2.stat.duke.edu/~clyde) | <a href="mailto:clyde@duke.edu" title="email"><i class="fa fa-envelope"></i></a> &nbsp; <a href="https://github.com/merliseclyde" title="GitHub"><i class="fa fa-github"></i></a> | Wed 1:15- 2:30 or by appointment (lots of 30 minute gaps!) <br /> 223E Old Chem | Zoom Meeting ID: **See Sakai** <br />  
+Instructor        | [Dr Merlise Clyde](https://www2.stat.duke.edu/~clyde) | <a href="mailto:clyde@duke.edu" title="email"><i class="fa fa-envelope"></i></a> &nbsp; <a href="https://github.com/merliseclyde" title="GitHub"><i class="fa fa-github"></i></a> | Mon 1:15- 2:15, Tu & Thur 11:30 -  or by appointment (I have lots of 30 minute gaps!) <br /> 223E Old Chem | Zoom Meeting ID: **See Sakai** <br />  
 TA               | [Steven Winter](https://scholars.duke.edu/person/steven.winter) | <a href="mailto:steven.winter@duke.edu" title="email"><i class="fa fa-envelope"></i></a> | Monday 8:00-10:00 am <br /> TBA | Zoom Meeting ID: **See Sakai**
 
 
