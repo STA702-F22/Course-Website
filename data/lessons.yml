@@ -58,13 +58,20 @@ lessons:
     
   - week: "WEEK 4"  
     date: "Tues, Sept 20"
-    title: "Lecture 6:  Metropolis Algorithms & Diagnostics"
-    reading: "06-metropolis.html"
+    title: "Lecture 6:  Metropolis Algorithm & Stochastic Sampling"
+    reading: "06-metropolis-reading.html"
+    hw: "hw-03.html"
+    slides: "06-metropolis.html"
+    slidespdf: "06-metropolis-handout.pdf"
+
  
   - date:  "Thur, September 22"
     title: "Lecture 7: More MCMC - Metropolis Hastings and Adaptive Metropolis"
     reading: "07-MH-reading.html"
-    
+    slides: "07-adaptive-metropolis.html"
+    slidespdf: "07-adaptive-metropolis-handout.pdf"
+
+
   - date:  "Fri, Sept 23"
     title: "Lab 4: Metropolis Hastings"
    
@@ -77,10 +84,7 @@ lessons:
     title: "Lecture 9: Data Augmentation" 
     reading: "09-DA-reading.html"
   
-  - date: "Thur, Sept 29"
-    title: "Lecture 9: Data Augmentation" 
-    reading: "09-DA-reading.html"
-  
+   
   - date: "Fri, Sept 30"
     title: "Lab 5: Adaptive Metropolis Hastings"  
     
@@ -90,7 +94,7 @@ lessons:
     reading: "10-reading.html"
 
   - date: "Thu, Oct 6"
-    title: "Lecture 11: Data Augmentation" 
+    title: "Lecture 11: Hypothesis Testing" 
     reading: "11-reading.html"
     
   - date: "Fri, Oct 7"

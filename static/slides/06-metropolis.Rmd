@@ -1,7 +1,7 @@
 ---
-title: "Lecture 8: Metropolis Algorithms and Diagnostics"
+title: "Lecture 6: Metropolis Algorithms and Stochastic Sampling"
 author: "Merlise Clyde"
-date: "September 21"
+date: "September 20"
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -67,6 +67,88 @@ $$\pi(\theta \mid y) = \frac{\pi(\theta) \cal{L}(\theta)}
 \frac{\pi(\theta) \cal{L}(\theta)}
 {m(y)}$$
 
+Stochastic methods
+---
+## Stochastic Integration
+
+
+
+$$\textsf{E}[h(\theta) \mid y] =  \int_\Theta h(\theta) \pi(\theta \mid y) \, d\theta \approx \frac{1}{T}\sum_{t=1}^{T} h(\theta^{(t)}) \qquad \theta^{(t)} \sim \pi(\theta \mid y)$$
+--
+
+what if we can't sample from the posterior but can sample from some distribution $q()$
+ 
+ 
+$$\textsf{E}[h(\theta) \mid y] =  \int_\Theta h(\theta) \frac{\pi(\theta \mid y)}{q(\theta)} q(\theta)\, d\theta \approx \frac{1}{T}\sum_{t=1}^{T} h(\theta^{(t)}) \frac{\pi(\theta^{(t)} \mid y)} {q(\theta^{(t)})} \qquad$$
+where $\theta^{(t)} \sim q(\theta)$
+
+--
+
+Without the denominator  in $\pi(\theta \mid y)$ we just have $\pi(\theta \mid y) \propto  \pi(\theta) \cal{L}(\theta)$
+
+
+--
+
+-  use twice for numerator and denominator
+
+
+---
+## Important Sampling Estimate
+
+Estimate of $m(y)$
+
+$$m(y) \approx \frac{1}{T} \sum_{t=1}^{T}  \frac{\pi(\theta^{(t)}) \cal{L}(\theta^{(t)})}{q(\theta^{(t)})} \qquad \theta^{(t)} \sim q(\theta)$$
+--
+
+$$\textsf{E}[h(\theta) \mid y] \approx \frac{\sum_{t=1}^{T} h(\theta^{(t)}) \frac{\pi(\theta^{(t)}) \cal{L}(\theta^{(t)})}{q(\theta^{(t)})}}
+{ \sum_{t=1}^{T}  \frac{\pi(\theta^{(t)}) \cal{L}(\theta^{(t)})}{q(\theta^{(t)})}}
+\qquad \theta^{(t)} \sim q(\theta)$$
+
+--
+
+$$\textsf{E}[h(\theta) \mid y] \approx \sum_{t=1}^{T} h(\theta^{(t)}) w(\theta^{(t)})  \qquad \theta^{(t)} \sim q(\theta)$$
+
+with un-normalized weights  $w(\theta^{(t)}) \propto \frac{\pi(\theta^{(t)}) \cal{L}(\theta^{(t)})}{q(\theta^{(t)})}$
+(normalize to sum to 1)
+
+
+Does not scale with the dimension $(p < 20)$
+
+---
+## Markov Chain Monte Carlo (MCMC)
+
+
+- Typically $\pi(\theta)$ and $\cal{L}(\theta)$ are easy to evaluate
+
+--
+
+
+
+<div class="question">How do we draw samples  only using evaluations of the prior and likelihood in higher dimensional settings?
+</div>
+--
+
+- construct a Markov chain $\theta^{(t)}$ in such a way the the stationary distribution of the Markov chain is the posterior distribution $\pi(\theta \mid y)$!
+
+
+$$\theta^{(0)} \overset{k}{\longrightarrow} \theta^{(1)} \overset{k}{\longrightarrow} \theta^{(2)} \cdots$$
+--
+
+
+
+--
+
+- initial state $\theta^{(0)}$
+
+--
+
+- choose some nice transition kernsl $k_t$ such that $\theta^{(t)} \to \pi(\theta \mid y)$ as $t \to \infty$
+
+--
+
+- biased samples initially but get closer to the target
+
+- Metropolis Algorithm (1950's)
 
 
 ---
@@ -88,7 +170,7 @@ $$\frac{\dfrac{\# \theta^{(s)} \in A}{S}}{\dfrac{\# \theta^{(s)} \in B}{S} } = \
 
 --
 
-- Consider a candidate value $\theta^\star$ that is  _close_ to $\theta^{(s)}$.  
+- Consider a candidate value $\theta^\star$ that is  _close_ to $\theta^{(s)}$ 
 
 
 --
@@ -96,7 +178,7 @@ $$\frac{\dfrac{\# \theta^{(s)} \in A}{S}}{\dfrac{\# \theta^{(s)} \in B}{S} } = \
 - Should we set $\theta^{(s+1)} = \theta^\star$ or not?
 
 ---
-## Metropolis Ratio
+## Posterior Ratio
 
 
 look at  the ratio 
@@ -149,7 +231,8 @@ $$
 
 --
 
-- Sample $\theta^\star$ close to the current value $\theta^{(s)}$ using a **symmetric proposal distribution** $q(\theta^\star \mid \theta^{(s)})$
+- Sample $\theta^\star$ close to the current value $\theta^{(s)}$ using a **symmetric proposal distribution** $\theta^\star \sim q(\theta^\star \mid \theta^{(s)})$
+
 
 --
 
@@ -543,7 +626,7 @@ stationary distribution and less dependent on any single set of starting values.
 --
 
 - For the example, we have the following in R.
-  ```{r fig.height=4}
+```{r fig.height=4}
 #library(coda)
 theta.mcmc <- mcmc(theta,start=1) #no burn-in (simple problem!)
 ```
@@ -582,7 +665,7 @@ $$\textrm{ESS} = \dfrac{S}{1 + 2 \sum_k \rho_k},$$
 --
 
 - For our data, we have
-  ```{r }
+```{r }
 effectiveSize(theta.mcmc)
 ```
 
