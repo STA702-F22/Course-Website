@@ -1,7 +1,7 @@
 ---
 title: "Lab 4: Metropolis Algorithms and Diagnostics"
-author: "STA 601: Bayesian and Modern Statistics"
-date: "Sept 20, 2021"
+author: "STA 702: Bayesian and Modern Statistics"
+date: "Sept 23, 2023"
 output: 
   tufte::tufte_html:
     tufte_variant: "envisioned"
@@ -22,7 +22,7 @@ options(
 knitr::opts_chunk$set(eval = FALSE)
 ```
 
-**Due:** 1:00pm, Monday, Sept 27
+**Due:** 11:00pm, Monday, Sept 25
 
 
 # Housekeeping
@@ -38,17 +38,17 @@ You are required to use R knitr with the Rnw format to type up this lab report. 
 
 # Getting started
 
-Go to Github classroom to create a repository for this assignment  at [lab4](https://classroom.github.com/a/oxOa9mao)
+Go to Github classroom to create a repository for this assignment  at [lab4](https://classroom.github.com/a/vLlCWkP4)
 
-This will create a private repo in the STA601-F21 organization on Github with your github user name. Note: You may receive an email invitation to join STA601-F21 on your behalf. 
+This will create a private repo in the  organization on Github with your github user name. 
 
-Hit refresh, to see the link for the repo, and then click on it to go to the STA601-F21 organization in Github.
+Hit refresh, to see the link for the repo, and then click on it to go to the  organization in Github.
 
 Follow the instructions in the README in your repo and follow along in lab to complete the assignment. 
 
 ## Github Classroom & Gradescope
 
-You MUST submit both your final .Rnw and .pdf files to the repo on Github and upload the pdf to [Gradescope](https://www.gradescope.com/courses/295827/assignments). 
+You MUST submit both your final .Rnw and .pdf files to the repo on Github and upload the pdf to [Gradescope](https://www.gradescope.com/courses/431637). 
 
 
 

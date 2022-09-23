@@ -74,6 +74,7 @@ lessons:
 
   - date:  "Fri, Sept 23"
     title: "Lab 4: Metropolis Hastings"
+    lab: "lab-04-metropolis.html"
    
   - week: "WEEK 5"
     date: "Tues, Sept 27"
