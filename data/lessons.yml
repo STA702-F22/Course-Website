@@ -78,8 +78,12 @@ lessons:
    
   - week: "WEEK 5"
     date: "Tues, Sept 27"
-    title: "Lecture 8:  Blocked Samplers and Gibbs"
+    title: "Lecture 8:  Metropolis-Hastings and Gibbs"
     reading: "08-Gibbs-reading.html"
+    hw: "hw-04.html"
+    slides: "08-gibbs.html"
+    slidespdf: "08-gibbs-handout.pdf"
+
     
   - date: "Thur, Sept 29"
     title: "Lecture 9: Data Augmentation" 
@@ -99,7 +103,7 @@ lessons:
     reading: "11-reading.html"
     
   - date: "Fri, Oct 7"
-    title: "Midterm I (***tentative***)"
+    title: "Review for Midterm I"
  
      
   
