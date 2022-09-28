@@ -1,7 +1,7 @@
 ---
-title: "Lecture 11: More Gibbs:  Regression and Data Augmentation"
+title: "Lecture 9: Gibbs and Data Augmentation"
 author: "Merlise Clyde"
-date: "September 30"
+date: "September 29"
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -38,123 +38,7 @@ set.seed(42)
 ```
 
 
-## Normal Linear Regression Example
 
-Model
-$$\begin{align*}
-Y \mid \beta, \phi & \sim \textsf{N}(X \beta, \phi^{-1} I_n) \\
-\beta & \sim \textsf{N}(b_0, \Phi_0^{-1}) \\
-\phi & \sim \textsf{Gamma}(v_0/2, s_0/2)
-\end{align*}$$
-
-
-
-- Full Conditional for $\beta$
-
-$$\begin{align*}
-\beta & \mid \phi, y_1, \ldots, y_n \sim \textsf{N}(b_n, \Phi_n^{-1}) \\
-b_n & =  (\Phi_0 + \phi X^TX)^{-1}(\Phi_0 b_0  +  \phi X^TX \hat{\beta})\\
-\Phi_n & = \Phi_0 + \phi X^TX
-\end{align*}$$
-
-- Full Conditional for $\phi$
-
-$$ \phi \mid \beta, y_1, \ldots, y_n \sim \textsf{Gamma}((v_0 + n)/2, (s_0 + \sum_i(y_i - x^T_i \beta)))$$
-
-- Choice of Prior Precision $\Phi_0$
-
----
-## Invariance and Choice of Mean/Precision
-
-
-- What if we transform the $X$ matrix by $\tilde{X} = X H$ where $H$ is $p \times p$ and invertible
-
---
-
-- obtain the posterior for $\tilde{\beta}$ using $Y$ and $\tilde{X}$  
-
-$$ Y \sim \textsf{N}_n (\tilde{X}\tilde{\beta}, \phi^{-1} I_n)$$
-
-- invariance suggests that since $\tilde{X} \tilde{\beta} = X H  \tilde{\beta} = X \beta$  the posterior for $\beta$ and $H \tilde{\beta}$ should be the same 
-(or the posterior of $H^{-1} \beta$
-and $\tilde{\beta}$ should be the same)
---
-
-- with some linear algebra we can show that this is true if $b_0 = 0$ and $\Phi_0$ is $k X^TX$ for some $k$  (show!)
-
----
-## Zellner's g-prior
-
-Popular choice is to take $k = \phi/g$ which is a special case of Zellner's g-prior
-
-$$\beta \mid \phi, g \sim \textsf{N}\left(0, \frac{g}{\phi} (X^TX)^{-1}\right)$$
-
---
-
-- Full conditional 
-
-$$\beta \mid \phi, g \sim \textsf{N}\left(\frac{g}{1 + g} \hat{\beta}, \frac{1}{\phi} \frac{g}{1 + g} (X^TX)^{-1}\right)$$
---
-
-- one parameter $g$ controls shrinkage
-
---
-
-if $\phi \sim \textsf{Gamma}(v_0/2, s_0/2)$ then posterior is
-$$\phi \mid y_1, \ldots, y_n \sim \textsf{Gamma}(v_n/2, s_n/2)$$
---
-
-Conjugate so we could skip Gibbs sampling and sample directly from gamma and then conditional normal!
-
----
-## Ridge Regression 
-
-If $X^TX$ is nearly singular, certain  elements of $\beta$ or (linear combinations of $\beta$) may have huge variances under the $g$-prior (or flat prior) as the MLEs are highly unstable!
-
---
-
-**Ridge regression** protects against the explosion of variances and ill-conditioning with the conjugate priors:
-
-
-$$\beta \mid \phi \sim \textsf{N}(0, \frac{1}{\phi \lambda} I_p)$$
---
-
-Posterior for $\beta$  (conjugate case)
-
-$$\beta \mid \phi, \lambda, y_1, \ldots, y_n \sim 
-\textsf{N}\left((\lambda I_p + X^TX)^{-1} X^T Y,  \frac{1}{\phi}(\lambda I_p + X^TX)^{-1}
-\right)$$
-
-
-
-
----
-##  Bayes Regression
-
-- Posterior mean (or mode) given $\lambda$ is biased, but can show that there **always** is a value of $\lambda$  where the frequentist's expected squared error loss is smaller for the Ridge estimator than MLE!
-
---
-
-- related to penalized maximum likelihood estimation 
-
---
-
--  Choice of $\lambda$
-
---
-
--  usual center and standardized $X$ !
-
---
-
--  Bayes Regression and choice of $\Phi_0$ in general is a very important problem and provides the foundation  for many variations on shrinkage estimators, variable selection, hierarchical models, nonparameteric regression and more!
-
---
-
-- Be sure that you can derive the full conditional posteriors for $\beta$ and $\phi$ as well as the joint posterior in the conjugate case!
-
-
----
 ### Binary Regression
 
 $$Y_i \mid \beta \sim \textsf{Ber}(p(x_i^T \beta))$$
@@ -166,7 +50,7 @@ where $\Pr(Y_i  = 1 \mid \beta) = p(x_i^T \beta))$ and linear predictor $x_i^T\b
 
 --
 
-- logistic regression use the logit link  
+- logistic regression uses the logit link  
 $$\log\left(\frac{p(\lambda_i)}{1 - p(\lambda_i) }\right) = x_i^T \beta = \lambda_i$$
 --
 
@@ -218,7 +102,7 @@ seemingly no, but there is a trick!
    $$\pi(\beta, Z \mid y) \propto \pi(\beta) \pi(Z \mid \beta) \pi(y \mid Z, \theta)$$
 --
 
-- IF we choose $\pi(Z \mid \beta) \pi(y \mid Z, \theta)$ carefully, we can carry out Gibbs and get samples of $\pi(\beta \mid y)$ 
+- IF we choose $\pi(Z \mid \beta)$ and $\pi(y \mid Z, \theta)$ carefully, we can carry out Gibbs and get samples of $\pi(\beta \mid y)$ !
 
 --
 
@@ -231,7 +115,7 @@ $$\pi(\beta \mid y) = \int_{\cal{Z}} \pi(\beta, z \mid y) \, dz$$
 
 -  We have to choose
 
-$$p(y \mid \theta) = \int_{\cal{Z}}  \pi(z \mid \beta) \pi(y \mid \beta, z) \, dz$$
+$$p(y \mid \beta) = \int_{\cal{Z}}  \pi(z \mid \beta) \pi(y \mid \beta, z) \, dz$$
 --
 
 - complete data likelihood
@@ -241,8 +125,8 @@ $$p(y \mid \theta) = \int_{\cal{Z}}  \pi(z \mid \beta) \pi(y \mid \beta, z) \, d
 
 Set 
 
-- $y_i = 1(Z_i > 0)$ i.e. ( $y_i = 1$ if $Z_i > 0$ ) 
-- $y_i = 1(Z_i < 0)$ i.e.  ( $y_i = 0$ if $Z_i < 0$ )
+- $y_i = 1_{(Z_i > 0)}$ i.e. ( $y_i = 1$ if $Z_i > 0$ ) 
+- $y_i = 1_{(Z_i < 0)}$ i.e.  ( $y_i = 0$ if $Z_i < 0$ )
 
 --
 
@@ -266,7 +150,7 @@ $$\begin{align*}\Pr(y = 1 \mid \beta) & = P(Z_i > 0 \mid \beta) \\
 ##  Augmented Posterior & Gibbs
 
 $$\begin{align*}\pi(& Z_1,  \ldots, Z_n,  \, \beta \mid y) \propto \\
-& \textsf{N}(\beta; b_0, \phi_0)  \left\{\prod_{i=1}^n \textsf{N}(Z_i; x_i^T\beta, 1)\right\} \left\{  \prod_{i=1}^n y_i 1(Z_i > 0) + (1 - y_i)1(Z_i < 0)\right\}
+& \textsf{N}(\beta; b_0, \phi_0)  \left\{\prod_{i=1}^n \textsf{N}(Z_i; x_i^T\beta, 1)\right\} \left\{  \prod_{i=1}^n y_i 1_{(Z_i > 0)} + (1 - y_i)1_{(Z_i < 0)}\right\}
 \end{align*}$$
 
 --
@@ -279,9 +163,9 @@ $$\beta \mid Z_1, \ldots, Z_n, y_1, \ldots, y_n \sim \textsf{N}(b_n, \Phi_n)$$
 
 $$\begin{align*}
 \pi(Z_i \mid \beta, Z_{[-i]}, y_1, \ldots, y_n)  & \propto 
-\textsf{N}(Z_i; x_i^T \beta, 1)1(Z_i > 0) \text{   if  } y_1 = 1 \\
+\textsf{N}(Z_i; x_i^T \beta, 1)1_{(Z_i > 0)} \text{   if  } y_1 = 1 \\
 \pi(Z_i \mid \beta, Z_{[-i]}, y_1, \ldots, y_n)  & \propto 
-\textsf{N}(Z_i; x_i^T \beta, 1)1(Z_i < 0) \text{   if  } y_1 = 0 \\
+\textsf{N}(Z_i; x_i^T \beta, 1)1_{(Z_i < 0) }\text{   if  } y_1 = 0 \\
 \end{align*}$$
 
 - sample from independent truncated normal distributions !
@@ -345,7 +229,7 @@ DA is a broader than a computational trick allowing Gibbs sampling
 
 
 
-- Why don't we treat each individual $\beta_j$ as a separate block?
+- Why don't we treat each individual $\theta_j$ as a separate block?
 
 --
 
@@ -366,7 +250,7 @@ DA is a broader than a computational trick allowing Gibbs sampling
 --
 
 
-- latent variables to allow Gibbs steps  but not always better!
+- latent variables to allow Gibbs steps  but not always better!  
 
 
 

@@ -1,5 +1,5 @@
 ---
-title: "Lecture 11: Gibbs Sampling and Data Augmentation"
+title: "Lecture 9: Gibbs Sampling and Data Augmentation"
 output: 
   html_document:
     theme: yeti

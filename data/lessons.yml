@@ -84,11 +84,11 @@ lessons:
     slides: "08-gibbs.html"
     slidespdf: "08-gibbs-handout.pdf"
 
-    
   - date: "Thur, Sept 29"
     title: "Lecture 9: Data Augmentation" 
     reading: "09-DA-reading.html"
-  
+    slides: "09-gibbs-data-augmentation.html"
+    slidespdf: "09-gibbs-data-augmentation-handout.pdf"
    
   - date: "Fri, Sept 30"
     title: "Lab 5: Adaptive Metropolis Hastings"  
@@ -104,6 +104,17 @@ lessons:
     
   - date: "Fri, Oct 7"
     title: "Review for Midterm I"
+    
+  - week: "WEEK 7"
+    date: "Tue, Oct 11"
+    title: "NO CLASS FALL BREAK"
+
+  - date: "Thu, Oct 13"
+    title: "Midterm I"  
+    
+  - date: "Fri, Oct 14"  
+  - lab: "Lab 6"  
+ 
  
      
   

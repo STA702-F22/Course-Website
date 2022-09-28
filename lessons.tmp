@@ -5,28 +5,16 @@
   
   - week: "WEEK 5"
     
-  - date: "Tues: Tues, Sept 26" 
-    title: "Lecture 10: Blocked Samplers and Gibbs" 
-    reading: "10-reading.html"
-    hw: "hw-04.html"
-    slides: "10-gibbs.html"
-    slidespdf: "10-gibbs-handout.pdf"
-    
-
-  - date: "Thu, Sept 28"
-    title: "Lecture 11: Data Augmentation" 
-    reading: "11-reading.html"
-    slides: "11-gibbs-data-augmentation.html"
-    slidespdf: "11-gibbs-data-augmentation-handout.pdf"
-    
     date: "Fri, Sept 29"
     title: "Lab 5"  
-    hw: "hw-05.html"
     lab: "lab-05-adaptive-metropolis-Gibbs.html"
   
+  
+  - week: "WEEK 6"
 
     title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
     reading: "05-reading.html"
+    hw: "hw-05.html"
     slides: "05-hypothesis-testing.html"
     slidespdf: "05-hypothesis-testing-handout.pdf"
     
@@ -38,15 +26,13 @@
 
 
 
-  - week: "WEEK 6"
-    date: "Fri, Oct 4"
-    title: "NO LAB FALL BREAK"
+  - week: "WEEK 7"
 
-  - date: "Tue, Oct 5"
+  - date: "Tue, Oct 11"
     title: "NO CLASS FALL BREAK"
 
-  - date: "Thu, Oct 7"
-    title: "Midterm I (***tentative***)"
+  - date: "Thu, Oct 13"
+    title: "Midterm I"
   
   - week: "WEEK 7"
     date: "Fri, Oct 11"
