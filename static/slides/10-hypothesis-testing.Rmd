@@ -1,7 +1,7 @@
 ---
-title: "Lecture 5: Basics of Bayesian Hypothesis Testing"
+title: "Lecture 10: Basics of Bayesian Hypothesis Testing"
 author: "Merlise Clyde"
-date: "September 9, 2021"
+date: "October 4, 2022"
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -62,7 +62,7 @@ plot(t, dt(t, 3), type="l", lty=1, lwd=2,
 
 --
 
-- **p-value**: Calculate the probability of seeing a dataset/test statistics as extreme or more extreme than the oberved data with repeated sampling under the null hypothesis
+- **p-value**: Calculate the probability of seeing a dataset/test statistics as extreme or more extreme than the observed data with repeated sampling under the null hypothesis  (Fisherian view)
 
 ---
 ## Errors
@@ -364,12 +364,12 @@ n = 10; y = 1.96/sqrt(n)
 th <- seq(y - 3/sqrt(n), y + 3/sqrt(n), length=1000)
 plot(th,dnorm(th,y,sqrt(1/n)),
       type="l", lwd=2,
-      col=1,xlab=expression(theta),
+      col="blue",xlab=expression(theta),
       ylab=expression(l(theta)))
 #m = integrate(f = function(x) {dbinom(y,n,x)}, low=0.00001, upper=.99999)
 #abline(h=m$value, lty=4, lwd=2, col="red")
 segments(0, 0, 0, dnorm(0, y, sqrt(1/n)), lty=2, lwd=2, col=2)
-abline(h=dnorm(y,y, sqrt(1/n)), lty=2, lwd=2, col="blue")
+abline(h=dnorm(y,y, sqrt(1/n)), lty=2, lwd=2, col="black")
 
 pval = pnorm(0,  abs(y), sqrt(1/n))*2
 ```
@@ -390,17 +390,21 @@ plot(th,dnorm(th,y,sqrt(1/n)),
       ylab=expression(pi(theta)))
 lines(th, dnorm(th, 0, sqrt(v0)), col="red", lwd=2)
 marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
-segments(0, 0, 0, marg.H1, lty=2, lwd=2, col="purple")
-abline(h =marg.H1, lty=2, lwd=3, col="purple")
+segments(0, 0, 0, marg.H1, lty=3, lwd=2, col="purple")
+abline(h =marg.H1, lty=3, lwd=3, col="purple")
 #m = integrate(f = function(x) {dbinom(y,n,x)}, low=0.00001, upper=.99999)
 #abline(h=m$value, lty=4, lwd=2, col="red")
-lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=3,  lwd=3, col="purple")
+lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=1,  lwd=3, col="purple")
 marg.H0 = dnorm(0, y, sqrt(1/n))
-segments(0, 0, 0, marg.H0, lty=2, lwd=2, col="blue")
-abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="blue")
+segments(0, 0, 0, marg.H0, lty=3, lwd=2, col="blue")
+abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="black")
+abline(h=marg.H0, lty=3, lwd=3, col="blue")
 bf10 = marg.H1/marg.H0
 bf01 = 1/bf10
 post.prob.H1 = 1/(1 + bf01)
+legend("topright", legend=c("p(y | H0)", "p(y | H1)", "likelihood", "prior", "posterior"), 
+       col=c("blue", "purple", "blue", "red", "purple"), 
+       lty=c(3,3,1,1,1))
 
 #cand = dnorm(0,0, sqrt(v0))/dnorm(0, theta.n, sqrt(1/tau.n))
 ```
