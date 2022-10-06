@@ -106,6 +106,9 @@ lessons:
   - date: "Thu, Oct 6"
     title: "Lecture 11: Hypothesis Testing" 
     reading: "11-reading.html"
+    slides: "11-hypothesis-testing-cont.html"
+    slidespdf: "11-hypothesis-testing-cont-handout.pdf"
+
     
   - date: "Fri, Oct 7"
     title: "Review for Midterm I"

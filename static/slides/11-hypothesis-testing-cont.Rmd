@@ -1,7 +1,7 @@
 ---
-title: "Lecture 6: Bayesian Hypothesis Testing Continued"
+title: "Lecture 11: Bayesian Hypothesis Testing: Priors"
 author: "Merlise Clyde"
-date: "September 14, 2021"
+date: "October 6, 2022"
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -86,7 +86,7 @@ $$
   
 --
 
-Alternative expression for Bayes Factor
+Alternative expression for Bayes Factor  (Candidate's Formula)
 
 $$\cal{BF}_{10} = \frac{p(y^{(n)} \mid \cal{H}_1)}
        {p(y^{(n)} \mid \cal{H}_0)} =
@@ -96,6 +96,7 @@ $$\cal{BF}_{10} = \frac{p(y^{(n)} \mid \cal{H}_1)}
   
 ---
 ##  Marginal Likelihoods & Evidence
+
 
 ```{r marglik, fig.height=4.5, echo=F}
 n = 10; y = 1.96/sqrt(n)
@@ -110,21 +111,24 @@ plot(th,dnorm(th,y,sqrt(1/n)),
       ylab=expression(pi(theta)))
 lines(th, dnorm(th, 0, sqrt(v0)), col="red", lwd=2)
 marg.H1 = dnorm(0, y, sqrt(v0 + 1/n))
-segments(0, 0, 0, marg.H1, lty=2, lwd=2, col="purple")
-abline(h =marg.H1, lty=2, lwd=3, col="purple")
+segments(0, 0, 0, marg.H1, lty=3, lwd=2, col="purple")
+abline(h =marg.H1, lty=3, lwd=3, col="purple")
 #m = integrate(f = function(x) {dbinom(y,n,x)}, low=0.00001, upper=.99999)
 #abline(h=m$value, lty=4, lwd=2, col="red")
-lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=3,  lwd=3, col="purple")
+lines(th, dnorm(th, theta.n, sqrt(1/tau.n)), lty=1,  lwd=3, col="purple")
 marg.H0 = dnorm(0, y, sqrt(1/n))
-segments(0, 0, 0, marg.H0, lty=2, lwd=2, col="blue")
-abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="blue")
+segments(0, 0, 0, marg.H0, lty=3, lwd=2, col="blue")
+abline(h=dnorm(y,y, sqrt(1/n)), lty=3, lwd=2, col="black")
+abline(h=marg.H0, lty=3, lwd=3, col="blue")
 bf10 = marg.H1/marg.H0
 bf01 = 1/bf10
 post.prob.H1 = 1/(1 + bf01)
+legend("topright", legend=c("p(y | H0)", "p(y | H1)", "likelihood", "prior", "posterior"), 
+       col=c("blue", "purple", "blue", "red", "purple"), 
+       lty=c(3,3,1,1,1))
 
 #cand = dnorm(0,0, sqrt(v0))/dnorm(0, theta.n, sqrt(1/tau.n))
 ```
-
   $\cal{BF}_{10}$ = `r round(bf10, 2)`
   Posterior Probability of $\cal{H}_0$ = `r round(1 - post.prob.H1, 4)` versus p-value of $0.05$
 ---
@@ -227,6 +231,16 @@ plot(th, d.post,
 
 segments(0, 0, 0, 1 - post.prob.H1, lty=2, lwd=2, col=1)
 ```
+
+---
+## Posterior Means and Other Summaries
+
+Use Iterated Expectations to find 
+
+$$\textsf{E}[\theta \mid y^{(n)}] $$
+Posterior Variance?
+
+Credible Intervals ?
 
 ---
 ## Prior
