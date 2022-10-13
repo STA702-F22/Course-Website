@@ -10,11 +10,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<meta name="author" content="STA 601: Bayesian and Modern Statistics" />
+<meta name="author" content="STA 702: Bayesian and Modern Statistics" />
 
-<meta name="date" content="2021-10-11" />
+<meta name="date" content="2022-10-14" />
 
-<title>Lab 6: Gibbs Sampling and Adaptive Metropolis for Binary Regression</title>
+<title>Lab 6: Hypothesis Testing, Multiple Testing and Shrinkage</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -242,19 +242,14 @@ color: #222;
 
 
 
-<h1 class="title toc-ignore">Lab 6: Gibbs Sampling and Adaptive
-Metropolis for Binary Regression</h1>
-<h4 class="author">STA 601: Bayesian and Modern Statistics</h4>
-<h4 class="date">October 11, 2021</h4>
+<h1 class="title toc-ignore">Lab 6: Hypothesis Testing, Multiple Testing
+and Shrinkage</h1>
+<h4 class="author">STA 702: Bayesian and Modern Statistics</h4>
+<h4 class="date">October 14, 2022</h4>
 
 
 <div id="TOC">
 <ul>
-<li><a href="#housekeeping" id="toc-housekeeping">Housekeeping</a>
-<ul>
-<li><a href="#rrstudio" id="toc-rrstudio">R/RStudio</a></li>
-<li><a href="#r-knitr" id="toc-r-knitr">R Knitr</a></li>
-</ul></li>
 <li><a href="#getting-started" id="toc-getting-started">Getting
 started</a>
 <ul>
@@ -264,41 +259,21 @@ Gradescope</a></li>
 </ul>
 </div>
 
-<p><strong>Due:</strong> 1:00pm, Monday, October 18</p>
-<div id="housekeeping" class="section level1">
-<h1>Housekeeping</h1>
-<div id="rrstudio" class="section level2">
-<h2>R/RStudio</h2>
-<p>You all should have R and RStudio installed on your computers by now
-or access to the Department Server. If you do not, first install the
-latest version of R here: <a href="https://cran.rstudio.com" class="uri">https://cran.rstudio.com</a> (remember to select the right
-installer for your operating system). Next, install the latest version
-of RStudio here: <a href="https://www.rstudio.com/products/rstudio/download/" class="uri">https://www.rstudio.com/products/rstudio/download/</a>.
-Scroll down to the “Installers for Supported Platforms” section and find
-the right installer for your operating system.</p>
-</div>
-<div id="r-knitr" class="section level2">
-<h2>R Knitr</h2>
-<p>You are required to use R knitr with the Rnw format to type up this
-lab report. To get started see <a href="https://kbroman.org/knitr_knutshell/pages/latex.html">basics</a>
-about knitr.</p>
-</div>
-</div>
+<p><strong>Due:</strong> 11:00pm, Sunday</p>
 <div id="getting-started" class="section level1">
 <h1>Getting started</h1>
 <p>Go to Github classroom to create a repository for this assignment at
-<a href="https://classroom.github.com/a/-tHHHV3K">lab6</a></p>
-<p>This will create a private repo in the STA601-F21 organization on
-Github with your github user name. Note: You may receive an email
-invitation to join STA601-F21 on your behalf.</p>
+<a href="https://classroom.github.com/a/a2YsYfGq">lab6</a></p>
+<p>This will create a private repo in the organization on Github with
+your github user name.</p>
 <p>Hit refresh, to see the link for the repo, and then click on it to go
-to the STA601-F21 organization in Github.</p>
+to the organization in Github.</p>
 <p>Follow the instructions in the README in your repo and follow along
 in lab to complete the assignment.</p>
 <div id="github-classroom-gradescope" class="section level2">
 <h2>Github Classroom &amp; Gradescope</h2>
 <p>You MUST submit both your final <code>Rnw</code> and <code>pdf</code>
-file to the repo on Github and upload the <code>pdf</code> to <a href="https://www.gradescope.com/courses/295827/assignments">Gradescope</a>.</p>
+file to the repo on Github and upload the <code>pdf</code> to <a href="https://www.gradescope.com/courses/431637">Gradescope</a>.</p>
 </div>
 </div>
 
