@@ -123,6 +123,21 @@ lessons:
   - date: "Fri, Oct 14"  
     title: "Lab 6"  
     lab: "lab-06-hypothesis-testing.html"
+
+  - week: "WEEK 8"
+    date: "Tue, Oct 17"
+    title: "Lec 12:  Multiple Testing and Hierachical Models"
+    reading: "12-reading.html"
+    hw: "hw-05.html"
+    
+  - date: "Thur, Oct 20"
+    title: "Lec 13:  Bayesian Multiple Testing and Hierachical Models"
+    reading: "13-reading.html"
+    
+  - date: "Friday, Oct 21"
+    title: "Lab 7"
+  
+
  
  
      
