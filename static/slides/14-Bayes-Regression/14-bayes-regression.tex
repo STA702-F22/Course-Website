@@ -1,0 +1,518 @@
+\documentclass[]{beamer}
+%\documentclass[handout]{beamer}
+%\usepackage[dvips]{color}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,array,comment,eucal}
+\input{../macros}
+\usepackage{verbatim}
+
+\usetheme{default}
+\title{Bayesian Estimation in Linear Models}
+\institute{Merlise Clyde}
+
+\date{\today}
+%\logo{duke.eps}
+
+\begin{document}
+\maketitle
+
+\begin{frame}
+  \frametitle{Bayesian Estimation}
+  
+  Model  $Y_i \mid \b, \phi  \overset{iid}{\sim} \textsf{N}(\x_i^T\b, 1/\phi)$
+   \pause
+is equivalent to
+$$
+\Y \sim \N(\X \b, \I_n/\phi)
+$$
+\pause
+ $\phi = 1/\sigma^2$ is the {\it precision}.
+\pause
+
+\vspace{14pt}
+
+\pause
+\begin{itemize}
+\item  $x_i$ is a $p \times 1$ vector of predictors and $X$ is $n \times p$ matrix
+\pause
+\item $\b$ is $p \times 1$ vector of regression coefficients \pause
+\item $\phi = 1/\sigma^2$ is the precision in the data
+
+
+\item  Likelihood
+
+$${\cal L}(\beta, \phi) \propto \frac{|\phi \I_n|^{1/2}}{(2 \pi)^{n/2}}\exp\left\{- \frac{\phi}{2}(\Y - \X\b )^T I_n (\Y - \X\b)  \right\}$$
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Prior Distributions}
+Factor joint prior distribution  $p(\b, \phi) = p(\b \mid \phi) p(\phi)$
+\pause
+
+Convenient choice is to take \pause
+\begin{itemize}
+\item $\b \mid \phi \sim \N(b_0, \Phi_0^{-1}/\phi)$ where $b_0$ is the prior
+  mean and $\Phi_0^{-1}/\phi$ is the prior covariance of $\b$ 
+  
+ $$\pi(\b \mid  \phi = \frac{|\phi \Phi_0|^{1/2}}{(2 \pi)^{p/2}}\exp\left\{- \frac{\phi}{2}(\b - \bv_0)^T \Phi_0 (\b - \bv_0)  \right\}$$ 
+  \pause
+\item $\phi \sim \G( \nu_0/2, \SS_0/2)$  with $\E(\sigma^2) =
+  \SS_0/(\nu_0 - 2)$ \pause
+$$p(\phi) = \frac{1}{\Gamma{(\nu_0/2)}}
+\left(\frac{\SS_0}{2} \right)^{\nu_0/2}
+\phi^{\nu_0/2 - 1}
+ e^{- \phi \SS_0/2}
+ $$\pause
+\item $(\b, \phi)^T \sim \NG(\bv_0, \Phi_0, \nu_0, \SS_0)$ \pause
+\item Conjugate  ``Normal-Gamma'' family implies \pause
+$$(\b, \phi)^T \mid \Y \sim \NG(\bv_n, \Phi_n, \nu_n, \SS_n)$$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Finding the Posterior Distribution}
+Express Likelihood: $\cL(\beta, \phi) \propto \phi^{n/2} e^{- \phi \frac{\SSE}{2}}
+e^{-\frac{\phi}{2} (\b - \bhat)^T(\X^T\X) (\b - \bhat)}$ \pause
+\begin{eqnarray*}
+ p(\b, \phi \mid \Y) &\propto&  \phi^{\frac {n + p + \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0) } \times \\
+ & & e^{-\frac{\phi}{2} (\b - \bhat)^T(\X^T\X) (\b - \bhat)}
+ e^{- \frac{\phi}{2} (\b - \bv_0)^T \Phi (\b - \bv_0) }
+\end{eqnarray*} \pause
+
+Quadratic in Normal
+$$\exp\left\{- \frac{\phi}{2} (\b - \bv)^T \Phi (\b - \bv) \right\} = \exp\left\{-
+  \frac{\phi}{2} (\b^T \Phi \b - 2 \b^T \Phi \bv + \bv^T\Phi \bv )\right\}$$
+\pause
+
+  \begin{itemize}
+  \item Expand quadratics and regroup terms \pause
+  \item Read off posterior precision from Quadratic in $\b$ \pause
+  \item Read off posterior mean from Linear term in $\b$ \pause
+  \item will need to complete the quadratic in the posterior mean
+  \end{itemize}
+\end{frame}
+\begin{frame}
+  \frametitle{ Expand and Regroup}
+  Quadratic in Normal
+$$\exp\left\{- \frac{\phi}{2} (\b - \bv)^T \Phi (\b - \bv) \right\} = \exp\left\{-
+  \frac{\phi}{2} (\b^T \Phi \b - 2 \b^T \Phi \bv + \bv^T\Phi \bv )\right\}$$
+\pause
+
+\begin{eqnarray*}
+ p(\b, \phi \mid \Y) &\propto&  \phi^{\frac {n + p + \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0) } \times  \\
+ & & e^{-\frac{\phi}{2} (\b - \bhat)^T(\X^T\X) (\b - \bhat)}
+ e^{- \frac{\phi}{2} (\b - \bv_0)^T \Phi_0 (\b - \bv_0) }  \pause  \\
+ & = & \phi^{\frac {n + p + \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0) } \times \pause \\
+& &  e^{ -\frac{\phi}{2} \left(  \b^T (\X^T\X + \Phi_0) \b  \right) } \times \pause \\
+& &  e^{  -\frac{\phi}{2} \left( -2 \b^T (\X^T\X \bhat  + \Phi_0 \bv_0)
+   \right)} \times \pause \\
+& &  e^{  -\frac{\phi}{2} (\bhat^T \X^T\X \bhat + \bv_0^T \Phi_0 \bv_0
+  )}
+\end{eqnarray*}
+
+
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{ Identify Hyperparameters and Complete the Quadratic}
+  Quadratic in Normal
+$$\exp\left\{- \frac{\phi}{2} (\b - \bv)^T \Phi (\b - \bv) \right\} = \exp\left\{-
+  \frac{\phi}{2} (\b^T \Phi \b - 2 \b^T \Phi \bv + \bv^T\Phi \bv )\right\}$$
+\pause
+
+
+Let $\Phi_n = \X^T\X + \Phi_0$ \pause
+  \begin{eqnarray*}
+ p(\b, \phi \mid \Y) &\propto&  \phi^{\frac {n + p + \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0) } \pause \\
+& &  e^{ -\frac{\phi}{2} \left(  \b^T \alert<4>{(\X^T\X + \Phi_0)} \b
+  \right) } \pause\\
+& &  e^{  -\frac{\phi}{2} \left( -2 \b^T \alert<5>{\Phi_n \Phi_n^{-1}} (\X^T\X \bhat  + \Phi_0 \bv_0)
+   \right)} \pause\\
+& &  e^{ -\frac{\phi}{2} (\alert<6>{\bv_ n^T \Phi_n \bv_n - \bv_n^T \Phi_0
+  \bv_n}) } \pause \\
+& &  e^{  -\frac{\phi}{2} (\bhat^T \X^T\X \bhat + \bv_0^T \Phi_0 \bv_0
+  )} \pause \\
+& = &
+  \phi^{\frac {n + p+  \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0  + \bhat^T \X^T\X \bhat + \bv_0^T \Phi_0 \bv_0
+ - \bv_n^T \Phi_n \bv_n)}  \pause  \\
+& &  e^{ -\frac{\phi}{2} \left(  \b^T \alert{(\Phi_n)} \b
+  \right) } \pause\\
+& &  e^{  -\frac{\phi}{2} \left( -2 \b^T \Phi_n\alert{\Phi_n^{-1} (\X^T\X \bhat  + \Phi_0 \bv_0)}
+   \right)} \pause\\
+& &  e^{ -\frac{\phi}{2} (\alert{\bv_ n^T \Phi_n \bv_n}) }
+  \end{eqnarray*}
+
+\end{frame}
+\begin{frame}
+  \frametitle{Posterior Distribution}
+  \begin{eqnarray*}
+ p(\b, \phi \mid \Y) &\propto&
+  \phi^{\frac {n +  \nu_0}{ 2} - 1}
+ e^{- \frac \phi 2 ( \SSE + \SS_0  + \bhat^T \X^T\X \bhat + \bv_0^T \Phi_0 \bv_0
+ - \bv_n^T \Phi_n \bv_n)} \\
+& & \phi^{\frac p 2} e^{- \frac{\phi}{2} (\b - \bv_n)^T \Phi_n (\b -
+  \bv_n) }  \pause  \\
+& & \\
+\Phi_n & = & \X^T\X +  \Phi_0 \pause \\
+\bv_n &  = & \Phi_n^{-1} (\X^T\X \bhat  + \Phi_0 \bv_0) \pause
+  \end{eqnarray*}
+
+Posterior Distribution
+  \begin{eqnarray*}
+\b \mid \phi, \Y & \sim &\N(\bv_n, (\phi \Phi_n)^{-1}) \pause \\
+\phi \mid \Y &\sim &\G(\frac{n + \nu_0}{2}, \frac{\SSE + \SS_0 + \bhat^T \X^T\X \bhat + \bv_0^T \Phi_0 \bv_0
+ - \bv_n^T \Phi_n \bv_n}{2})
+  \end{eqnarray*}
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{Marginal Distribution from Normal--Gamma }
+  \begin{theorem}
+    Let  $\tb \mid \phi \sim \N(m, \frac{1}{\phi} \Sigma)$ and $\phi \sim
+    \G(\nu/2, \nu \shat/2)$. Then  $\tb$ ($p \times 1)$ has a $p$
+    dimensional multivariate $t$ distribution $$\tb \sim t_\nu( m,
+    \shat \Sigma )$$ with density
+$$p(\tb) \propto  \left[ 1 + \frac{1}{\nu}  \frac{ (\tb - m)^T
+    \Sigma^{-1} (\tb - m)}{\shat} \right]^{- \frac{p + \nu}{2}}$$
+  \end{theorem}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Derivation}
+Marginal density  $p(\tb) = \int p(\tb \mid \phi) p(\phi) \, d\phi$
+\pause
+\begin{eqnarray*}
+  p(\tb) & \propto & \int |\Sigma/\phi|^{-1/2}
+e^{- \frac{\phi}{2} (\tb - m)^T
+    \Sigma^{-1} (\tb - m)}  \phi^{\nu/2 - 1} e^{- \phi \frac{\nu
+      \shat}{2}}\, d \phi \pause \\
+  & \propto & \int \phi^{p/2} \phi^{\nu/2 - 1}
+e^{- \phi \frac{(\tb - m)^T
+    \Sigma^{-1} (\tb - m)+  \nu
+      \shat}{2}}\, d \phi \pause \\
+ & \propto & \int \phi^{\frac{p +\nu}{2} - 1}
+e^{- \phi \frac{(\tb - m)^T
+    \Sigma^{-1} (\tb - m)+  \nu
+      \shat}{2}} \, d \phi \pause \\
+& = & \Gamma((p + \nu)/2 ) \left( \frac{(\tb - m)^T
+    \Sigma^{-1} (\tb - m)+  \nu
+      \shat}{2} \right)^{- \frac{p + \nu}{2}} \pause \\
+& \propto &  \left( (\tb - m)^T
+    \Sigma^{-1} (\tb - m)+  \nu
+      \shat \right)^{- \frac{p + \nu}{2}} \pause \\
+& \propto &  \left( 1 + \frac{1}{\nu}  \frac{(\tb - m)^T
+    \Sigma^{-1} (\tb - m)}{\shat}
+       \right)^{- \frac{p + \nu}{2}}
+\end{eqnarray*}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Marginal Posterior Distribution of $\b$}
+  \begin{eqnarray*}
+\b \mid \phi, \Y  & \sim & \N( \bv_n, \phi^{-1} \Phi_n^{-1}) \pause \\
+ \phi \mid \Y & \sim & \G\left(\frac{\nu_n}{2},  \frac{\SS_n}{ 2} \right)
+  \end{eqnarray*}
+\pause
+
+Let $\shat = \SS_n/\nu_n$  (Bayesian MSE) \pause
+
+Then the marginal posterior distribution of $\b$ is
+$$
+\b  \mid \Y \sim t_{\nu_n} (\bv_n, \shat \Phi_n^{-1})
+$$ \pause
+
+
+Any linear combination $\lambda^T\b$
+$$\lambda^T\b  \mid \Y \sim t_{\nu_n}
+(\lambda^T\bv_n, \shat \lambda^T\Phi_n^{-1}\lambda)$$ has a univariate
+$t$ distribution with $\v_n$ degrees of freedom
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Predictive Distribution}
+Suppose $\Y^* \mid \b, \phi \sim \N(\X^* \b , \I/\phi)$  and is conditionally
+independent of $\Y$ given $\b$ and $\phi$ \pause
+\vspace{18pt}
+
+What is the predictive distribution of $\Y^* \mid \Y$? \pause
+
+\vspace{18pt}
+$\Y^* = \X^* \b + \eps^*$ and $\eps^*$ is independent of $\Y$ given
+$\phi$ \pause
+
+\begin{eqnarray*}
+\X^* \b + \eps^* \mid \phi, \Y & \sim & \N(\X^*\bv_n, (\X^{*} \Phi_n^{-1} \X^{*T}
++ \I)/\phi)  \pause \\
+\Y^* \mid \phi, \Y & \sim & \N(\X^*\bv_n, (\X^{*} \Phi_n^{-1} \X^{*T}
++ \I)/\phi)  \pause \\
+\phi \mid \Y & \sim & \G\left(\frac{\nu_n}{2},
+  \frac{\shat \nu_n}{ 2} \right)  \pause \\
+\Y^* \mid \Y & \sim & t_{\nu_n}( \X^*\bv_n, \shat (\I + \X^* \Phi_n^{-1} \X^T))
+\end{eqnarray*}
+\end{frame}
+\begin{frame}
+  \frametitle{Alternative Derivation}
+Conditional Distribution:
+\begin{eqnarray*}
+f(\Y^* \mid \Y) & = & \frac{f(\Y^*, \Y)}{f(\Y)} \pause \\
+ & = & \frac{
+\iint f(\Y^*, \Y \mid \b, \phi) p(\b, \phi) d\b\, d\phi
+}
+{
+  f(\Y)
+}  \pause \\
+ & = & \frac{
+\iint f(\Y^*\mid \b, \phi) f(\Y \mid \b, \phi) p(\b, \phi) d\b\, d\phi
+}
+{
+  f(\Y)
+}  \pause \\
+ & = &
+\iint f(\Y^*\mid \b, \phi)  p(\b, \phi \mid \Y) d\b\, d\phi \pause
+\end{eqnarray*}
+$$\Y^* = \X^* \b + \eps^* \mid \Y, \phi \sim \N(\X^* \bv_n, \phi^{-1}(\I +
+\X^* \Phi_n \X^{*T}))$$ \pause
+Use result about Marginals of Normal-Gamma family to integrate out $\phi$
+\end{frame}
+
+\begin{frame}
+  \frametitle{Conjugate Priors}
+  \begin{definition}
+    A class of prior distributions $\cP$ for $\tb$ is conjugate for a
+    sampling model $p(y \mid \tb)$ if for every $p(\tb) \in \cP$, $p(\tb
+    \mid \Y) \in \cP$.
+  \end{definition}
+\pause
+  Advantages: \pause
+  \begin{itemize}
+  \item Closed form distributions for most quantities; bypass MCMC for
+    calculations \pause
+  \item Simple updating in terms of sufficient statistics ``weighted
+    average'' \pause
+  \item Interpretation as prior samples - prior sample size \pause
+  \item Elicitation of prior through imaginary or historical data \pause
+  \item limiting ``non-proper'' form recovers MLEs \pause
+  \end{itemize}
+Choice of conjugate prior?
+\end{frame}
+
+\begin{frame}
+  \frametitle{Unit Information Prior}
+
+Unit information prior $\b \mid \phi \sim \N(\bhat, n
+   (\X^T\X)^{-1}/\phi)$ \pause
+  \begin{itemize}
+\item Fisher Information is $\phi \X^T\X$ based on a sample of $n$
+  observations \pause
+\item Inverse Fisher information is covariance matrix of MLE \pause
+\item ``average information'' in one observation is  $\phi \X^T\X /n$ \pause
+\item center prior at MLE and base covariance on the information in
+  ``1'' observation \pause
+\item  Posterior mean
+$$\frac{n}{1 + n} \bhat +  \frac{1}{1 + n}\bhat = \bhat$$ \pause
+\item Posterior Distribution
+$$\b \mid \Y, \phi \sim \N\left( \bhat, \frac{n}{1 + n} (\X^T\X)^{-1}
+  \phi^{-1} \right)$$ \pause
+    \end{itemize}
+Cannot represent real prior beliefs; double use of data
+\end{frame}
+
+\begin{frame}
+  \frametitle{Zellner's $g$-prior}
+Zellner's g-prior(s) $\b \mid \phi \sim \N(\bv_0, g
+    (\X^T\X)^{-1}/\phi)$ \pause
+
+$$\b \mid \Y, \phi \sim \N\left( \frac{g}{1 + g} \bhat +  \frac{1}{1 + g}
+\bv_0, \frac{g}{1 + g} (\X^T\X)^{-1} \phi^{-1} \right)$$ \pause
+
+\begin{itemize}
+\item Invariance: Require posterior of   $\X \b$  equal the posterior of $\X \H \alphav$
+\pause   ($\a_0 = \H^{-1} \bv_0$)  ( take $\bv_0 = \zero$)
+
+\item Choice of $g$?  \pause
+\item $\frac{g}{1 + g}$  weight given to the data \pause
+\item Fixed $g$ effect does not vanish as $n \to \infty$
+\item Use $g = n$ or place a prior diistribution on $g$
+\end{itemize}
+
+
+\end{frame}
+\begin{frame}
+  \frametitle{Shrinkage}
+ Posterior mean under  $g$-prior  with $\bv_0 = 0$
+$\frac{g}{1 +g} \bhat $
+
+\centerline{\includegraphics[height=3in]{shrinkage}}
+\end{frame}
+
+
+\begin{frame}\frametitle{Ridge Regression}
+
+\begin{itemize}
+
+\item If $\X^T\X$ is nearly singular, certain  elements of $\b$ or (linear combinations of $\b$) may have huge variances under the $g$-prior (or flat prior) as the MLEs are highly unstable!
+
+
+\item {\bf Ridge regression} protects against the explosion of variances and ill-conditioning with the conjugate prior:
+
+$$\b \mid \phi \sim \textsf{N}(0, \frac{1}{\phi \lambda} \I_p)$$
+
+\item Posterior for $\b$  (conjugate case)
+
+$$\b \mid \phi, \lambda, \Y \sim \N \left((\lambda \I_p + \X^T\X)^{-1} \X^T \Y,  \frac{1}{\phi}(\lambda \I_p + \X^T\X)^{-1}\right)$$
+
+\item induces shrinkage as well!
+\end{itemize}
+\end{frame}
+
+
+
+%\end{document}
+\begin{frame}
+  \frametitle{Jeffreys Prior}
+
+Jeffreys proposed a default  procedure so that resulting prior
+would be invariant to model parameterization  \pause
+
+$$p(\tb) \propto |\cI(\tb)|^{1/2}$$
+\pause
+where $\cI(\tb)$ is the  Expected Fisher Information matrix
+\pause
+$$
+\cI(\theta) = - \E[ \left[ \frac{\partial^2 \log(\cL(\tb))}{\partial
+  \theta_i \partial \theta_j} \right] ]
+$$
+\end{frame}
+\begin{frame}
+  \frametitle{Fisher Information Matrix}
+Log Likelihood
+$$
+    \log(\cL(\b, \phi))  =  \, \frac{n}{2} \log(\phi)  - \frac{\phi}{2}
+     \| (\I - \P_\x) \Y\|^2
+ - \frac{\phi}{2}(\b - \bhat)^T(\X^T\X)(\b - \bhat)
+$$ \pause
+  \begin{eqnarray*}
+\frac{\partial^2 \log \cL} { \partial \tb \partial \tb^T} & = &
+\left[
+  \begin{array}{cc}
+    -\phi (\X^T\X) & -(\X^T\X) (\b - \bhat) \\
+  - (\b - \bhat)^T (\X^T\X) & -\frac{n}{2} \frac{1}{\phi^2} \\
+  \end{array}
+\right] \pause \\
+\E[\frac{\partial^2 \log \cL} { \partial \tb \partial \tb^T}] & = &
+\left[
+  \begin{array}{cc}
+    -\phi (\X^T\X) & \zero_p \\
+  \zero_p^T & -\frac{n}{2} \frac{1}{\phi^2} \\
+  \end{array}
+\right] \pause \\
+& & \\
+\cI((\b, \phi)^T) & = & \left[
+  \begin{array}{cc}
+    \phi (\X^T\X) & \zero_p \\
+  \zero_p^T & \frac{n}{2} \frac{1}{\phi^2}
+  \end{array}
+\right]
+  \end{eqnarray*}
+\end{frame}
+\begin{frame}
+  \frametitle{Jeffreys Prior}
+  Jeffreys Prior
+  \begin{eqnarray*}
+  p_J(\b, \phi)  & \propto & |\cI((\b, \phi)^T) |^{1/2}   \pause \\
+               & = & |\phi (\X^T\X|^{1/2} \left(\frac{n}{2}
+                 \frac{1}{\phi^2} \right)^{1/2} \pause \\
+  & \propto  &  \phi^{p/2 - 1} |\X^T\X|^{1/2} \pause \\
+  & \propto & \phi^{p/2 - 1}  \pause
+  \end{eqnarray*}
+  Improper prior   $\iint p_J(\b, \phi) \, d\b \, d\phi $ not finite
+
+\end{frame}
+\begin{frame}
+  \frametitle{Formal Bayes Posterior}
+$$  p(\b, \phi \mid \Y) \propto p(\Y \mid \b, \phi)  \phi^{p/2 - 1} $$
+\pause
+if this is integrable, then renormalize to obtain formal posterior
+distribution \pause
+
+
+\begin{eqnarray*}
+  \b \mid \phi, \Y & \sim & \N(\bhat, (\X^T\X)^{-1} \phi^{-1}) \\
+  \phi \mid \Y & \sim& \G(n/2, \| \Y - \X\bhat \|^2/2)
+\end{eqnarray*} \pause
+Limiting case of Conjugate prior with $\bv_0 = 0$, $\Phi = \zero$,
+$\nu_0 = 0$ and $\SS_0 = 0$ \pause
+
+  \pause
+
+\vfill
+Jeffreys did not recommend using this Posterior does not depend on dimension $p$
+\end{frame}
+\begin{frame}
+  \frametitle{Independent Jeffreys Prior}
+  \begin{itemize}
+  \item  Treat $\b$ and $\phi$ separately  (``orthogonal
+    parameterization'') \pause
+  \item $p_{IJ}(\b) \propto |\cI(\b)|^{1/2}$ \pause
+\item $p_{IJ}(\phi) \propto |\cI(\phi)\|^{1/2}$ \pause
+  \end{itemize}
+$$
+\cI((\b, \phi)^T)  =  \left[
+  \begin{array}{cc}
+    \phi (\X^T\X) & \zero_p \\
+  \zero_p^T & \frac{n}{2} \frac{1}{\phi^2}
+  \end{array}
+\right]
+$$
+\pause
+$$p_{IJ}(\b) \propto |\phi \X^T\X|^{1/2} \propto 1$$ \pause
+$$p_{IJ}(\phi) \propto \phi^{-1}$$ \pause
+
+Independent Jeffreys Prior is
+$$p_{IJ}(\beta, \phi) \propto p_{IJ}(\b) p_{IJ}(\phi) = \phi^{-1}$$
+
+\end{frame}
+\begin{frame}
+  \frametitle{Formal Posterior Distribution}
+  With Independent Jeffreys Prior
+$$p_{IJ}(\beta, \phi) \propto p_{IJ}(\b) p_{IJ}(\phi) = \phi^{-1}$$
+\pause
+Formal Posterior Distribution
+\pause
+\begin{eqnarray*}
+  \b \mid \phi, \Y & \sim & \N(\bhat, (\X^T\X)^{-1} \phi^{-1}) \pause \\
+  \phi \mid \Y & \sim& \G((n-p)/2, \| \Y - \X\bhat \|^2/2) \pause\\
+\b \mid \Y & \sim & t_{n-p}(\bhat, \shat (\X^T\X)^{-1})\pause
+\end{eqnarray*}
+Bayesian Credible Sets
+$p(\b \in C_\alpha) = 1- \alpha$ correspond to frequentist Confidence
+Regions
+
+$$\frac{\lambdab^T\b - \lambdab\bhat}
+{\sqrt{\shat \lambdab^T(\X^T\X)^{-1} \lambdab}} \sim t_{n-p}$$
+
+\end{frame}
+
+\begin{frame} \frametitle{Summary}
+
+\begin{itemize}
+  \item Bayes Regression with Conjugate Priors provides foundation for many hierarchical models
+  \item Know how to complete the square/quadratic
+  \item Prediction Distributions
+  \item Next Bayes Factors!
+\end{itemize}
+
+
+\end{frame}
+\end{document}
+
