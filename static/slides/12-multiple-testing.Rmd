@@ -1,7 +1,7 @@
 ---
 title: "Lecture 12: Normal Means & Multiple Testing"
 author: "Merlise Clyde"
-date: "October 11"
+date: "October 18"
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -183,7 +183,7 @@ $$\begin{align*} Y_i \mid \mu_i, \sigma^2  & \overset{iid}{\sim} \textsf(\mu_i, 
 
 --
 
-- naive approach: choose $g$ as $N(\mu, \sigma^2_{\mu})$ & estimate $\mu$ and $\sigma^2_\mu$  (Empirical Bayes)
+- naive approach: choose $g$ as $N(\mu, \sigma^2_{\mu})$ & estimate $\mu$ and $\sigma^2_\mu$  (Empirical Bayes) assuming $\sigma^2 = 1$ so that
 $\hat{\mu} = \bar{y}$ and $s^2_y = 1 + \hat{\sigma}^2_\mu$, so $\hat{\sigma}^2_\mu = \max(0, 1 - s^2_y)$
 
 --

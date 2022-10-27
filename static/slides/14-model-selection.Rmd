@@ -1,10 +1,10 @@
 ---
-title: "STA 601: Bayesian Model Choice in Linear Regression"
-subtitle: "STA 601 Fall 2021"
+title: "Bayesian Model Choice in Linear Regression"
+subtitle: "STA 702 Fall 2022"
 author: "Merlise Clyde"
-date: "October 19, 2021"
+date: "October 27, 2022"
 header-includes:
-  - \include{macros.tex}
+  - \usepackage{bm} 
 output:
   xaringan::moon_reader:
     css: "slides.css"
@@ -15,6 +15,21 @@ output:
       highlightLines: true
       countIncrementalSlides: false
 ---
+
+$$\begin{equation*}
+\newcommand{\Y}{\boldsymbol{Y}}
+\newcommand{\X}{\boldsymbol{X}}
+\newcommand{\b}{\boldsymbol{\beta}}
+\newcommand{\bhat}{\hat{\boldsymbol{\beta}}}
+\newcommand{\SSE}{\textsf{SSE}}
+\newcommand{\SS}{\textsf{SS}}
+\newcommand{\bv}{\mathbf{b}}
+\newcommand{\N}{\textsf{N}}
+\newcommand{\Ber}{\textsf{Ber}}
+\newcommand{\Poi}{\text{Poi}}
+\newcommand{\Gam}{\textsf{Gamma}}
+\newcommand{\Gm}{\textsf{G}}
+\end{equation*}$$
 
 ```{r setup, include=FALSE}
 # R options
@@ -35,7 +50,7 @@ library(tidyverse)
 library(rvest)
 ```
 
-
+--
 ## Bayesian Model Choice
 
 **General setting:**
@@ -347,54 +362,4 @@ $$R^2_\gamma = 1 - \frac{(y - \hat{y}_{\gamma})^T(y - \hat{y}_{\gamma})}{(y -  \
 
 - Also paper by Liang et al (2008)  JASA
 
---
-- we will focus on using R packages for implementing
 
-
----
-##  Examples with BAS
-```{r bas}
-library(BAS)
-data(usair, package="HH")
-poll.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
-                             log(popn) + wind +
-                             precip + raindays,
-                  data=usair,
-                  prior="g-prior",
-                  alpha=nrow(usair), # g = n
-                  n.models=2^6,
-                  modelprior = uniform(),
-                  method="deterministic")
-```
-
----
-## Summaries
-
-```{r}
-poll.bma
-```
-
----
-## Plots of Coefficients
-
-```{r coef_plot, out.width='75%',out.height='75%', fig.height=5,fig.width=8, echo=TRUE}
- beta = coef(poll.bma)
- par(mfrow=c(2,3));  plot(beta, subset=2:7,ask=F)
-```
-
----
-##  Summary of Coefficients
-
-```{r}
-beta
-```
-
-Iterated Expectations!
-
----
-##  Model Space Visualization 
-
-```{r image_plot, out.width='75%',out.height='75%', fig.height=5,fig.width=8, echo=TRUE}
-
-image(poll.bma, rotate=FALSE)
-```
