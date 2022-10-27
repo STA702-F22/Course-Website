@@ -1,0 +1,323 @@
+\documentclass[]{beamer}
+%\documentclass[handout]{beamer}
+% ***************************************************************
+% for handout, change only this...
+%   \documentclass[twocolumn]{article}
+%   \usepackage{beamerarticle}
+%   \setlength{\textwidth}{7.5in}
+%   \setlength{\textheight}{9.8in}
+%   \setlength{\topmargin}{-1in}
+%   \setlength{\oddsidemargin}{-.52in}
+%   \setlength{\evensidemargin}{-.52in}
+
+%\usepackage{beamerprosper}
+%\usetheme{Warsaw}
+%\usecolortheme{orchid}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,array,comment,eucal}
+\input{macros}
+\title{Bayesian Model Averaging}
+
+\author{Hoff Chapter 9, Liang et al 2007, Hoeting et al (1999), Clyde \&
+ George (2004) Statistical Science}
+\date{\today}
+%\Logo(-1.9,7.3){\includegraphics[width=.5in]{../eps/duke}}
+% Optional: text to put in the bottom of each slide.
+% By default, the title of the talk will be placed there.
+%\slideCaption{\textit{October 28, 2005 }}
+
+\usepackage{Sweave}
+\begin{document}
+\input{bma-concordance}
+% make the title slide
+\maketitle
+
+
+\begin{frame}\frametitle{Prior Distributions}
+  \begin{itemize}
+  \item Bayesian Model choice requires  proper prior distributions on
+    parameters that are not common across models  \pause
+  \item Vague but proper priors may lead to paradoxes! \pause
+  \item Conjugate Normal-Gammas lead to closed form expressions for
+  marginal likelihoods, Zellner's g-prior is the most popular. \pause
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{Prior Distributions}
+  \begin{itemize}
+  \item ``Spike and Slab'' - Lempers (1971) Mitchell \& Beauchamp (1988) \pause
+  \item ``Spike and Bell''  Leamer (1978)  in BMA \pause
+  \item   mixture of 2 normals - concentrated and dispersed - SSVS Gibbs Sampler -  George \& McCulloch (1993) \pause
+  \item Back to ``Spike and Bell'' Hoeting, Raftery \& Madigan $MC^3$
+    (1997) and George \& McCulloch (1997) collapsed MCMC after
+    integrating out $\bg$
+  \item Conjugate Normal-Gammas lead to closed form expressions for
+  marginal likelihoods, Zellner's g-prior is the most popular. \pause
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Zellner's g-prior}
+  Centered model:  $$\Y = \1 \alpha + \X^c \b + \epsilon$$
+  where $\X^c$ is the centered design matrix where all variables have
+  had their mean subtracted \pause
+\begin{itemize}
+\item   $p(\alpha) \propto 1$ \pause
+\item  $p(\sigma^2) \propto 1/\sigma^2$  \pause
+\item  $\b_\gamma \mid \alpha, \sigma^2, \g \sim \N(0, g \sigma^2
+  ({\Xg^c}^\prime \Xg^c)^{-1})$ \pause
+%\item  take $g=n$
+\end{itemize}
+which leads to marginal likelihood of $\Mg$ that is proportional
+to $$ p(\Y \mid \Mg) = C (1 + g)^{\frac{n-p-1}{2}} ( 1 + g (1 -
+ R^2_\gamma))^{- \frac{(n-1)}{2}}$$
+where $R^2$ is the usual coefficient of determination for model $\Mg$.
+\pause
+
+Trade-off of model complexity versus goodness of fit
+
+\bigskip
+Lastly, assign distribution to space of models
+\end{frame}
+
+\begin{frame}{Sketch}
+\begin{itemize}
+  \item  Integrate out $\bg$  using sums of normals \pause
+  \item  Find inverse of $\I_n + g \P_{\Xg}$  (properties of projections) \pause
+  \item Find determinant of $\phi (\I_n + g \P_{\Xg})$  \pause
+  \item Integrate out intercept (normal)  \pause
+  \item Integrate out $\phi$  (gamma)  \pause
+  \item algebra to simplify in from quadratic forms to  $R^2_{\g}$
+\end{itemize}
+
+\end{frame}
+\begin{frame}
+  \frametitle{Priors on Model Space}
+  $p(\Mg) \Leftrightarrow p(\g)$
+  \begin{itemize}
+  \item $p(\gamma_j = 1) = .5 \Rightarrow P(\Mg) = .5^p$  Uniform on space of models \pause $\pg \sim \Bin(p, .5)$
+\item $\gamma_j \mid \pi \simiid \Ber(\pi)$ and $\pi \sim \Be(a,b)$ then  $\pg \sim \BB_p(a, b)$
+$$
+p(\pg \mid p, a, b) = \frac{ \Gamma(p + 1) \Gamma(\pg + a) \Gamma(p - \pg + b) \Gamma (a + b) }{\Gamma(\pg+1) \Gamma(p - \pg + 1) \Gamma(p + a + b) \Gamma(a) \Gamma(b)}
+$$
+\item $\pg \sim \BB_p(1, 1) \sim \Un(0, p)$
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{USair Data}
+\begin{Schunk}
+\begin{Sinput}
+> library(BAS)
+> data(usair, package="HH")
+> poll.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
++                              log(popn) + wind +
++                              precip + raindays,
++                   data=usair,
++                   prior="g-prior",
++                   alpha=nrow(usair), # g = n
++                   n.models=2^6,
++                   modelprior = uniform(),
++                   method="deterministic")
+\end{Sinput}
+\end{Schunk}
+
+% Marginal Posterior Inclusion Probabilities:
+% Intercept  temp   log(mfgfirms)  log(popn)   wind  precip  raindays
+%   1.0000   0.9755       0.7190     0.2757  0.7654  0.5994   0.3104
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Summary}
+
+\begin{small}
+\begin{Schunk}
+\begin{Sinput}
+> poll.bma
+\end{Sinput}
+\begin{Soutput}
+Call:
+bas.lm(formula = log(SO2) ~ temp + log(mfgfirms) + log(popn) + 
+    wind + precip + raindays, data = usair, n.models = 2^6, prior = "g-prior", 
+    alpha = nrow(usair), modelprior = uniform(), method = "deterministic")
+
+
+ Marginal Posterior Inclusion Probabilities: 
+    Intercept           temp  log(mfgfirms)      log(popn)           wind  
+       1.0000         0.9755         0.7190         0.2757         0.7654  
+       precip       raindays  
+       0.5994         0.3104  
+\end{Soutput}
+\end{Schunk}
+\end{small}
+
+\end{frame}
+\begin{frame}[fragile]\frametitle{Plots}
+
+\centering
+\begin{Schunk}
+\begin{Sinput}
+> par(mfrow=c(2,2))
+> plot(poll.bma, ask=F)
+\end{Sinput}
+\end{Schunk}
+\end{frame}
+
+\begin{frame}\frametitle{Posterior Distribution  with Uniform Prior on Model Space}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> image(poll.bma, rotate=FALSE)
+\end{Sinput}
+\end{Schunk}
+
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Posterior Distribution  with BB(1,1) Prior on Model Space}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> poll.bb.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
++                                 log(popn) + wind +
++                                 precip + raindays,
++                      data=usair,
++                      prior="g-prior",
++                      alpha=nrow(usair),
++                      n.models=2^6,  #enumerate
++                      modelprior=beta.binomial(1,1))
+\end{Sinput}
+\end{Schunk}
+
+\end{frame}
+
+\begin{frame}\frametitle{BB(1,1) Prior on Model Space}
+
+
+\begin{Schunk}
+\begin{Sinput}
+> image(poll.bb.bma, rotate=FALSE)
+\end{Sinput}
+\end{Schunk}
+
+\end{frame}
+\begin{frame}
+\frametitle{Jeffreys Scale of Evidence}
+\begin{itemize}
+\item Bayes Factor = ratio of marginal likelihoods \pause
+
+\item Posterior odds = Bayes Factor $\times$ Prior odds \pause
+
+\end{itemize}
+
+
+$B = BF[\M_0 : \Mg]$   and $1/B = BF[\Mg : \M_0]$ \pause
+
+\vspace{14pt}
+
+\begin{tabular}{|r|l|} \hline \hline
+Bayes Factor & Interpretation \\ \hline
+$B \geq 1$ & $H_0$ supported \\
+$1 > B \geq 10^{-\frac{1}{2}} $ & minimal evidence against $H_0$ \\
+$ 10^{- \frac{1}{2}} > B  \geq 10^{-1}$ & substantial evidence against $H_0$ \\
+$ 10^{-1} > B  \geq 10^{-2}$ & strong evidence against $H_0$ \\
+$ 10^{-2} > B $ & decisive evidence against $H_0$ \\ \hline \hline
+\end{tabular}
+
+\pause
+\vspace{24pt}
+in context of testing one hypothesis with equal prior odds
+Kass \& Raftery (JASA 1996)
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Coefficients}
+\begin{Schunk}
+\begin{Sinput}
+>  beta = coef(poll.bma)
+>  par(mfrow=c(2,3));  plot(beta, subset=2:7,ask=F)
+\end{Sinput}
+\end{Schunk}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Bartlett's Paradox}
+
+The Bayes factor for comparing $\Mg$ to the null
+model:
+$$
+ BF(\Mg : \M_0) =    (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R^2))^{-(n-1)/2}
+$$
+\pause
+\begin{itemize}
+\item For fixed sample size $n$ and $R^2$, consider taking values of  $g$ that
+  go to infinity  \pause
+\item Increasing vagueness in prior \pause
+\item What happens to BF as $g \to \infty$?
+
+\end{itemize}
+
+
+
+
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Information Paradox}
+
+The Bayes factor for comparing $\Mg$ to the null
+model:
+$$
+ BF(\Mg : \M_0) =    (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R^2))^{-(n-1)/2}
+$$
+\pause
+\begin{itemize}
+\item Let $g$ be a fixed constant and take $n$ fixed. \pause
+\item Let $F = \frac{R_{\g}^2/\pg}{(1 - R_{\g}^2)/(n - 1 - \pg)}$ \pause
+\item As $R^2_{\g} \to 1$, $F \to \infty$ LR test would reject $\M_0$
+  where $F$ is the usual $F$ statistic for  comparing model $\Mg$ to
+  $\M_0$ \pause
+\item BF converges to a fixed constant $(1+g)^{-\pg/2}$  (does not go
+  to infinity
+\end{itemize}
+
+``Information Inconsistency''  see Liang et al JASA 2008
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Mixtures of $g$ priors \& Information consistency}
+
+Need $BF \to \infty$ if $\R^2 \to 1$  $\Leftrightarrow$ $\E_g[(1 +
+g)^{-\pg/2}]$ diverges for $\pg < n - 1$ (proof in Liang et al)
+\pause
+\begin{itemize}
+\item Zellner-Siow Cauchy prior \pause
+\item hyper-g prior or hyper-g/n (Liang et al JASA 2008) \pause
+\item robust prior (Bayarrri et al Annals of Statistics 2012 \pause
+\end{itemize}
+
+ All have tails that behave like a Cauchy distribution
+\end{frame}
+\section{Mortality}
+\begin{frame}[fragile]
+\frametitle{Mortality \& Pollution}
+  \begin{itemize}
+  \item Data 60 cities from Statistical Sleuth 12.17 \pause
+\item response Mortality \pause
+\item 15 predictors;  measures of HC, NOX, SO2 \pause
+\item Is pollution associated with mortality after adjusting for other
+  socio-economic and meteorological factors? \pause
+\item 15 predictor variables implies $2^{15} = 32,768$ possible models
+  \end{itemize}
+\begin{Schunk}
+\begin{Sinput}
+> data(ex1217, package="Sleuth3")

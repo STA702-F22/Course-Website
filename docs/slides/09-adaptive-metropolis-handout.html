@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Lecture 9: More MCMC: Adaptive Metropolis, Metropolis-Hastings, and Gibbs</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Merlise Clyde" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/font-awesome/css/all.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.css" rel="stylesheet" />
+    <link rel="stylesheet" href="slides.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Lecture 9: More MCMC: Adaptive Metropolis, Metropolis-Hastings, and Gibbs
+### Merlise Clyde
+### September 23
+
+---
+
+
+
+
+
+
+
+
+
+## Example from Last Class
+
+Priors with `\(\sigma^2 = 1\)`:
+
+`$$p(\mu) \propto 1$$`
+--
+
+- Use a `\(\textsf{Cauchy}(0,1)\)` prior on `\(\sigma_\mu\)` independent of `\(\mu\)` and 
+
+--
+
+- Symmetric proposal for `\(\mu\)` and  `\(\sigma_\tau\)`    
+
+--
+
+-  Independent normals centered at current values of `\(\mu\)` and `\(\sigma_\mu\)`  with covariance `\(\frac{2.4^2}{d} \textsf{Cov}(\theta)\)` where `\(d = 2\)` (the dimension of `\(\theta\)` ) 
+
+
+
+
+
+
+
+
+
+---
+## Gelman-Rubin 
+
+Gelman  &amp; Rubin suggested a diagnostic `\(R\)` based on taking separate  chains with dispersed initial values to test convergence
+
+--
+&lt;img src="09-adaptive-metropolis-handout_files/figure-html/unnamed-chunk-2-1.png" style="display: block; margin: auto;" /&gt;
+
+
+---
+## Gelman-Rubin Diagnostic
+
+- Run m &gt; 2 chains of length 2S from overdispersed starting values.
+- Discard the first S draws in each chain.
+-  Calculate the pooled within-chain variance `\(W\)` and between-chain variance `\(B\)`.
+
+--
+
+.block[
+.small[
+`$$R = \frac{\frac{S-1}{S} W + \frac{1}{S} B }{W}$$`
+]
+]
+
+--
+
+- numerator and denominator are both unbiased estimates of the variance if the two chains have converged
+
+--
+
+  +  otherwise `\(W\)` is an underestimate (hasn't explored enough)
+  
+--
+  +  numerator will overestimate as `\(B\)` is too large (overdispersed starting points)
+  
+--
+
+- As `\(S \to \infty\)` and `\(B \to 0\)`,  `\(R \to 1\)`
+
+--
+
+- Note: version in `R` is slightly different 
+
+---
+## Gelman-Rubin Diagnostic
+
+
+
+
+```r
+theta.mcmc = mcmc.list(mcmc(theta1, start=5000), mcmc(theta2, start=5000))
+gelman.diag(theta.mcmc)
+```
+
+```
+## Potential scale reduction factors:
+## 
+##          Point est. Upper C.I.
+## mu                1          1
+## sigma_mu          1          1
+## 
+## Multivariate psrf
+## 
+## 1
+```
+
+--
+
+-  Values of `\(R &gt; 1.1\)` suggest lack of convergence
+
+--
+- Looks OK
+ 
+--
+
+See also `gelman.plot`
+
+---
+## Geweke statistic
+
+- Geweke proposed taking two non-overlapping parts of a single Markov chain (usually the first 10% and the last 50%) and comparing the mean of both parts, using a difference of means test
+
+--
+
+- The null hypothesis would be that the two parts of the chain are from the same distribution. 
+
+--
+
+- The test statistic is a z-score with standard errors adjusted for autocorrelation, and if the p-value is significant for a variable, you need more draws. 
+
+---
+## Geweke Diagnostic
+
+- The output is the z-score itself (not the p-value).
+
+
+```r
+geweke.diag(theta.mcmc)
+```
+
+```
+## [[1]]
+## 
+## Fraction in 1st window = 0.1
+## Fraction in 2nd window = 0.5 
+## 
+##       mu sigma_mu 
+##  -0.7779   0.7491 
+## 
+## 
+## [[2]]
+## 
+## Fraction in 1st window = 0.1
+## Fraction in 2nd window = 0.5 
+## 
+##       mu sigma_mu 
+##   0.4454   0.6377
+```
+
+
+---
+## Practical advice on diagnostics
+
+- There are more tests we can use: Raftery and Lewis diagnostic, Heidelberger and Welch, etc.
+
+--
+
+- The Gelman-Rubin approach is quite appealing in using multiple chains
+
+--
+
+- Geweke (and Heidelberger and Welch) sometimes reject even when the trace plots look good.
+
+--
+
+- Overly sensitive to minor departures from stationarity that do not impact inferences.
+
+--
+
+
+
+- Most common method of assessing convergence is visual examination of trace plots.
+
+
+---
+##  Improving
+
+-  more iterations and multiple chains
+
+--
+
+- thinning to reduce correlations and increase ESS
+
+--
+
+- change the proposal distribution `\(q\)`
+
+
+
+---
+## Proposal Distribution
+
+
+
+
+Common choice 
+`$$\textsf{N}(\theta^\star; \theta^{(s)}, \delta^2 \Sigma)$$`
+--
+
+-  rough estimate of `\(\Sigma\)` based on the asymptotic Gaussian approximation `\(\textsf{Cov}(\theta \mid y)\)` and `\(\delta = 2.38/\sqrt{\text{dim}(\theta)}\)` 
+
+--
+  + find the MAP estimate (posterior mode)  `\(\hat{\theta}\)`
+  
+--
+  + take 
+  $$\Sigma =  \left[- 
+  \frac{\partial^2 \log(\cal{L}(\theta)) + \log(\pi(\theta))}
+       {\partial \theta \partial \theta^T} \right]^{-1}_{\theta = \hat{\theta}}$$`
+  
+--
+
+- ignore prior and use inverse of Fisher Information (covariance of MLE)
+---
+### Adaptive Metropolis?
+
+-  MCMC doesn't allow you to use the full history of the chain `\(\theta^{(1)}, \ldots, \theta^{(s)}\)` in constructing the proposal distributions 
+
+--
+
+- violates the Markov assumption
+
+--
+
+- Workaround?  run an initial MCMC for an initial tuning phase (e.g. 1000 samples) and then fix the kernel to depend only on `\(\theta^{(s-1)}\)` and `\(y\)`.
+
+
+--
+
+- more elegant approach -  formal **adaptive Metropolis**
+
+--
+
+  + keep adapting the entire time!
+  
+--
+  + this may mess up convergence !  
+  
+--
+  + need conditions for vanishing adaptation e.g.  that the proposal depends less and less on recent states in the chain - Roberts &amp; Rosenthal (2006) and other conditions
+  
+  
+---
+## Adaptive MCMC
+
+- Haario et al (2001) propose a simple and effective adaptive random walk Metropolis  (RWM)
+
+--
+
+-  run  RWM with a Gaussian proposal for a fixed number of iterations for `\(s &lt; s_0\)`
+
+--
+
+- estimate of covariance at state `\(s\)`
+
+`$$\Sigma^{(s)} = \frac{1}{s}\left(\sum_{i=1}^s \theta^{(i)} {\theta^{(i)}}^T - 
+s \bar{\theta}^{(s)} {\bar{\theta}^{(s)}}^T\right)$$`
+
+--
+
+- proposal for `\(s &gt; s_0\)` with `\(\delta = 2.38/\sqrt{d}\)`
+
+`$$\theta^* \sim \textsf{N}(\theta^{(s)}, \delta^2 (\Sigma^{(s)} + \epsilon I_d))$$`
+
+--
+
+- `\(\epsilon &gt; 0\)` insures covariance is positive definite
+
+--
+
+- if `\(s_0\)` is too large will take longer for adaptation to be seen
+
+---
+## Example again
+
+
+&lt;img src="09-adaptive-metropolis-handout_files/figure-html/unnamed-chunk-6-1.png" style="display: block; margin: auto;" /&gt;
+
+Acceptance rate now around 30-35 % of 10,000 iterations!
+---
+##  Metropolis-Hastings  (MH)
+
+- Metropolis requires that the proposal distribution be symmetric
+
+--
+
+- Hastings (1970)  generalizes Metropolis algorithms to allow asymmetric proposals - aka Metropolis-Hastings or MH  `\(q(\theta^* \mid \theta^{(s)})\)` does not need to be the same as `\(q(\theta^{(s)} \mid \theta^*)\)`
+
+--
+-  propose `\(\theta^*  \mid \theta^{(s)} \sim q(\theta^* \mid \theta^{(s)})\)`
+
+--
+- Acceptance probability 
+
+`$$\min \left\{ 1, \frac{\pi(\theta^*) \cal{L}(\theta^*)/q(\theta^* \mid \theta^{(s)})}
+{\pi(\theta^{(s)}) \cal{L}(\theta^{(s)})/q( \theta^{(s)} \mid \theta^*)} \right\}$$`
+
+--
+
+- adjustment for asymmetry in acceptance ratio is key to ensuring convergence to stationary distribution!
+
+---
+## Special cases
+
+- Metropolis
+
+--
+
+- Independence chain
+
+--
+
+- Gibbs samplers
+
+--
+
+- Metropolis-within-Gibbs
+
+--
+
+- combinations of the above!
+
+---
+## Independence Chain
+
+- suppose we have a good approximation `\(\tilde{\pi}(\theta \mid y)\)`   to  `\(\pi(\theta \mid y)\)`
+
+--
+
+-  Draw `\(\theta^* \sim \tilde{\pi}(\theta \mid y)\)` _without_ conditioning on `\(\theta^{(s)}\)`
+
+--
+
+- acceptance probability 
+
+`$$\min \left\{ 1, \frac{\pi(\theta^*) \cal{L}(\theta^*)/\tilde{\pi}(\theta^* \mid \theta^{(s)})}
+{\pi(\theta^{(s)}) \cal{L}(\theta^{(s)})/\tilde{\pi}( \theta^{(s)} \mid \theta^*)} \right\}$$`
+
+--
+
+- what happens if the approximation is really accurate?
+
+--
+
+- probability of acceptance is `\(\approx 1\)`
+
+--
+
+- Important caveat for convergence:  tails of the posterior should be at least as heavy as the tails of the posterior  (Tweedie 1994)
+
+--
+
+-  Replace Gaussian by a Student-t with low degrees of freedom
+
+--
+
+- transformations of `\(\theta\)`
+
+---
+## Block Updates &amp; Gibbs
+
+So far all algorithms update all of the parameters simultaneously
+
+--
+
+- convenient to break problems in to `\(K\)` blocks and update them separately
+
+--
+
+- `\(\theta = (\theta_{[1]}, \ldots, \theta_{[K]}) = (\theta_1, \ldots, \theta_p)\)`
+
+
+
+--
+
+At iteration `\(s\)`, for `\(k = 1, \ldots, K\)` Cycle thru blocks: (fixed order or random order)
+   + propose `\(\theta^*_{[k]} \sim q_k(\theta_{[k]} \mid \theta_{[&lt;k]}^{(s)}, \theta_{[&gt;k]}^{(s-1)})\)`
+   
+   + set `\(\theta_{[k]}^{(s)} = \theta^*_{[k]}\)` with probability
+   
+`$$\min \left\{ 1, \frac{
+   \pi(\theta_{[&lt;k]}^{(s)},\theta_{[k]}^*, 
+        \theta_{[&gt;k]}^{(s-1)})
+   \cal{L}(\theta_{[&lt;k]}^{(s)},\theta_{[k]}^*,
+           \theta_{[&gt;k]}^{(s-1)})/
+   q_k(\theta_{[k]}^* \mid \theta_{[&lt;k]}^{(s)},    
+       \theta_{[&gt;k]}^{(s-1)})}
+  {\pi(\theta_{[&lt;k]}^{(s)},\theta_{[k]}^{(s-1)}, 
+        \theta_{[&gt;k]}^{(s-1)})
+   \cal{L}(\theta_{[&lt;k]}^{(s)},\theta_{[k]}^{(s-1)},
+           \theta_{[&gt;k]}^{(s-1)})/
+   q_k(\theta_{[k]}^{(s-1)} \mid \theta_{[&lt;k]}^{(s)},    
+       \theta_{[&gt;k]}^{(s-1)})} \right\}$$`
+---
+## Gibbs Sampler
+
+special case of MH
+
+--
+
+- proposal distribution `\(q_k\)` for the `\(k\)`th block is the **full conditional** distribution for `\(\theta_{[k]}\)`
+
+`$$\pi(\theta_{[k]} \mid \theta_{[-k]}, y) = \frac{\pi(\theta_{[k]} , \theta_{[-k]} \mid y)}{ \pi(\theta_{[-k]} \mid y))} \propto \pi(\theta_{[k]} , \theta_{[-k]} \mid y)$$`
+--
+
+`$$\pi(\theta_{[k]} \mid \theta_{[-k]}, y)  \propto \cal{L}(\theta_{[k]} , \theta_{[-k]})\pi(\theta_{[k]} , \theta_{[-k]})$$`
+--
+
+- acceptance probability is always 1!
+
+--
+
+- even though joint distribution is messy, full conditionals may be (conditionally) conjugate and easy to sample from!
+
+---
+## Comments
+
+- can use Gibbs steps and Metropolis Hastings steps together
+
+--
+
+- Use block sizes in Gibbs that are as big as possible to improve  mixing (proven faster convergence)
+
+--
+
+- combine with adaptive Metropolis 
+
+--
+
+- Adaptive Independence Metropolis Hastings  (learn a mixture)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

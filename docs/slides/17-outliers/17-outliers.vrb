@@ -1,0 +1,16 @@
+\frametitle{Specifying which Parameters to Save}
+The parameters to be monitored and returned to R are specified with
+the variable {\tt parameters}
+
+\begin{verbatim}
+parameters = c("beta0", "beta1", "sigma",
+               "mu34", "y34", "lambda[39]")
+\end{verbatim}
+\begin{itemize}
+\item All of the above (except lambda) are calculated from the other
+  parameters. (See R-code for definitions of these parameters.) \pause
+\item {\tt mu34} and {\tt y34} are the mean functions and predictions for a man with a 34 in waist.
+\item {\tt lambda[39]} saves only the 39th case of $\lambda$ \pause
+\item  To save a whole vector (for example all lambdas, just give the
+  vector name) \pause
+\end{itemize}

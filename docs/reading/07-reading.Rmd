@@ -1,0 +1,29 @@
+---
+title: "Lecture 7: Introduction to Hierarchical Models"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Readings
+
+- [A First Course in Bayesian Statistical Methods](https://find.library.duke.edu/catalog/DUKE004968562) by Peter D. Hoff.:
+  + Section 8.2: Comparing multiple groups
+  + Section 8.3: The hierarchical normal model
+
+
+- [Bayesian Data Analysis (Third Edition)](https://find.library.duke.edu/catalog/DUKE006588051?utm_campaign=bento&utm_content=bento_result_link&utm_source=library.duke.edu&utm_medium=referral) by Andrew Gelman, John Carlin, Hal Stern, David Dunson, Aki Vehtari, and Donald Rubin.:
+  + Section 5.2: Exchangeability and setting up hierarchical models
+  + Section 5.3: Fully Bayesian analysis of conjugate hierarchical models
+  + Section 5.4: Estimating exchangeable parameters for a normal model
+  + Section 5.7: Weakly informative priors for hierarchical variance parameters
+  + Section 11.2  Metropolis and Metropolis-Hastings algorithms  
+  
+- [The Bayesian Choice (Second Edition)](https://link-springer-com.proxy.lib.duke.edu/content/pdf/10.1007%2F0-387-71599-1.pdf)    by Christian Robert
+
+    

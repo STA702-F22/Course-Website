@@ -6,7 +6,4 @@
 *key.R
 *.key
 .rdb
-docs/*
-docs/*/*
-docs
 website.Rproj

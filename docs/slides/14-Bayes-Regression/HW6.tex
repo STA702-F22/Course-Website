@@ -1,0 +1,62 @@
+\documentclass{article}
+
+
+\usepackage{graphicx, fullpage}
+\usepackage{amsmath,amssymb,array,comment,eucal}
+\input{../macros}
+\usepackage{verbatim}
+\begin{document}
+\begin{center}
+  STA 721 HW 6
+\end{center}
+
+
+\begin{enumerate}
+\item If $\Y \sim \N(\X\b, \sigma^2 \I_n)$, show that the likelihood
+  function for $\b, \phi$ where $\phi = 1/\sigma^2$ can be written as 
+ $$\cL(\beta, \phi) \propto \phi^{n/2} e^{- \phi \frac{\SSE}{2}}
+e^{-\frac{\phi}{2} (\b - \bhat)^T(\X^T\X) (\b - \bhat)}.$$   Do you
+need to consider a Jacobian term for a change of variables?  (explain)
+
+\item Consider the prior data dependent prior $\b \mid \phi \sim N(\bhat, \sigma^2 n
+  (\X^T\X)^{-1})$ and   $\phi \sim G((n + 2)/(2n), \SSE/(2n)$
+where $\bhat$ is the MLE of $\b$, $\X$ is $n \times p$ and rank $p$
+and $\SSE$ is the residual sum of squares.
+  \begin{enumerate}
+  \item  Find the prior mean of $\sigma$ and $\sigma^2$.  (For those
+    who like abstraction, find $\E(\sigma^j)$ - when will this exist?)
+    Please do not use the inverse gamma distribution, but use the
+    distribution of $\phi$.
+  \item  Using the likelihood above, find the conditional posterior distribution of $\b$ given
+    $\phi$ and the marginal posterior distribution for $\phi$,
+    simplifying as much as possible.  What
+    is the posterior mean for $\b$ and $\sigma^2$?   
+  \item Find the marginal posterior distribution of $\beta_j$.
+  \item Suppose that $\beta_j \mid \Y, \phi$ are independent (and
+    uncorrelated).  What does that imply about $\X$?  Will the
+    $\beta_j$ be independent after marginalizing over $\phi$?  Are
+    they uncorrelated?  (show your work)
+  \end{enumerate}
+\item Consider the simple linear regression model to predict swimming
+  times for a 50 yard practice as a function of time during the season
+  (in weeks).  Suppose that the only information that you are given is
+  that you expect 95\% of the swimming times to be between 20 and 24
+  seconds/50 yards and that the athletes generally improve ovr time.
+  \begin{enumerate}
+  \item Under a conjugate normal-gamma prior, find the prior
+    predictive distribution for swimming times for a given week?
+  \item 
+  Construct an informative normal-gamma prior for parameters in the
+  simple linear  regression that satisfies the above probability  statement  and
+  describe how you arrived at your choice.
+
+  \item Simulate from the predictive distribution of swimming
+  times for 6 weeks and construct a plot of the prediction intervals
+  over time for each week.   (you may need to iterate you hyper-parameter
+  selection in order for your prior to agree with the information
+  above).  Add exact intervals based on the Student $t$ prior
+  predictive distribution.  
+   \end{enumerate}
+\end{enumerate}
+
+\end{document}

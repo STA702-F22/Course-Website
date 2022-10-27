@@ -1,0 +1,386 @@
+\documentclass[]{beamer}
+%\documentclass[handout]{beamer}
+% ***************************************************************
+% for handout, change only this...
+%   \documentclass[twocolumn]{article}
+%   \usepackage{beamerarticle}
+%   \setlength{\textwidth}{7.5in}
+%   \setlength{\textheight}{9.8in}
+%   \setlength{\topmargin}{-1in}
+%   \setlength{\oddsidemargin}{-.52in}
+%   \setlength{\evensidemargin}{-.52in}
+
+%\usepackage{beamerprosper}
+%\usetheme{Warsaw}
+%\usecolortheme{orchid}
+
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,array,comment,eucal}
+\input{macros}
+\title{BMA \&  Distributions }
+ 
+\author{Hoff Chapter 9, Liang et al 2008, Hoeting et al (1999), Clyde \&
+ George (2004)}
+\date{\today}
+%\Logo(-1.9,7.3){\includegraphics[width=.5in]{../eps/duke}}
+% Optional: text to put in the bottom of each slide.
+% By default, the title of the talk will be placed there.
+%\slideCaption{\textit{October 28, 2005 }}
+
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+% make the title slide
+\maketitle
+
+
+<<echo=FALSE>>=
+library(BAS)
+@
+
+\begin{frame}[fragile]
+\frametitle{USair Data}
+<<>>=
+library(BAS)
+data(usair, package="HH")
+poll.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
+                             log(popn) + wind +
+                             precip + raindays,
+                  data=usair,
+                  prior="g-prior",
+                  alpha=nrow(usair), # g = n
+                  n.models=2^6,
+                  modelprior = uniform(),
+                  method="deterministic")
+@
+
+% Marginal Posterior Inclusion Probabilities:
+% Intercept  temp   log(mfgfirms)  log(popn)   wind  precip  raindays
+%   1.0000   0.9755       0.7190     0.2757  0.7654  0.5994   0.3104
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Summary}
+
+\begin{small}
+<<summary>>=
+summary(poll.bma)
+@
+\end{small}
+
+\end{frame}
+\begin{frame}[fragile]\frametitle{Plots}
+
+\centering
+<<coef_plot,out.width='75%',out.height='75%',fig.height=5,fig.width=8, echo=TRUE>>=
+ beta = coef(poll.bma)
+ par(mfrow=c(2,3));  plot(beta, subset=2:7,ask=F)
+@
+\end{frame}
+
+\begin{frame}\frametitle{Posterior Distribution  with Uniform Prior on Model Space}
+
+
+<<out.width='4.5in',out.height='3in', fig.height=6,fig.width=8>>=
+image(poll.bma, rotate=FALSE)
+@
+
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Posterior Distribution  with BB(1,1) Prior on Model Space}
+
+
+<<>>=
+poll.bb.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
+                                log(popn) + wind +
+                                precip + raindays,
+                     data=usair,
+                     prior="g-prior",
+                     alpha=nrow(usair),
+                     n.models=2^6,  #enumerate
+                     modelprior=beta.binomial(1,1))
+@
+
+\end{frame}
+
+\begin{frame}\frametitle{BB(1,1) Prior on Model Space}
+
+
+<<out.width='4.5in',out.height='3in', fig.height=6,fig.width=8>>=
+image(poll.bb.bma, rotate=FALSE)
+@
+\end{frame}
+
+
+\begin{frame} \frametitle{Bartlett's Paradox}
+
+
+The Bayes factor for comparing $\g$ to the null
+model:
+$$
+ BF(\g : \g0) =    (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R_{\g}^2))^{-(n-1)/2}
+$$
+\pause
+\begin{itemize}
+\item For fixed sample size $n$ and $R_{\g}^2$, consider taking values of  $g$ that
+  go to infinity  \pause
+\item Increasing vagueness in prior \pause
+\item What happens to BF as $g \to \infty$? \pause
+\item why is this a paradox?
+
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Information Paradox}
+
+The Bayes factor for comparing $\g$ to the null
+model:
+$$
+ BF(\g : \g_0) =    (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R_{\g}^2))^{-(n-1)/2}
+$$
+\pause
+\begin{itemize}
+\item Let $g$ be a fixed constant and take $n$ fixed. \pause
+\item Let $F = \frac{R_{\g}^2/\pg}{(1 - R_{\g}^2)/(n - 1 - \pg)}$ \pause
+\item As $R^2_{\g} \to 1$, $F \to \infty$ LR test would reject $\g_0$
+  where $F$ is the usual $F$ statistic for  comparing model $\g$ to
+  $\g_0$ \pause
+\item BF converges to a fixed constant $(1+g)^{n - 1 -\pg/2}$  (does not go
+  to infinity 
+\end{itemize}
+
+``Information Inconsistency''  see Liang et al JASA 2008
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Mixtures of $g$ priors \& Information consistency}
+
+
+\begin{itemize}
+\item Need $BF \to \infty$ if $\R_{\g}^2 \to 1$
+\item Put a prior on $g$
+$$BF(\g : \g_0) =  \frac{ C \int (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R_{\g}^2))^{-(n-1)/2} \pi(g) dg}{C}$$
+\item interchange limit and integration as $R^2 \to 1$
+want
+$$ \E_g[(1 +
+g)^{(n-1-\pg)/2}]$$  to diverge
+
+\item hyper-g prior (Liang et al JASA 2008)
+$$p(g) = \frac{a-2}{2}(1 + g)^{-a/2}$$ or $g/(1+g) \sim Beta(1, (a-2)/2)$
+
+\item prior expectation converges if $a > n + 1 - \pg$
+
+\item Consider minimal model $\pg = 1$ and $n = 3$ (can estimate intercept, one coefficient, and  $\sigma^2$, then $a > 3$ integral exists
+
+\item For $2 < a \le 3$ integral diverges and resolves the information paradox!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Mixtures of $g$ priors \& Information consistency}
+
+Need $BF \to \infty$ if $\R^2 \to 1$  $\Leftrightarrow$ $\E_g[(1 +
+g)^{(n-1-\pg)/2}]$ diverges  (proof in Liang et al)
+\pause
+\begin{itemize}
+
+\item hyper-g prior (Liang et al JASA 2008)
+$$p(g) = \frac{a-2}{2}(1 + g)^{-a/2}$$ or $g/(1+g) \sim Beta(1, (a-2)/2)$
+need $2 < a \le 3$
+\pause
+\item Jeffreys prior on $g$ corresponds to $a = 2$ (improper) \pause
+\item Hyper-g/n  $(g/n)(1 + g/n) \sim (Beta(1, (a-2)/2)$ \pause
+\item Zellner-Siow Cauchy prior $1/g \sim G(1/2, n/2)$ \pause
+\item robust prior (Bayarri et al Annals of Statistics 2012 \pause
+\item Intrinsic prior (Womack et al  JASA 2015)
+\end{itemize}
+
+ All have prior tails for $\b$  that behave like a Cauchy distribution
+ and (the latter 4) marginal  likelihoods that can be computed using special hypergeometric
+ functions   ($_2F_1$, Appell $F_1$)
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Computation}
+
+If $p > 35$  enumeration is difficult
+
+  \begin{itemize}
+  \item Gibbs sampler or Random-Walk algorithm on $\g$ \pause
+  \item slow convergence/poor mixing with high correlations \pause
+  \item Metropolis Hastings algorithms more flexibility \pause
+        (swap pairs of variables)
+
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}[fragile] \frametitle{Diabetes Example from Hoff $p=64$ }
+
+<<hoff, results='verbatim'>>=
+set.seed(8675309)
+source("yX.diabetes.train.txt")
+diabetes.train = as.data.frame(diabetes.train)
+
+source("yX.diabetes.test.txt")
+diabetes.test = as.data.frame(diabetes.test)
+colnames(diabetes.test)[1] = "y"
+
+str(diabetes.train)
+@
+
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{MCMC with BAS}
+<<MCMC, cache=TRUE, results="verbatim">>=
+diabetes.bas = bas.lm(y ~ ., data=diabetes.train,
+                      prior = "JZS",
+                      method="MCMC",
+                      n.models = 10000,
+                      MCMC.iterations=150000,
+                      thin = 10,
+                      initprobs="eplogp",
+                      force.heredity=FALSE)
+
+system.time(bas.lm(y ~ ., data=diabetes.train, 
+                   prior = "JZS",
+                   method="MCMC", n.models = 10000,
+                   MCMC.iterations=150000,
+                   thin = 10,  initprobs="eplogp",
+                   force.heredity=FALSE))
+
+@
+
+Time is in seconds
+
+\end{frame}
+
+
+
+\begin{frame}[fragile] \frametitle{Diagnostics}
+
+<<diagnostics, fig.height=5, fig.width=5, out.width='.4\\linewidth'>>=
+diagnostics(diabetes.bas, type="pip")
+
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Prediction}
+
+<<predictions,cache=TRUE,results="verbatim">>=
+pred.bas = predict(diabetes.bas,
+                   newdata=diabetes.test,
+                   estimator="BMA",
+                   se=TRUE)
+mean((pred.bas$fit- diabetes.test$y)^2)
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{95\% prediction intervals}
+<<fig.height=3.5, results="hide">>=
+ci.bas = confint(pred.bas); plot(ci.bas)
+points(diabetes.test$y, col=2, pch=15)
+@
+
+<<coverage, echo=FALSE>>=
+coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+@
+
+coverage is  $\Sexpr{round(100*coverage, 2)}$
+
+
+
+\end{frame}
+
+\begin{frame}\frametitle{Selection and Prediction}
+
+\begin{itemize}
+  \item  BMA  - optimal for squared error loss Bayes
+  \item  HPM: Highest Posterior Probability model (not optimal for prediction) but for selection
+
+\item MPM: Median Probabilty model (select model where PIP > 0.5)
+ (optimal under certain conditions; nested models)
+
+\item BPM: Best Probability Model - Model closest to BMA under loss
+      (usually includes more predictors than HPM or MPM)
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Selection}
+<<>>=
+pred.bas = predict(diabetes.bas,
+                   newdata=diabetes.test,
+                   estimator="BPM",
+                   se=TRUE)
+#MSE
+mean((pred.bas$fit- diabetes.test$y)^2)
+#Coverage
+ci.bas = confint(pred.bas)
+mean(diabetes.test$y > ci.bas[,1] &
+     diabetes.test$y < ci.bas[,2])
+@
+
+\end{frame}
+
+
+\begin{frame}\frametitle{Alternatives to MCMC}
+
+
+\begin{itemize}
+\item "Stochastic Search" (no guarantee samples represent posterior) \pause
+\item Variational, EM, etc to find modal model \pause
+\item in BMA all variables are included, but coefficients are
+   shrunk to 0; alternative is to use shrinkage methods without point mass at zero \pause
+  \item
+  \item If $p > n$, can use a generalized inverse, but requires care for prior on $\g$!
+\end{itemize}
+
+\bigskip Model averaging versus Model Selection  -- what are objectives?
+
+
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Effect Estimation}
+  \begin{itemize}
+  \item  Coefficients in each model are adjusted for other variables
+    in the model
+\item OLS:  leave out a predictor with a non-zero coefficient then
+  estimates are biased!
+\item Model Selection in the presence of high correlation, may leave
+  out "redundant" variables;
+\item improved MSE for prediction (Bias-variance tradeoff)
+
+\item in BMA all variables are included, but coefficients are
+   shrunk to 0
+\item Care needed for "causal" questions   and confounder adjustment!    With confounding, should not use plain BMA.  Need to change prior to
+  include potential confounders  (advanced topic)
+
+  \end{itemize}
+
+
+\end{frame}
+
+
+
+
+
+\end{document}
