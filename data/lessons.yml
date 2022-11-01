@@ -161,7 +161,9 @@ lessons:
     
   - week: "WEEK 10"
     date: "Tues, Nov 1"
-    title: "Bayesian Variable Selection"
+    title: "Bayesian Variable Selection and Model Averaging"
+    slides: "16-bma/16-bma.pdf"
+    slidespdf: "16-bma/16-bma-handout.pdf"
 
   - date: "Thur, Nov 3"
   
