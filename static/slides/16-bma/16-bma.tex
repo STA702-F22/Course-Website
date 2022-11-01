@@ -411,7 +411,7 @@ logmarg                  NA 3.14406 2.0313422 1.8339656 1.8182487 1.6192271
 
 
 \end{frame}
-\end{document}
+
 
 
 \begin{frame}[fragile] \frametitle{Diabetes Example from Hoff $p=64$ }
@@ -503,7 +503,7 @@ logmarg                  NA 3.14406 2.0313422 1.8339656 1.8182487 1.6192271
 
 \end{frame}
 
-\end{document}
+
 
 \begin{frame}[fragile]\frametitle{MCMC with BAS}
 \begin{Schunk}
@@ -526,7 +526,7 @@ logmarg                  NA 3.14406 2.0313422 1.8339656 1.8182487 1.6192271
 \end{Sinput}
 \begin{Soutput}
    user  system elapsed 
-  7.006   0.309   7.336 
+  6.464   0.261   6.729 
 \end{Soutput}
 \begin{Sinput}
 > 
@@ -564,27 +564,34 @@ Time is in seconds
 \begin{Soutput}
 [1] 0.4552798
 \end{Soutput}
+\begin{Sinput}
+> ci.bas = confint(pred.bas);
+> coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+> coverage
+\end{Sinput}
+\begin{Soutput}
+[1] 1
+\end{Soutput}
 \end{Schunk}
 
 \end{frame}
 
 
 \begin{frame}[fragile]\frametitle{95\% prediction intervals}
+
+\begin{small}
 \begin{Schunk}
 \begin{Sinput}
-> ci.bas = confint(pred.bas); plot(ci.bas)
+> plot(ci.bas); points(diabetes.test$y, col=2, pch=15)
 \end{Sinput}
 \begin{Soutput}
 NULL
 \end{Soutput}
-\begin{Sinput}
-> points(diabetes.test$y, col=2, pch=15)
-\end{Sinput}
 \end{Schunk}
 \includegraphics{16-bma-011}
+\end{small}
 
 
-coverage is  $100$
 
 
 

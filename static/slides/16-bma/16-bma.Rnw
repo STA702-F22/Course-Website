@@ -380,7 +380,7 @@ image(poll.bb.bma, rotate=FALSE)
 
 
 \end{frame}
-\end{document}
+
 
 
 \begin{frame}[fragile] \frametitle{Diabetes Example from Hoff $p=64$ }
@@ -402,7 +402,7 @@ str(diabetes.train)
 
 \end{frame}
 
-\end{document}
+
 
 \begin{frame}[fragile]\frametitle{MCMC with BAS}
 <<MCMC, cache=TRUE>>=
@@ -448,22 +448,24 @@ pred.bas = predict(diabetes.bas,
                    estimator="BMA",
                    se=TRUE)
 mean((pred.bas$fit- diabetes.test$y)^2)
+
+ci.bas = confint(pred.bas);
+coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+coverage
 @
 
 \end{frame}
 
 
 \begin{frame}[fragile]\frametitle{95\% prediction intervals}
-<<fig.height=3.5, fig=TRUE>>=
-ci.bas = confint(pred.bas); plot(ci.bas)
-points(diabetes.test$y, col=2, pch=15)
-@
 
-<<coverage, echo=FALSE>>=
-coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+\begin{small}
+<<fig.height=3, fig.width=5, out.width=3in, fig=TRUE>>=
+plot(ci.bas); points(diabetes.test$y, col=2, pch=15)
 @
+\end{small}
 
-coverage is  $\Sexpr{round(100*coverage, 2)}$
+
 
 
 

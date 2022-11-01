@@ -164,11 +164,16 @@ lessons:
     title: "Bayesian Variable Selection and Model Averaging"
     slides: "16-bma/16-bma.pdf"
     slidespdf: "16-bma/16-bma-handout.pdf"
+    hw: "hw-07.html"
 
   - date: "Thur, Nov 3"
+    title: "Outliers"
   
   - date: "Friday, Nov 4"
-    title: "Lab 8"
+    title: "Lab: Q&A with HW 7"
+    
+
+
 
 
 
