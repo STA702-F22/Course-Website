@@ -17,7 +17,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,array,comment,eucal}
 \input{macros}
-\title{BMA \&  Distributions }
+\title{Bayesian Variable Selection \&  Bayesian Model Averaging}
  
 \author{Hoff Chapter 9, Liang et al 2008, Hoeting et al (1999), Clyde \&
  George (2004)}
@@ -29,19 +29,38 @@
 
 \begin{document}
 \SweaveOpts{concordance=TRUE}
+
+%\SweaveOpts{prefix.string=tmpout/t, split=TRUE, ae=FALSE, height=5,width=6}
+%\SweaveOpts{concordance=TRUE}
 %\SweaveOpts{concordance=TRUE}
 % make the title slide
 \maketitle
 
 
-<<echo=FALSE>>=
-library(BAS)
-@
 
 
 
 
-\begin{frame} \frametitle{Bartlett's Paradox}
+
+
+\begin{frame}\frametitle{Prior \& Posterior Recap}
+\begin{align*}
+\Y \mid \alpha, \bg, \phi, \g & \sim \N(\one \alpha + \Xg \bg, \I_n/ \phi) \\
+p(\alpha, \phi) \propto 1/\phi & \quad  \bg \mid \g, \phi \sim \N(0, \frac{g}{\phi} (\Xg^T\Xg)^{-1}) \quad \g \sim p(\g)\\
+\alpha \mid \phi, y & \sim \textsf{N}\left(\bar{y}, \frac{1}{n \phi}\right)\\
+\boldsymbol{\beta}_{\gamma} \mid \gamma, \phi, g, y &\sim \textsf{N}\left( \frac{g}{1 + g} \hat{\boldsymbol{\beta}}_{\gamma}, \frac{g}{1 + g} \frac{1}{\phi} \left[{\boldsymbol{X}_{\gamma}}^T \boldsymbol{X}_{\gamma} \right]^{-1}  \right) \\
+\phi \mid \gamma, y & \sim \textsf{Gamma}\left(\frac{n-1}{2}, \frac{\textsf{TotalSS} - \frac{g}{1+g} \textsf{RegSS}}{2}\right) \\
+p(\g \mid \Y ) & = \frac{BF(\g: \g0) p(\g)/p(\g0)} {\sum_{\g^\prime \in \Gamma} BF(\g^\prime : \g0) p(\g^\prime)/p(\g0)} \\
+ BF(\g : \g0)  & =    (1 + g)^{(n - 1 - \pg)/2} (1 + g(1 - R_{\g}^2))^{-(n-1)/2}
+\end{align*}
+\end{frame}
+
+
+
+
+
+
+\begin{frame} \frametitle{Choice of $g$: Bartlett's Paradox}
 
 
 The Bayes factor for comparing $\g$ to the null
@@ -55,7 +74,7 @@ $$
   go to infinity  \pause
 \item Increasing vagueness in prior \pause
 \item What happens to BF as $g \to \infty$? \pause
-\item why is this a paradox?
+\item Why is this a paradox?
 
 \end{itemize}
 \end{frame}
@@ -137,25 +156,103 @@ need $2 < a \le 3$
 \end{frame}
 
 
+\begin{frame}[fragile]
+\frametitle{USair Data}
+<<>>=
+library(BAS)
+data(usair, package="HH")
+poll.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
+                             log(popn) + wind +
+                             precip + raindays,
+                  data=usair,
+                  prior="JZS",  #Jeffrey-Zellner-Siow
+                  alpha=nrow(usair), # n
+                  n.models=2^6,
+                  modelprior = uniform(),
+                  method="deterministic")
+@
 
-\begin{frame}\frametitle{Computation}
-
-If $p > 35$  enumeration is difficult
-
-  \begin{itemize}
-  \item Gibbs sampler or Random-Walk algorithm on $\g$ \pause
-  \item slow convergence/poor mixing with high correlations \pause
-  \item Metropolis Hastings algorithms more flexibility \pause
-        (swap pairs of variables)
-
-\end{itemize}
+% Marginal Posterior Inclusion Probabilities:
+% Intercept  temp   log(mfgfirms)  log(popn)   wind  precip  raindays
+%   1.0000   0.9755       0.7190     0.2757  0.7654  0.5994   0.3104
 
 \end{frame}
 
 
-\begin{frame}[fragile] \frametitle{Diabetes Example from Hoff $p=64$ }
+\begin{frame}[fragile]\frametitle{Summary}
 
-<<hoff>>=
+\begin{small}
+<<summary>>=
+summary(poll.bma)
+@
+\end{small}
+
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Plots}
+
+\centering
+<<coef_plot,out.width='75%',out.height='75%',fig.height=5,fig.width=8, echo=TRUE, fig = TRUE>>=
+ beta = coef(poll.bma)
+ par(mfrow=c(2,3));  plot(beta, subset=2:7,ask=F)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]\frametitle{Posterior Distribution  with Uniform Prior on Model Space}
+
+
+<<out.width='4.5in',out.height='3in', fig.height=6,fig.width=8,fig=TRUE>>=
+image(poll.bma, rotate=FALSE)
+@
+
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]\frametitle{Posterior Distribution  with BB(1,1) Prior on Model Space}
+
+
+<<>>=
+poll.bb.bma = bas.lm(log(SO2) ~ temp + log(mfgfirms) +
+                                log(popn) + wind +
+                                precip + raindays,
+                     data=usair,
+                     prior="JZS",
+                     alpha=nrow(usair),
+                     n.models=2^6,  #enumerate
+                     modelprior=beta.binomial(1,1))
+@
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{BB(1,1) Prior on Model Space}
+
+
+<<out.width='4.5in',out.height='3in', fig.height=6,fig.width=8, fig=TRUE>>=
+image(poll.bb.bma, rotate=FALSE)
+@
+\end{frame}
+
+
+\begin{frame}\frametitle{Summary}
+
+\begin{itemize}
+  \item Choice of prior on $\bg$ 
+  \item g-priors or mixtures of $g$ (sensitivity)
+  \item priors on the models (sensitivity)
+  \item posterior summaries - select a model or "average" over all models
+\end{itemize}
+
+
+\end{frame}
+
+
+
+\begin{frame}[fragile] \frametitle{Diabetes Example from Hoff $p=64$ }
+<<>>=
 set.seed(8675309)
 source("yX.diabetes.train.txt")
 diabetes.train = as.data.frame(diabetes.train)
@@ -165,7 +262,10 @@ diabetes.test = as.data.frame(diabetes.test)
 colnames(diabetes.test)[1] = "y"
 
 str(diabetes.train)
+
 @
+
+
 
 
 \end{frame}
@@ -174,6 +274,7 @@ str(diabetes.train)
 
 \begin{frame}[fragile]\frametitle{MCMC with BAS}
 <<MCMC, cache=TRUE>>=
+library(BAS)
 diabetes.bas = bas.lm(y ~ ., data=diabetes.train,
                       prior = "JZS",
                       method="MCMC",
@@ -215,22 +316,24 @@ pred.bas = predict(diabetes.bas,
                    estimator="BMA",
                    se=TRUE)
 mean((pred.bas$fit- diabetes.test$y)^2)
+
+ci.bas = confint(pred.bas);
+coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+coverage
 @
 
 \end{frame}
 
 
 \begin{frame}[fragile]\frametitle{95\% prediction intervals}
-<<fig.height=3.5, fig=TRUE>>=
-ci.bas = confint(pred.bas); plot(ci.bas)
-points(diabetes.test$y, col=2, pch=15)
-@
 
-<<coverage, echo=FALSE>>=
-coverage = mean(diabetes.test$y > ci.bas[,1] & diabetes.test$y < ci.bas[,2])
+\begin{small}
+<<fig.height=3, fig.width=5, out.width=3in, fig=TRUE>>=
+plot(ci.bas); points(diabetes.test$y, col=2, pch=15)
 @
+\end{small}
 
-coverage is  $\Sexpr{round(100*coverage, 2)}$
+
 
 
 
@@ -306,7 +409,6 @@ mean(diabetes.test$y > ci.bas[,1] &
 
 
 \end{frame}
-
 
 
 

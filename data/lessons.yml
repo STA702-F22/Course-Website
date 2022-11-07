@@ -161,18 +161,44 @@ lessons:
     
   - week: "WEEK 10"
     date: "Tues, Nov 1"
-    title: "Bayesian Variable Selection and Model Averaging"
+    title: "Lec 16: Bayesian Variable Selection and Model Averaging"
     slides: "16-bma/16-bma.pdf"
     slidespdf: "16-bma/16-bma-handout.pdf"
     hw: "hw-07.html"
 
   - date: "Thur, Nov 3"
-    title: "Outliers"
-  
+    title: "Lec 17: Bayesian Variable Selection and Model Averaging"
+    slides: "17-bma-part2/17-bma.pdf"
+    slidespdf: "17-bma-part2/17-bma-handout.pdf"
+
   - date: "Friday, Nov 4"
     title: "Lab: Q&A with HW 7"
     
+  - week: "Week 11"
+    date: "Tues, Nov 8"
+    hw: 
+    title:  "Lec 18: Outliers"
+    
+  - date:  "Thurs, Nov 10"
+    title:  "Lec 19: Missing Data"
+  
+  - date:  "Friday, Nov 11"
+    title: "Lab 8"
 
+  - week: "Week 12"
+    date: "Tues, Nov 15"
+    title:  "Midterm II"
+    
+  - date: "Thurs, Nov 17"
+  
+  - date: "Friday, Nov 18"
+    title: ""  
+
+    
+  - week:  "Week 12"
+  
+  
+  - week:  "Week 13"
 
 
 
