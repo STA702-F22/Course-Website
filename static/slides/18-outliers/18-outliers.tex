@@ -1,5 +1,5 @@
-\documentclass[]{beamer}
-%\documentclass[handout]{beamer}
+%\documentclass[]{beamer}
+\documentclass[handout]{beamer}
 %\usepackage[dvips]{color}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,array,comment,eucal}
@@ -9,7 +9,7 @@
 
 \title{Outliers \& Robust Bayesian  Regression}
 
-\author{STA 601 Duke University}
+\author{STA 702 Duke University}
 
 \subtitle{Readings: Hoff Chapter 9, West JRSSB 1984, F{\'{u}}quene,
     P{\'e}rez \& Pericchi 2015}
@@ -19,8 +19,29 @@
 \date{\today}
 \logo{duke.eps}
 
+\usepackage{Sweave}
 \begin{document}
+\input{18-outliers-concordance}
 \maketitle
+
+% -------
+\begin{frame}{Body Fat Data: Intervals w/ All Data}
+Response \% Body Fat and Predictor Waist Circumference
+
+  \begin{tabular}{cc}
+{\includegraphics[height=2.in,angle=270]{pred}} &
+{\includegraphics[height=2.in,angle=270]{pred-sub}}
+  \end{tabular}
+
+  Which analysis do we use?  with Case 39 or not -- or something different?
+
+
+\end{frame}  \begin{frame} \frametitle{Cook's Distance}
+
+{\includegraphics[height=3.5in]{CooksD}}
+
+\end{frame}
+
 
   \begin{frame} \frametitle{Outliers in Regression}
     \begin{itemize}
@@ -40,23 +61,6 @@ outliers at the same time. \pause
 
 
 
-% -------
-\begin{frame}{Body Fat Data: Intervals w/ All Data}
-Response \% Body Fat and Predictor Waist Circumference
-
-  \begin{tabular}{cc}
-{\includegraphics[height=2.in,angle=270]{pred}} &
-{\includegraphics[height=2.in,angle=270]{pred-sub}}
-  \end{tabular}
-
-  Which analysis do we use?  with Case 39 or not -- or something different?
-
-
-\end{frame}  \begin{frame} \frametitle{Cook's Distance}
-
-{\includegraphics[height=3.5in]{CooksD}}
-
-\end{frame}
 
 \begin{frame} \frametitle{Options for Handling Influential Cases}
 \begin{itemize}
