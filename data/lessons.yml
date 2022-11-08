@@ -162,12 +162,14 @@ lessons:
   - week: "WEEK 10"
     date: "Tues, Nov 1"
     title: "Lec 16: Bayesian Variable Selection and Model Averaging"
+    reading: "16-reading.html"
     slides: "16-bma/16-bma.pdf"
     slidespdf: "16-bma/16-bma-handout.pdf"
     hw: "hw-07.html"
 
   - date: "Thur, Nov 3"
     title: "Lec 17: Bayesian Variable Selection and Model Averaging"
+    reading: "17-reading.html"
     slides: "17-bma-part2/17-bma.pdf"
     slidespdf: "17-bma-part2/17-bma-handout.pdf"
 
@@ -176,11 +178,15 @@ lessons:
     
   - week: "Week 11"
     date: "Tues, Nov 8"
-    hw: 
+    hw:  "hw-08.html"
     title:  "Lec 18: Outliers"
+    reading: "18-outliers-reading.html"
+    slides: "18-outliers/18-outliers.pdf"
+    slidespdf: "18-outliers/18-outliers-handout.pdf"
     
   - date:  "Thurs, Nov 10"
     title:  "Lec 19: Missing Data"
+    reading: "19-reading.html"
   
   - date:  "Friday, Nov 11"
     title: "Lab 8"

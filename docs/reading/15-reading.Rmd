@@ -1,5 +1,5 @@
 ---
-title: "Lecture 15: Bayesian Model Averaging"
+title: "Lecture 15: Bayesian Model Choice"
 output: 
   html_document:
     theme: yeti
