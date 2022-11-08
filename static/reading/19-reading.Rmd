@@ -1,5 +1,5 @@
 ---
-title: "Lecture 17: Outliers and Robust Bayesian Regression"
+title: "Lecture 19: Missing Data"
 output: 
   html_document:
     theme: yeti
