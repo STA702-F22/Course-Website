@@ -178,11 +178,11 @@ lessons:
     
   - week: "Week 11"
     date: "Tues, Nov 8"
-    hw:  "hw-08.html"
     title:  "Lec 18: Outliers"
     reading: "18-outliers-reading.html"
     slides: "18-outliers/18-outliers.pdf"
     slidespdf: "18-outliers/18-outliers-handout.pdf"
+    hw:  "hw-08.html"
     
   - date:  "Thurs, Nov 10"
     title:  "Lec 19: Missing Data"
