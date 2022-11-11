@@ -187,7 +187,9 @@ lessons:
   - date:  "Thurs, Nov 10"
     title:  "Lec 19: Missing Data"
     reading: "19-reading.html"
-  
+    slidespdf:  "19-missing-data-handout.pdf"
+    slides: "19-missing-data.pdf"
+    
   - date:  "Friday, Nov 11"
     title: "Lab 8"
 
@@ -198,7 +200,7 @@ lessons:
   - date: "Thurs, Nov 17"
   
   - date: "Friday, Nov 18"
-    title: ""  
+    title: "Lab 9"  
 
     
   - week:  "Week 12"

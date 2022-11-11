@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>STA 601: Missing data and imputation</title>
+    <title>STA 702: Missing data and imputation</title>
     <meta charset="utf-8" />
     <meta name="author" content="Merlise Clyde" />
     <script src="libs/header-attrs/header-attrs.js"></script>
@@ -13,9 +13,15 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# STA 601: Missing data and imputation
+.title[
+# STA 702: Missing data and imputation
+]
+.author[
 ### Merlise Clyde
-### Nov 9, 2021
+]
+.date[
+### Nov 10, 2022
+]
 
 ---
 
@@ -26,19 +32,18 @@ class: center, middle, inverse, title-slide
 
 ## Introduction to missing data
 
-- Missing data/nonresponse is fairly common in real data. For example,
+- Missing data/nonresponse is fairly common in real data.
   + Failure to respond to survey question
   + Subject misses some clinic visits out of all possible
   + Only subset of subjects asked certain questions
   
 --
 
-- Recall that our posterior computation usually depends on the data through `\(\mathcal{p}(Y| \theta)\)`, which cannot be
-computed (at least directly) when some of the `\(y_i\)` values are missing.
+- posterior computation usually depends on the data through `\(\mathcal{p}(Y \mid  X, \theta)\)`, which can be difficult to compute (at least directly) when some of the `\(y_i\)` (multivariate `\(Y\)`) or `\(x^T_i\)` values are missing.
 
 --
 
-- The most common software packages often throw away all subjects with incomplete data (can lead to bias and precision loss).
+- Most software packages often throw away all subjects with incomplete data (can lead to bias and precision loss).
 
 --
 
@@ -46,56 +51,8 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 
 --
 
-- As you will see, imputing missing data is actually quite natural in the Bayesian context.
+- Imputing missing data is actually quite natural in the Bayesian context.
 
-
-
-&lt;!-- --- --&gt;
-&lt;!-- ## Main types of nonresponse --&gt;
-
-&lt;!-- - .hlight[Unit nonresponse]: the individual has no values recorded for any of the variables. For example, when participants do not complete a survey questionnaire at all. --&gt;
-
-&lt;!-- - .hlight[Item nonresponse]: the individual has values recorded for at least one variable, but not all variables. --&gt;
-
-&lt;!-- &lt;table&gt; --&gt;
-&lt;!--   &lt;caption&gt;Unit nonresponse vs item nonresponse&lt;/caption&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;th&gt; &lt;/th&gt; --&gt;
-&lt;!--     &lt;th height="30px" colspan="3"&gt;Variables&lt;/th&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;th&gt;  &lt;/th&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:center" width="100px"&gt; Y&lt;sub&gt;1&lt;/sub&gt; &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center" width="100px"&gt; Y&lt;sub&gt;2&lt;/sub&gt; &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center" width="100px"&gt; Y&lt;sub&gt;3&lt;/sub&gt; &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:left"&gt; Complete cases &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;td rowspan="3"&gt; Item nonresponse &lt;/td&gt; --&gt;
-&lt;!--     &lt;td rowspan="3" style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10004 &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!--   &lt;tr&gt; --&gt;
-&lt;!--     &lt;td height="30px" style="text-align:left"&gt; Unit nonresponse &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--     &lt;td style="text-align:center"&gt; &amp;#10067 &lt;/td&gt; --&gt;
-&lt;!--   &lt;/tr&gt; --&gt;
-&lt;!-- &lt;/table&gt; --&gt;
 
 
 
@@ -134,7 +91,7 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 
 --
   
-- Then, the values for questions 16-20 for those people who did not respond would be .hlight[MAR] if younger people are more likely not to respond to those income related questions than old people, where age is observed for all participants.
+- Then, the values for questions 16-20 for those people who did not respond would be .hlight[MAR] if younger people are more likely not to respond to those income related questions than old people, where age is observed for all participants. (missingness reason must be independent of income)
   
 --
 
@@ -148,7 +105,7 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 
 --
 
-- Continuing with our previous example, suppose again that
+-  suppose again that
   - questions 1-15 include demographic information such as age and education;
   - questions 16-20 include income related questions; and
   - once again, some of the participants did not respond to questions 16-20.
@@ -163,13 +120,15 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 
 
 ---
-## Mathematical formulation
+## Multivariate Formulation
 
 - Consider the multivariate data scenario with `\(\boldsymbol{Y}_i = (\boldsymbol{Y}_1,\ldots,\boldsymbol{Y}_n)^T\)`, where `\(\boldsymbol{Y}_i = (Y_{i1},\ldots,Y_{ip})^T\)`, for `\(i = 1,\ldots, n\)`.
 
 --
 
-- For now, we will assume the multivariate normal model as the sampling model, so that each `\(\boldsymbol{Y}_i = (Y_{i1},\ldots,Y_{ip})^T \sim \mathcal{N}_p(\boldsymbol{\theta}, \Sigma)\)`.
+- For now, we will assume the multivariate normal model as the sampling model, so that each `\(p\)` dimensional `\(\boldsymbol{Y}_i = (Y_{i1},\ldots,Y_{ip})^T \sim \mathcal{N}_p(\boldsymbol{\theta}, \Sigma)\)`.
+
+`$$p(\boldsymbol{Y}_i \mid \boldsymbol{\theta}, \Sigma) = \frac{|\Sigma|^{-1/2}}{(2\pi)^{p/2}} \exp\left\{ -\frac{1}{2} (\boldsymbol{Y} - \boldsymbol{\theta})^T \Sigma^{-1} (\boldsymbol{Y} - \boldsymbol{\theta}) \right\}$$`
 
 --
 	
@@ -177,11 +136,9 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 
 --
 
-- We can separate `\(\boldsymbol{Y}\)` into the observed and missing parts, that is, `\(\boldsymbol{Y} = (\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis})\)`.
+- We can separate `\(\boldsymbol{Y}\)` into the observed and missing parts so that for for each individual, `\(\boldsymbol{Y}_i = (\boldsymbol{Y}_{i,obs},\boldsymbol{Y}_{i,mis})\)`.
 
 --
-
-- Then for each individual, `\(\boldsymbol{Y}_i = (\boldsymbol{Y}_{i,obs},\boldsymbol{Y}_{i,mis})\)`.
 
 
 
@@ -251,50 +208,23 @@ computed (at least directly) when some of the `\(y_i\)` values are missing.
 .block[
 $$
 `\begin{split}
-p(\boldsymbol{Y}_{obs}, \boldsymbol{R} |\boldsymbol{\theta}, \Sigma, \boldsymbol{\psi}) &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
+p(\boldsymbol{Y}_{obs}, \boldsymbol{R} |\boldsymbol{\theta}, \Sigma, \boldsymbol{\psi}) &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} 
 \end{split}`
 $$
 ]
 
- &lt;!-- = \prod^n_{i=1}  p(\boldsymbol{Y}_{i,obs} | \boldsymbol{\theta}, \Sigma) --&gt;
-
-&lt;!-- &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \prod^n_{i=1}  p(\boldsymbol{Y}_{i,obs}, \boldsymbol{Y}_{i,mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\ --&gt;
-
+ 
 --
 
-- Since we do not actually observe `\(\boldsymbol{Y}_{mis}\)`, we would like to be able to integrate it out so we don't have to deal with it.
+- Since we do not actually observe `\(\boldsymbol{Y}_{mis}\)`, we would like to be able to integrate it out so we don't have to deal with it and infer `\((\boldsymbol{\theta}, \Sigma)\)` using only the observed data.
 
---
-
-- That is, we would like to infer `\((\boldsymbol{\theta}, \Sigma)\)` (and sometimes, `\(\boldsymbol{\psi}\)`) using only the observed data.
-
-
-
----
-## Likelihood function: MCAR
-
-- For MCAR, we have:
-.block[
-$$
-`\begin{split}
-p(\boldsymbol{Y}_{obs}, \boldsymbol{R} |\boldsymbol{\theta}, \Sigma, \boldsymbol{\psi}) &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
-&amp; = \int p(\boldsymbol{R} | \boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
-&amp; = p(\boldsymbol{R} | \boldsymbol{\psi}) \cdot \int p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
-&amp; = p(\boldsymbol{R} | \boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs} | \boldsymbol{\theta}, \Sigma). \\
-\end{split}`
-$$
-]
-
---
-
-- For inference on `\((\boldsymbol{\theta}, \Sigma)\)`, we can simply focus on `\(p(\boldsymbol{Y}_{obs} | \boldsymbol{\theta}, \Sigma)\)` in the likelihood function, since `\((\boldsymbol{R} | \boldsymbol{\psi})\)` does not include any `\(\boldsymbol{Y}\)`.
 
 
 
 ---
 ## Likelihood function: MAR
 
-- For MAR, we have:
+- Focus on MAR
 .block[
 $$
 `\begin{split}
@@ -308,77 +238,22 @@ $$
 
 --
 
-- For inference on `\((\boldsymbol{\theta}, \Sigma)\)`, we can once again focus on `\(p(\boldsymbol{Y}_{obs} | \boldsymbol{\theta}, \Sigma)\)` in the likelihood function
+- For inference on `\((\boldsymbol{\theta}, \Sigma)\)`, we only need `\(p(\boldsymbol{Y}_{obs} | \boldsymbol{\theta}, \Sigma)\)` in the likelihood function for inference `\((\boldsymbol{\theta}, \Sigma)\)`.
 
 --
 
-- Also, if we want to infer the missingness mechanism through `\(\boldsymbol{\psi}\)`, we would need to deal with `\(p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{\psi})\)` anyway.
-
-
----
-## Likelihood function: MNAR
-
-- For MNAR, we have:
-.block[
-$$
-`\begin{split}
-p(\boldsymbol{Y}_{obs}, \boldsymbol{R} |\boldsymbol{\theta}, \Sigma, \boldsymbol{\psi}) &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
-\end{split}`
-$$
-]
-
---
-
-- The likelihood under MNAR cannot simplify any further.
-  
---
-
-- In this case, we cannot ignore the missing data when making inferences about `\((\boldsymbol{\theta}, \Sigma)\)`.
-  
---
-
-- We must include the model for `\(\boldsymbol{R}\)` and also infer the missing data `\(\boldsymbol{Y}_{mis}\)`.
-  
-  
-
----
-## How to tell in practice?
-
-- So how can we tell the type of mechanism we are dealing with? 
-
---
-
-- In general, we don't know!!!
-
---
-
-- Rare that data are MCAR (unless planned beforehand); more likely that data are MNAR.
-
---
-
-- **Compromise**: assume data are MAR if we include enough variables in model for the missing data indicator `\(\boldsymbol{R}\)`.
-
---
-
-- Whenever we talk about missing data in this course, we will do so in the context of MCAR and MAR.
-  
+- Hard!
 
 ---
 ## Bayesian inference with missing data
 
-- As we have seen, for MCAR and MAR, we can focus on `\(p(\boldsymbol{Y}_{obs} | \boldsymbol{\theta}, \Sigma)\)` in the likelihood function, when inferring `\((\boldsymbol{\theta}, \Sigma)\)`.
+
+- For posterior sampling for most models (especially multivariate models), sampling is easier with complete data  `\(\boldsymbol{Y}\)`'s to update the parameters.
+
 
 --
 
-- While this is great, for posterior sampling under most models (especially multivariate models), we actually do need all the `\(\boldsymbol{Y}\)`'s to update the parameters.
-
---
-
-- In addition, we may actually want to learn about the missing values, in addition to inferring `\((\boldsymbol{\theta}, \Sigma)\)`.
-
---
-
-- By thinking of the missing data as **another set of parameters**, we can sample them from the "posterior predictive" distribution of the missing data conditional on the observed data and parameters:
+- Think of the missing data as **latent variables** and sample from the "posterior predictive" distribution of the missing data conditional on the observed data and parameters:
 .block[
 .small[
 $$
@@ -391,7 +266,170 @@ $$
 
 --
 
-- In the case of the multivariate model, each `\(p(\boldsymbol{Y}_{i,mis} | \boldsymbol{Y}_{i,obs},\boldsymbol{\theta}, \Sigma)\)` is just a normal distribution, and we can leverage results on conditional distributions for normal models.
+- In the case of the multivariate  normal model, each `\(p(\boldsymbol{Y}_{i,mis} | \boldsymbol{Y}_{i,obs},\boldsymbol{\theta}, \Sigma)\)` is just a normal distribution, and we can leverage results on conditional distributions for normal models.
+
+---
+## Model for Missing Data
+
+- Rewrite  as `\(\boldsymbol{Y}_i\)` in block form
+.block[
+.small[
+`\begin{eqnarray*}
+\boldsymbol{Y}_i =
+\begin{pmatrix}\boldsymbol{Y}_{i,mis}\\
+\boldsymbol{Y}_{i,obs}
+\end{pmatrix} &amp; \sim &amp; \mathcal{N}_p\left[\left(\begin{array}{c}
+\boldsymbol{\theta}_1\\
+\boldsymbol{\theta}_2
+\end{array}\right),\left(\begin{array}{cc}
+\Sigma_{11} &amp; \Sigma_{12} \\
+\Sigma_{21} &amp; \Sigma_{22}
+\end{array}\right)\right],\\
+\end{eqnarray*}`
+]
+]
+
+   
+  
+--
+
+- Missing data has a conditional 
+.block[
+`$$\boldsymbol{Y}_{i,mis} | \boldsymbol{Y}_{i,obs} = \boldsymbol{y}_{i,obs} \sim \mathcal{N}\left(\boldsymbol{\theta}_1 + \Sigma_{12}\Sigma_{22}^{-1}  (\boldsymbol{y}_{i,obs}-\boldsymbol{\theta}_2), \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}\right).$$`
+]
+
+multivariate normal distribution (or univariate normal distribution if `\(\boldsymbol{Y}_i\)` only has one missing entry) 
+  
+--
+
+- This sampling technique actually encodes MAR since the imputations for `\(\boldsymbol{Y}_{mis}\)` depend on the `\(\boldsymbol{Y}_{obs}\)`.
+  
+
+---
+
+## Semi-Conjugate Prior
+
+- We need prior distributions for  `\(\boldsymbol{\theta}\)` and `\(\Sigma\)`
+
+--
+
+- Multivariate Normal Prior for `\(\boldsymbol{\theta} \sim \mathcal{N}_p(\boldsymbol{\mu}_0, \Lambda_0^{-1})\)`
+
+--
+
+- Analogous to the univariate case, the **inverse-Wishart distribution** is the corresponding conditionally conjugate prior for `\(\Sigma\)` (multivariate generalization of the inverse-gamma).
+
+--
+
+
+- A random variable `\(\Sigma \sim \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1})\)`, where `\(\Sigma\)` is positive definite and `\(p \times p\)`, has pdf
+
+`$$p(\Sigma) \propto  \left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \textsf{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\}$$`
+--
+
+where
+ + `\(\eta_0 &gt; p - 1\)` is the "degrees of freedom", and 
+ + `\(\boldsymbol{S}_0\)` is a `\(p \times p\)` positive definite matrix.
+  
+---
+## Mean
+
+- For this distribution, `\(E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0\)`, for `\(\eta_0 &gt; p + 1\)`.
+
+
+--
+
+- If we are very confident in a prior guess `\(\Sigma_0\)`, for `\(\Sigma\)`, then we might set
+  + `\(\eta_0\)`, the degrees of freedom to be very large, and
+  + `\(\boldsymbol{S}_0 = (\eta_0 - p - 1)\Sigma_0\)`. 
+  
+  In this case, `\(E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0 = \frac{1}{\eta_0 - p - 1}(\eta_0 - p - 1)\Sigma_0 = \Sigma_0\)`, and `\(\Sigma\)` is tightly (depending on the value of `\(\eta_0\)`) centered around `\(\Sigma_0\)`.
+  
+--
+
+- If we are not at all confident but we still have a prior guess `\(\Sigma_0\)`, we might set
+  + `\(\eta_0 = p + 2\)`, so that the `\(E[\Sigma] = \frac{1}{\eta_0 - p - 1} \boldsymbol{S}_0\)` is finite.
+  + `\(\boldsymbol{S}_0 = \Sigma_0\)`
+  
+--
+
+- Jeffreys prior (improper limiting case)
+  
+
+---
+## Wishart distribution
+
+- Just as we had with the gamma and inverse-gamma relationship in the univariate case, we can also work in terms of the **Wishart distribution** (multivariate generalization of the gamma) instead.
+
+--
+
+- The **Wishart distribution** provides a conditionally-conjugate prior for the precision matrix `\(\Sigma^{-1}\)` in a multivariate normal model.
+
+--
+
+- Specifically, if `\(\Sigma \sim \textrm{IW}_p(\eta_0, \boldsymbol{S}_0)\)`, then `\(\Phi = \Sigma^{-1} \sim \textrm{W}_p(\eta_0, \boldsymbol{S}_0^{-1})\)`.
+
+--
+
+- A random variable `\(\Phi \sim \textrm{W}_p(\eta_0, \boldsymbol{S}_0^{-1})\)`, where `\(\Phi\)` has dimension `\((p \times p)\)`, has pdf
+
+`$$\begin{align*}
+f(\Phi) \ \propto \ \left|\Phi\right|^{\frac{\eta_0 - p - 1}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Phi) \right\}.
+\end{align*}$$`
+
+
+--
+
+- Here, `\(E[\Phi] = \eta_0 \boldsymbol{S}_0\)`.
+
+
+  
+---
+## Conditional posterior for `\(\Sigma\)`
+
+`$$\begin{align}Y_i  \mid  \boldsymbol{\theta}, \Sigma &amp; \overset{ind}{\sim} N(\boldsymbol{\theta}, \Sigma)\\
+\Sigma  &amp; \sim  \textrm{IW}_p(\eta_0, \boldsymbol{S}_0^{-1}) \\
+\boldsymbol{\theta} &amp; \sim N(\mu_0, \Psi_0^{-1}) 
+\end{align}$$`
+
+- The conditional posterior (full conditional) `\(\Sigma \mid \boldsymbol{\theta}, \boldsymbol{Y}\)`, is then
+
+.block[
+.small[
+`\begin{align*}
+\pi(\Sigma &amp; \mid \boldsymbol{\theta}, \boldsymbol{Y})\propto p(\Sigma) \cdot p( \boldsymbol{Y}  \mid \boldsymbol{\theta}, \Sigma)\\
+&amp; \propto \underbrace{\left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\}}_{p(\Sigma)} \cdot \underbrace{\prod_{i = 1}^{n}\left|\Sigma\right|^{-\frac{1}{2}} \ \textrm{exp} \left\{-\frac{1}{2}\left[(\boldsymbol{Y}_i - \boldsymbol{\theta})^T \Sigma^{-1} (\boldsymbol{Y}_i - \boldsymbol{\theta})\right] \right\}}_{p(\boldsymbol{Y}_i \mid \boldsymbol{\theta}, \Sigma)}  
+\end{align*}`
+]
+]
+
+--
+
+`$$\Sigma \mid \boldsymbol{\theta}, \boldsymbol{Y} \sim \textrm{IW}_p\left(\eta_0 + n, \left(\boldsymbol{S}_0+ \sum_{i=1}^n (\boldsymbol{Y}_i - \boldsymbol{\theta})(\boldsymbol{Y}_i - \boldsymbol{\theta})^T\right)^{-1} \right)$$` 
+---
+## Posterior Derivation
+- The conditional posterior (full conditional) `\(\Sigma \mid \boldsymbol{\theta}, \boldsymbol{Y}\)`, is 
+
+.block[
+.small[
+`\begin{align*}
+\pi(\Sigma &amp; \mid \boldsymbol{\theta}, \boldsymbol{Y})\propto p(\Sigma) \cdot p( \boldsymbol{Y}  \mid \boldsymbol{\theta}, \Sigma)\\
+&amp; \propto \left|\Sigma\right|^{\frac{-(\eta_0 + p + 1)}{2}} \textrm{exp} \left\{-\frac{1}{2} \text{tr}(\boldsymbol{S}_0\Sigma^{-1}) \right\} \cdot \prod_{i = 1}^{n}\left|\Sigma\right|^{-\frac{1}{2}} \ \textrm{exp} \left\{-\frac{1}{2}\left[(\boldsymbol{Y}_i - \boldsymbol{\theta})^T \Sigma^{-1} (\boldsymbol{Y}_i - \boldsymbol{\theta})\right] \right\} 
+\end{align*}`
+]
+]
+
+--
+
+`$$\Sigma \mid \boldsymbol{\theta}, \boldsymbol{Y} \sim \textrm{IW}_p\left(\eta_0 + n, \left(\boldsymbol{S}_0+ \sum_{i=1}^n (\boldsymbol{Y}_i - \boldsymbol{\theta})(\boldsymbol{Y}_i - \boldsymbol{\theta})^T\right)^{-1} \right)$$` 
+
+--
+
+- posterior sample size `\(\eta_0 + n\)`
+
+--
+
+- posterior sum of squares `\(\boldsymbol{S}_0+ \sum_{i=1}^n (\boldsymbol{Y}_i - \boldsymbol{\theta})(\boldsymbol{Y}_i - \boldsymbol{\theta}\)`
 
 
 
@@ -419,61 +457,20 @@ At iteration `\(s+1\)`, do the following
 --
 
 3. For each `\(i = 1, \ldots, n\)`, with at least one "1" value in the missingness indicator vector `\(\boldsymbol{R}_i\)`, sample `\(\boldsymbol{Y}_{i,mis}^{(s+1)}\)` from the full conditional
+
 .block[
 .small[
-`$$p(\boldsymbol{Y}_{i,mis}^{(s+1)} | \boldsymbol{Y}_{i,obs}, \boldsymbol{\theta}^{(s+1)}, \Sigma^{(s+1)}),$$`
+`$$\boldsymbol{Y}_{i,mis}^{(s+1)}| \boldsymbol{Y}_{i,obs}, \boldsymbol{\theta}^{(s+1)},  \Sigma^{(s+1)}  \sim \mathcal{N}\left(\boldsymbol{\theta}_1^{(s+1)} + \Sigma_{12}^{(s+1)}{\Sigma_{22}^{(s+1)}}^{-1}  (\boldsymbol{Y}_{i,obs}-\boldsymbol{\theta}_2^{(s+1)}), \Sigma_{11}^{(s+1)} - \Sigma_{12}^{(s+1)}{\Sigma_{22}^{(s+1)}}^{-1}\Sigma_{21}^{(s+1)}\right)$$`
 ]
 ]
+  
+derived from the original sampling model but with the updated parameters,  `\(\boldsymbol{Y}_i^{(s+1)} = (\boldsymbol{Y}_{i,obs},\boldsymbol{Y}_{i,mis}^{(s+1)})^T \sim \mathcal{N}_p(\boldsymbol{\theta}^{(s+1)}, \Sigma^{(s+1)})\)`.
 
-  which is also multivariate normal, with its form derived from the original sampling model but with the updated parameters, that is, `\(\boldsymbol{Y}_i^{(s+1)} = (\boldsymbol{Y}_{i,obs},\boldsymbol{Y}_{i,mis}^{(s+1)})^T \sim \mathcal{N}_p(\boldsymbol{\theta}^{(s+1)}, \Sigma^{(s+1)})\)`.
 
 
-
+ 
 ---
-## Gibbs sampler with missing data
-
-- Rewrite `\(\boldsymbol{Y}_i^{(s+1)} = (\boldsymbol{Y}_{i,mis},\boldsymbol{Y}_{i,obs}^{(s+1)})^T  \sim \mathcal{N}_p(\boldsymbol{\theta}^{(s+1)}, \Sigma^{(s+1)})\)` as
-.block[
-.small[
-`\begin{eqnarray*}
-\boldsymbol{Y}_i =
-\begin{pmatrix}\boldsymbol{Y}_{i,mis}\\
-\boldsymbol{Y}_{i,obs}
-\end{pmatrix} &amp; \sim &amp; \mathcal{N}_p\left[\left(\begin{array}{c}
-\boldsymbol{\theta}_1\\
-\boldsymbol{\theta}_2
-\end{array}\right),\left(\begin{array}{cc}
-\Sigma_{11} &amp; \Sigma_{12} \\
-\Sigma_{21} &amp; \Sigma_{22}
-\end{array}\right)\right],\\
-\end{eqnarray*}`
-]
-]
-
-  so that we can take advantage of the conditional normal results.
-  
---
-
-- That is, we have
-.block[
-`$$\boldsymbol{Y}_{i,mis} | \boldsymbol{Y}_{i,obs} = \boldsymbol{y}_{i,obs} \sim \mathcal{N}\left(\boldsymbol{\theta}_1 + \Sigma_{12}\Sigma_{22}^{-1}  (\boldsymbol{y}_{i,obs}-\boldsymbol{\theta}_2), \Sigma_{11} - \Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}\right).$$`
-]
-
-  as the multivariate normal distribution (or univariate normal distribution if `\(\boldsymbol{Y}_i\)` only has one missing entry) we need in step 3 of the Gibbs sampler.
-  
---
-
-- This sampling technique actually encodes MAR since the imputations for `\(\boldsymbol{Y}_{mis}\)` depend on the `\(\boldsymbol{Y}_{obs}\)`.
-  
---
-
-- Now let's look at the reading comprehension example in Hoff. We will add missing values to the original data and refit the model.
-  
-  
-  
-  
----
-## Reading example with missing data
+## Reading example from Hoff with missing data
 
 
 ```r
@@ -657,7 +654,7 @@ Also very similar. A bit more uncertainty in dimension of `\(Y_{i2}\)` because w
 ---
 ## Posterior distribution of the mean
 
-&lt;img src="20-missing-data-handout_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="19-missing-data-handout_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
 
 
 
@@ -703,6 +700,45 @@ Also very similar. A bit more uncertainty in dimension of `\(Y_{i2}\)` because w
 --
 
 - No need to incorporate the prediction problem into your original Gibbs sampler!
+
+
+
+
+---
+## MNAR Likelihood function: 
+
+- For MNAR, we have:
+.block[
+$$
+`\begin{split}
+p(\boldsymbol{Y}_{obs}, \boldsymbol{R} |\boldsymbol{\theta}, \Sigma, \boldsymbol{\psi}) &amp; = \int p(\boldsymbol{R} | \boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis},\boldsymbol{\psi}) \cdot p(\boldsymbol{Y}_{obs},\boldsymbol{Y}_{mis} | \boldsymbol{\theta}, \Sigma) \textrm{d}\boldsymbol{Y}_{mis} \\
+\end{split}`
+$$
+]
+
+--
+
+- The likelihood under MNAR cannot simplify any further.
+  
+--
+
+- In this case, we cannot ignore the missing data when making inferences about `\((\boldsymbol{\theta}, \Sigma)\)`.
+  
+--
+
+- We must include the model for `\(\boldsymbol{R}\)` and also infer the missing data `\(\boldsymbol{Y}_{mis}\)`.
+ 
+--
+
+- So how can we tell the type of mechanism we are dealing with? 
+
+--
+
+- In general, we don't know!!!
+
+--
+
+- Rare that data are MCAR (unless planned beforehand); more likely that data are MNAR or MNAR.
 
 
     </textarea>
@@ -752,6 +788,19 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
     deleted = true;
   });
 })();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
 (function() {
   "use strict"
   // Replace <script> tags in slides area to make them executable
