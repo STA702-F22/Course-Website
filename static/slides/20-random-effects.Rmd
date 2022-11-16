@@ -1,8 +1,7 @@
 ---
-title: "STA 601: Random Effects"
-subtitle: "STA 601 Fall 2021"
+title: "STA 702: Random Effects"
 author: "Merlise Clyde"
-date: "Nov 1, 2021"
+date: "Nov 17, 2022"
 header-includes:
   - \include{macros.tex}
 output:
@@ -36,7 +35,7 @@ library(rvest)
 ```
 
 
-## Hierarchical Models Continued
+## Building Hierarchical Models 
 
 - Models for Gaussian Data with no Covariates
 
@@ -91,12 +90,12 @@ $$  y_{ij} \overset{ind}{\sim}  N(\alpha + \beta_i, \sigma^2) $$
 ---
 ##  Non-Identifiability
 
-- Example:  $y_i \sim N(\alpha + \beta, \sigma^2)$  overparameterized
+- Example:  $y_i \sim N(\alpha + \beta_i, \sigma^2)$  overparameterized
 
 
 --
 
-- $\mu = \alpha + \beta$ and $\sigma^2$ are uniquely estimated, but not $\alpha$ or $\beta$
+- $\mu_i = \alpha + \beta_i$ and $\sigma^2$ are uniquely estimated, but not $\alpha$ or $\beta_i$
 
 --
 
@@ -193,7 +192,7 @@ y_{ij} & = \alpha + \beta_i + \epsilon_{ij}, \qquad \epsilon_{ij} \overset{iid}{
 Note: Don't confuse random effect distributions with prior distributions! 
 
 --
--  Random effect distributions should be viewed as part of the model specification (likelihood)
+-  Random effect distributions should be viewed as part of the model specification 
 
 --
 
@@ -391,6 +390,14 @@ $$\pi(\mu, \tau, \sigma^2 \mid y) \propto \pi(\mu, \tau, \sigma^2) \prod_{i=1}^n
 - determine if integrals are finite (what happens at 0 and infinity ?)
 
 - look at special case when $n_i$ are all equal.
+
+---
+## Bayes Estimates of Variances
+
+- Avoids issues when estimate of variance is on the boundary of the parmaeter space
+
+-  Do not have to use asymptotics to construct CI!
+
 
 
 ---

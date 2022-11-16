@@ -191,16 +191,20 @@ lessons:
     slides: "19-missing-data.pdf"
     
   - date:  "Friday, Nov 11"
-    title: "Lab 8"
+    title: "Lab 8: Review"
 
   - week: "Week 12"
     date: "Tues, Nov 15"
     title:  "Midterm II"
     
   - date: "Thurs, Nov 17"
+    title: "Lec 20:  Random Effects"
+    slides: "20-random-effects.pdf"
+    slidespdf: "20-random-effects-handout.pdf"
   
   - date: "Friday, Nov 18"
     title: "Lab 9"  
+    hw: "HW 9"
 
     
   - week:  "Week 12"
