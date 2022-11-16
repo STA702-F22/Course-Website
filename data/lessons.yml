@@ -199,6 +199,7 @@ lessons:
     
   - date: "Thurs, Nov 17"
     title: "Lec 20:  Random Effects"
+    reading: "20-random-effects.html"
     slides: "20-random-effects.pdf"
     slidespdf: "20-random-effects-handout.pdf"
   
@@ -208,6 +209,11 @@ lessons:
 
     
   - week:  "Week 12"
+    date: "Tues, Nov 22"
+    title:  "Lec 21: Mixed Effects Models"
+    
+  - date: "Thurs, Nov 24"
+    title: " "
   
   
   - week:  "Week 13"
