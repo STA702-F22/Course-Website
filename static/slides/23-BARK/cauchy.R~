@@ -1,0 +1,6 @@
+
+eps = .01
+J = rpois(1,2/eps)
+x = runif(J)
+beta = rbinom(J, size=1,prob=.5)*1/(runif(J) + 1/eps)
+plot(x,cumsum(beta))

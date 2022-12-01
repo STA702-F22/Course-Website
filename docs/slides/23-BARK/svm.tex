@@ -1,0 +1,627 @@
+\documentclass[]{beamer}
+%\documentclass[handout]{beamer}
+%\usetheme[hideothersubsections]{PaloAlto}
+
+\usepackage{amsmath,amssymb,bm,array,graphicx}
+\usepackage{multirow, dcolumn}
+%\usepackage{movie15}
+%\bibliographystyle{jasa}
+\graphicspath{{./}{figs/}}
+\setbeamercovered{transparent}
+\title{Bayesian Adaptive Regression Kernels}
+%\author[M. Clyde]{Merlise Clyde}
+\date{\today}
+\newcommand{\bs}[2]{\begin{frame} \frametitle{#1}
+{#2}
+\end{frame} }
+\input{macros}
+
+
+\usepackage{Sweave}
+\begin{document}
+\input{svm-concordance}
+\begin{frame}
+  \titlepage
+\end{frame}
+
+
+
+
+\section{Nonparametric Regression}
+
+
+\bs{Problem Setting}{
+Regression problem
+$$ \E[Y \mid \bfx] = f(\bfx), \quad \bfx \in \cfX$$
+with unknown function $f(\bfx)$ \pause
+
+Write
+$$f(\bfx_i) = \beta_0 + \sum_{j = 1}^n \beta_j k(x_i, x_j)
+$$
+
+where  $k(x_i, x_j)$ is a kernel function
+
+\begin{itemize}
+  \item Linear Kernel  $$ k(x_i, x_j) = x_i^Tx_j$$
+  \item Radial or Gaussian Kernel $$k(x_i, x_j) = \exp(- \frac{\lambda}{2}( (x_i - x_j)^T (x_i - x_j))$$
+
+\end{itemize}
+
+"support vectors"
+
+
+
+
+}
+
+\subsection{Stochastic Expansions}
+\bs{Expansions} {
+
+Write function as
+ $$f(\bfx_i) = \sum_{j=0}^{J}  \psi(\bfx_i, \bfomega_j)\beta_j$$ in
+terms of an (over-complete) dictionary where \pause
+
+  \begin{itemize}
+   \item  $\{\beta_j\}$:  unknown coefficients \pause
+   \item  $J$: number of terms in expansion (finite or infinite) \pause
+
+
+ \item $\psi(\bfx,\bfomega_j)$   Dictionary elements from
+a ``generator function'' $g$ \pause
+  \begin{itemize}
+  \item cubic splines
+$$   \psi(x_i, \omega_j) =  (x_i - \omega_j)^3_+$$ \pause
+  \item multivariate kernels  (Gaussian, Cauchy, Exponential, e.g.)
+$$  \psi(\bfx_i, \bfomega_j) =  g(
+\bfLambda_j (\bfx - \mean_j)) = \exp\left\{-\frac{1}{2}(\bfx - \mean_j)^T \bfLambda_j (\bfx -
+  \mean_j)\right\}$$  \pause
+  \item translation and scaling wavelet families  \pause
+
+\item Need not be symmetric!
+  \end{itemize}
+  \end{itemize}
+
+
+}
+
+
+\bs{Kernel Convolution } {
+    \includegraphics[angle=90,origin=l,totalheight=6.5truecm,
+     clip=1, width=10cm]{gammaproc2}
+
+Easy to generate  non-stationarity processes
+
+}
+
+
+
+
+
+
+
+\bs{Bayesian NonParametrics (BNP)}{
+
+Goal $$f(x) = \sum_{j=0}^{J}  \psi(\bfx, \bfomega_j) \beta_j$$
+\pause
+
+
+\pause
+
+\begin{itemize}
+\item Poisson prior on $J$  (could be infinite!)
+\item[$\Rightarrow$] $J \sim \Po(\nu_+)$,\qquad $\nu_+\equiv
+  \nu(\bbR\times\bfOmega) = \iint v(\beta, \bfomega) d \beta \,
+  d\bfomega$  \pause
+\item[$\Rightarrow$] $\beta_j,\bfomega_j \mid J \iid \pi(\beta, \bfomega)
+  \propto \nu(\beta,\bfomega)$. \pause
+\end{itemize}
+
+\begin{itemize}
+  \item Finite number of ``big'' coefficients $|\beta_j|$ \pause
+  \item Possibly infinite number of $\beta \in [-\epsilon, \epsilon]$ \pause
+  \item Coefficients $|\beta_j|$ are absolutely summable \pause
+  \item Conditions on $\nu$
+ \end{itemize}
+
+
+
+
+}
+
+
+\bs{$\alpha$-Stable L\'evy Measures} {
+
+L\'evy measure: $\nu(\beta, \bfomega) =  c_\alpha |\beta|^{-(\alpha
+    +1)}\ \pi(\bfomega) \qquad 0 < \alpha < 2$ \pause
+
+For $\alpha$- Stable $\nu^+(\bbR, \bfOmega) = \infty$ \pause
+
+Fine in theory, but not in practice for MCMC! \pause
+
+\vspace{14pt}
+Truncate measure to obtain a finite expansion:
+\begin{itemize}
+ \item Finite number of support points $\bfomega$ with $\beta$ in
+   $[-\epsilon, \epsilon]^c$  \pause
+\item Fix $\epsilon$  (for given prior approximation error) \pause
+\item Use approximate L\'evy  measure
+$\nu_{\epsilon}(\beta, \bfomega) \equiv \nu(\beta,
+\bfomega)\bfone(|\beta| > \epsilon) $ \pause
+\item[$\Rightarrow$] $J \sim \Po(\nu_{\epsilon}^+)$ where
+  $\nu^+_{\epsilon} = \nu([-\epsilon, \epsilon]^c, \bfOmega)$ \pause
+\item[$\Rightarrow$]  $\beta_j, \bfomega_j \iid \pi(d\beta, d\bfomega) \equiv
+  \nu_\epsilon(d\beta , d \bfomega)/\nu^+_{\epsilon}$ ($\beta_j$
+  distributed as Pareto)
+
+\end{itemize}
+}
+
+
+\bs{Truncated Cauchy Process} {
+\centerline{Restriction  $|\beta| > \epsilon$}
+
+%\psfrag{x}{\small{$\beta$}}
+\centerline{\includegraphics[width=2.5in,angle=90]{cauchy1}}
+}
+
+
+\bs{Contours of Log Prior (in $\bbR^2$) -- Penalties} {
+\begin{tabular}{ccc}
+Normal  & DE  & Cauchy \\
+\includegraphics[angle=90,width=1.25in]{L2} &
+\includegraphics[angle=90,width=1.25in]{L1} &
+\includegraphics[angle=90,width=1.25in]{cauchy}
+\end{tabular}
+
+\vspace{.25in}
+Penalized Likelihood:
+$$-\frac{1}{2 \sigma^2} \sum_i\left(Y_i - f(\bfx_i)\right)^2  - (\alpha +
+1) \sum_j
+\log(|\beta_j|)  - \nu^+_{\epsilon} \ldots $$
+
+}
+
+
+
+
+
+\bs{Higher Dimensional $\cfX$} {
+
+MCMC is (currently) too slow in higher dimensional space to allow \pause
+\begin{itemize}
+\item $\bfchi$ to be completely arbitrary; restrict support to
+  observed $\{\bfx_i\}$ like in SVM \pause
+\item use diagonal $\bfLambda$
+\end{itemize}
+Kernels take form:
+\begin{eqnarray*}
+\psi(\bfx, \bfomega_j) & = & \prod_d \exp\{ -\frac{1}{2} \lambda_d (x_d - \chi_{d})^2
+\} \\
+f(\bfx) & =  & \sum_j \psi(\bfx, \bfomega_j) \beta_j
+\end{eqnarray*}
+}
+
+
+\bs{Approximate L\'evy Prior II} {
+Continuous Approximation Student $t(\alpha, 0, \epsilon)$ approximation:
+
+$$\nu_\epsilon(d\beta, d \bfomega) = c_\alpha (\beta^2 + \alpha
+\epsilon^2)^{-(\alpha + 1)/2} d\beta \ \gamma(d \bfomega) $$
+
+\pause
+
+Based on the following hierarchical prior
+\begin{eqnarray*}
+  \beta_j \mid \phi_j & \ind & \No(0,  \varphi_j^{-1}) \\
+  \phi_j    & \ind & \Ga\left(\frac{\alpha}{2}, \frac{\alpha \epsilon^2}{2}\right) \\
+   J & \sim & \Po(\nu^+_\epsilon)
+\end{eqnarray*}
+
+where $\nu^+_\epsilon = \nu_\epsilon(\bbR, \bfOmega) = \frac{\alpha ^{1
+    - \alpha/2} \Gamma(\alpha)\Gamma(\alpha/2)}{\epsilon^\alpha
+  \pi^{1/2} \Gamma(\frac{\alpha +1}{2})} \sin(\frac{\pi \alpha} {2}) \gamma(\bfOmega)$
+
+Key:  need to have variance of coefficients decrease as $J$ increases
+}
+
+\bs{Limiting Case} {
+  \begin{eqnarray*}
+    \beta_j   \mid  \varphi_j & \ind &\N(0, 1/\varphi_j) \\
+      \varphi_j & \iid & \Ga(\alpha/2, "0")
+  \end{eqnarray*}
+\pause
+
+Notes:
+  \begin{itemize}
+\item Require $0 < \alpha < 2$  Additional restrictions  on $\omega$  \pause
+\item  Cauchy process corresponds to $\alpha = 1$ \pause
+\item  Tipping's ``Relevance Vector Machine'' corresponds to $\alpha =
+  0$  (improper posterior!) \pause
+\item Provides an extension of {\bf{Generalized Ridge Priors}}
+      to infinite dimensional case \pause
+\item Infinite dimensional analog of Cauchy priors
+ \end{itemize}
+}
+
+\bs{Further Simplification in Case with $\alpha = 1$} {
+  \begin{itemize}
+  \item Poisson number of points $J_\eps\sim \Po\big(
+    \nu_\eps^+(\alpha, \gamma) \big)$ with $\nu_\eps^+(\alpha, \gamma)
+  = \frac{\gamma \alpha^{1-\alpha/2}}{2^{1 - \alpha}\eps^\alpha}
+  \frac{\Gamma(\alpha/2)}{\Gamma(1-\alpha/2)}$ \pause
+  \item Given $J$, $[ n_1 : n_n] \sim  MN(J, 1/(n+1))$ points
+    supported at each kernel located at $\bfx_j$  \pause
+  \end{itemize}
+The regression mean function can be rewritten as
+\[
+  f(\bfx) = \sum_{i=0}^n \tilde{\beta}_i \psi(\bfx, \bfomega_i), \quad
+  \tilde{\beta}_i = \sum_{\{j \, \mid \bfchi_j = \bfx_i\}} \beta_j.
+\]
+\pause
+In particular, if $\alpha = 1$, not only the Cauchy process is infinitely
+divisible, the approximated Cauchy prior distributions on the regression
+coefficients are also infinitely divisible:
+
+$$
+  \tilde{\beta}_i  \ind
+  \No(0, n_i^2 \tilde{\varphi}_i^{-1}), \qquad
+  \tilde{\varphi}_i \iid \Ga( 1/2, \eps^2/2)
+$$
+\pause
+At most $n$ non-zero coefficients!
+}
+
+\begin{frame}[fragile] \frametitle{BARK: Bayesian Additive Regression Kernels }
+\begin{Schunk}
+\begin{Sinput}
+> #library(devtools)
+> #suppressMessages(install_github("merliseclyde/bark"))
+> library(bark)
+> set.seed(42)
+> n = 500
+> circle2 = as.data.frame(sim_circle(n, dim = 2))
+\end{Sinput}
+\end{Schunk}
+
+\end{frame}
+
+\begin{frame}[fragile] \frametitle{Circle}
+\includegraphics{svm-r}
+
+\end{frame}
+
+
+\begin{frame}[fragile] \frametitle{Circle Example}
+
+\begin{Schunk}
+\begin{Sinput}
+> set.seed(42)
+> train = sample(1:n, size = floor(n/2), rep=FALSE)
+> circle2.bark = bark(as.matrix(circle2[train, 1:2]),
++                     circle2[train, 3],
++                     x.test = as.matrix(circle2[-train, 1:2]),
++                     classification = TRUE,
++                     printevery = 10000,
++                     type="se")
+\end{Sinput}
+\begin{Soutput}
+[1] "Starting BARK-se for this classification problem"
+[1] "burning iteration 10000, J=5, max(nj)=2"
+[1] "posterior mcmc iteration 10000, J=4, max(nj)=1"
+\end{Soutput}
+\end{Schunk}
+\end{frame}
+
+\begin{frame}[fragile] \frametitle{Missclassification}
+\includegraphics{svm-004}
+
+\end{frame}
+
+\begin{frame}[fragile] \frametitle{SVM}
+\begin{Schunk}
+\begin{Sinput}
+> library(e1071)
+> circle2.svm = svm(y ~ x.1 + x.2, data=circle2[train,],
++                   type="C")
+> pred.svm = predict(circle2.svm, circle2[-train,])
+> mean(pred.svm != circle2[-train, "y"])
+\end{Sinput}
+\begin{Soutput}
+[1] 0.048
+\end{Soutput}
+\end{Schunk}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile] \frametitle{BART}
+\begin{Schunk}
+\begin{Sinput}
+> suppressMessages(library(BART))
+> circle.bart = pbart(x.train = circle2[train, 1:2],
++                     y.train = circle2[train, "y"])
+> pred.bart = predict(circle.bart, circle2[-train, 1:2])
+> mean((pred.bart$prob.test.mean > .5) != 
++        circle2[-train, "y"])
+\end{Sinput}
+\end{Schunk}
+
+
+\begin{Schunk}
+\begin{Soutput}
+[1] 0.036
+\end{Soutput}
+\end{Schunk}
+
+
+\end{frame}
+
+
+\bs{Feature Selection in Kernel} {
+\begin{itemize}
+\item Product structure allows interactions between variables  \pause
+\item Many input variables may be irrelevant \pause
+\item Feature selection; if $\lambda_d = 0$ variable $x_d$ is removed
+  from all kernels \pause
+\item Allow point mass on $\lambda_h = 0$ with probability $p_\lambda
+  \sim B(a,b)$  (in practice have used $a = b = 1$ \pause
+\end{itemize}
+
+Consider 3 Scenarios
+
+\begin{itemize}
+\item $D$ Different $\lambda-D$ parameters in each dimension \pause
+\item $S + D$ Different $\lambda_d$ parameters $+$ Selection \pause
+\item $S + E$ Selection $+$ Equal for Remaining $\lambda_d = \lambda$
+\end{itemize}
+
+}
+
+\section{Examples}
+
+\bs{Regression Out of Sample Prediction} {
+Average Relative MSE to best procedure
+\small{
+  \begin{tabular}[ht]{|l|c|c|c|c|c|}
+%  \begin{tabular}[ht]{|l|r|r|c|c|c|c|c|c|}
+    \hline
+  \multirow{2}{*}{Data Sets} &
+%  \multirow{2}{*}{n} &
+%  \multirow{2}{*}{p} &
+  \multicolumn{3}{c|}{BARK} &
+  \multirow{2}{*}{SVM}&
+  \multirow{2}{*}{BART} \\
+% \cline{4-7}
+  \cline{2-4}
+% &&& equal & diff
+  &  D
+  & S $+$ E & S $+$ D && \\
+    \hline
+  Friedman1       %& 200 & 4
+  & 1.22 & 2.26 & 1.93 & 5.36 & 1.97 \\
+  Friedman2       %& 200 & 4
+  & 1.07 & 1.09 & 1.04 & 4.36 & 3.64 \\
+  Friedman3       %& 200 & 4
+  & 1.46 & 2.30 & 1.44 & 2.70 & 1.00 \\
+  Boston Housing  %& 506 & 13
+  & 1.09 & 1.23 & 1.20 & 1.56 & 1.01 \\
+  Body Fat        %& 252 & 14
+  & 1.81 & 1.01 & 2.19 & 4.04 & 1.68 \\
+  Basketball      %& 96  & 4
+  & 1.01 & 1.01 & 1.02 & 1.16 & 1.10 \\\hline
+  \end{tabular}
+}
+
+D: dimension specific scale $\lambda_d$
+
+E: equal scales $\lambda_d = \lambda \, \forall \, d$
+
+S: selection $\lambda_d = 0$ with probability $\rho$
+
+}
+
+%\subsection{Regression}
+
+\bs{Feature Selection in Boston Housing Data} {
+
+Posterior Distribution of $\lambda_d$
+
+\includegraphics[height=3.5in,angle=90]{bhlambdabox}
+
+}
+%\subsection{Classification Examples}
+\bs{Classification Examples} {
+
+  \centering
+  \begin{tabular}{cccc}
+    Name            & $d$ & data type  & $n$ (train/test) \\ \hline
+    Circle          &   2 & simulation & 200/1000 \\
+    Circle (3 null) &   5 & simulation & 200/1000 \\
+    Circle (18 null)&  20 & simulation & 200/1000 \\
+    Swiss Bank Notes      &   6 & real data  & 200  $(5\,cv)$ \\
+    Breast Cancer   &  30 & real data  & 569 $(5\,cv)$ \\
+    Ionosphere      &  33 & real data  & 351 $(5\,cv)$
+  \end{tabular}
+
+
+  \begin{itemize}
+  \item Add latent Gaussian $Z_i$ for probit regression \\(as in Albert
+  \& Chib)
+ \item Same model as before conditional on $\bfZ$
+ \item Advantage:  Draw $\bfbeta$ in a block from full conditional
+\item Can extend to Logistic
+  \end{itemize}
+
+}
+
+\bs{Predictive Error Rate for Classification} {
+\small{
+ \begin{tabular}[ht]{|l|r|r|r|
+%      D{.}{.}{2.3}|D{.}{.}{1.3}|
+%      D{.}{.}{4.6}|D{.}{.}{4.4}|
+      r|r|}
+    \hline
+  \multirow{2}{*}{Data Sets} &
+%  \multirow{2}*{n} &
+%  \multirow{2}*{p} &
+  \multicolumn{3}{c|}{BARK} &
+  \multirow{2}*{SVM}&
+  \multirow{2}*{BART} \\
+% \cline{4-7}
+  \cline{2-4}
+% &&& \multicolumn{1}{c|}{E}
+  & \multicolumn{1}{c|}{D}
+  & \multicolumn{1}{c|}{S $+$ E}
+  & \multicolumn{1}{c|}{S $+$ D} && \\
+    \hline
+    Circle 2      %&200&  2
+     & 4.91\% & 1.88\% & 1.93\% & 5.03\% & 3.97\% \\
+    Circle 5      %&200&  5
+     & 4.70\% & 1.47\% & 1.65\% & 10.99\% & 6.51\% \\
+    Circle 20     %&200& 20
+     & 4.84\% & 2.09\% & 3.69\% & 44.10\% & 15.10\% \\
+    Bank          %&200& 6
+     & 1.25\% & 0.55\% & 0.88\% & 1.12\% & 0.50\% \\
+    BC          %&569& 30
+     & 4.02\% & 2.49\% & 6.09\% & 2.70\% & 3.36\% \\
+    Ionosphere    %&351& 33
+     & 8.59\% & 5.78\% &10.87\% & 5.17\% & 7.34\%\\ \hline
+  \end{tabular}
+
+D: dimension specific scale $\lambda_d$
+
+E: equal scales $\lambda_d = \lambda \forall d$
+
+S: selection $\lambda_d = 0$ with probability $\rho$
+}
+}
+
+
+
+\section{Summary}
+
+\bs{Needs \& Limitations}{
+
+  \begin{itemize}
+  \item NP Bayes of many flavors often does better than frequentist methods
+(BARK, BART, Treed GP, more) \pause
+\item Hyper-parameter specification - theory \& computational
+  approximation \pause
+\item need faster code for BARK that is easier for users (BART \& TGP are
+  great!)   ({\tt library(bark)} or github \pause
+\item Can these models be added to JAGS, STAN, etc instead of
+  stand-alone R packages \pause
+\item With availability of code what are caveats for users?
+
+  \end{itemize}
+}
+
+\bs{Summary} {
+L\'evy Random Field Priors \& LARK models:
+  \begin{itemize}
+  \item Provide limit of finite dimensional priors (GRP \& SVSS) to infinite
+  dimensional setting \pause
+  \item Adaptive bandwidth for kernel regression \pause
+  \item Allow flexible generating functions \pause
+  \item Provide sparser representations compared to SVM \& RVM, with
+    coherent Bayesian interpretation \pause
+  \item Incorporation of  prior knowledge if available \pause
+  \item Relax assumptions of equally spaced data and Gaussian likelihood \pause
+  \item Hierarchical Extensions \pause
+  \item Formulation allows one to define stochastic processes on
+    arbitrary spaces (spheres, manifolds)
+\end{itemize}
+}
+
+\end{document}
+
+\begin{Schunk}
+\begin{Sinput}
+> n = 200
+> t = matrix(sort(runif(n, -10, 10)))
+> mu = 1/(1 + exp(-t))
+> y = rnorm(n,mu, sd=.1)
+> bk = bark(t, y, t, class=FALSE)
+\end{Sinput}
+\begin{Soutput}
+[1] "Starting BARK-se for this regression problem"
+[1] "burning iteration 1000, J=12, max(nj)=1"
+[1] "burning iteration 2000, J=13, max(nj)=2"
+[1] "burning iteration 3000, J=13, max(nj)=2"
+[1] "burning iteration 4000, J=7, max(nj)=1"
+[1] "burning iteration 5000, J=9, max(nj)=1"
+[1] "burning iteration 6000, J=12, max(nj)=1"
+[1] "burning iteration 7000, J=8, max(nj)=1"
+[1] "burning iteration 8000, J=6, max(nj)=1"
+[1] "burning iteration 9000, J=14, max(nj)=2"
+[1] "burning iteration 10000, J=11, max(nj)=1"
+[1] "posterior mcmc iteration 1000, J=17, max(nj)=1"
+[1] "posterior mcmc iteration 2000, J=10, max(nj)=1"
+[1] "posterior mcmc iteration 3000, J=13, max(nj)=1"
+[1] "posterior mcmc iteration 4000, J=12, max(nj)=1"
+[1] "posterior mcmc iteration 5000, J=13, max(nj)=2"
+[1] "posterior mcmc iteration 6000, J=14, max(nj)=1"
+[1] "posterior mcmc iteration 7000, J=11, max(nj)=1"
+[1] "posterior mcmc iteration 8000, J=8, max(nj)=1"
+[1] "posterior mcmc iteration 9000, J=11, max(nj)=1"
+[1] "posterior mcmc iteration 10000, J=10, max(nj)=1"
+\end{Soutput}
+\begin{Sinput}
+> plot(t, y)
+> lines(t, bk$yhat.test.mean, col=2, lty=1)
+> mean((mu - bk$yhat.test.mean)^2)
+\end{Sinput}
+\begin{Soutput}
+[1] 0.0007400087
+\end{Soutput}
+\begin{Sinput}
+> suppressMessages(library(BART))
+> out.bart = wbart(x.train=t,
++                  y.train = y)
+\end{Sinput}
+\begin{Soutput}
+*****Into main of wbart
+*****Data:
+data:n,p,np: 200, 1, 0
+y1,yn: -0.317372, 0.455214
+x1,x[n*p]: -9.974335, 9.979124
+*****Number of Trees: 200
+*****Number of Cut Points: 100 ... 100
+*****burn and ndpost: 100, 1000
+*****Prior:beta,alpha,tau,nu,lambda: 2.000000,0.950000,0.025382,3.000000,0.007051
+*****sigma: 0.190257
+*****w (weights): 1.000000 ... 1.000000
+*****Dirichlet:sparse,theta,omega,a,b,rho,augment: 0,0,1,0.5,1,1,0
+*****nkeeptrain,nkeeptest,nkeeptestme,nkeeptreedraws: 1000,1000,1000,1000
+*****printevery: 100
+*****skiptr,skipte,skipteme,skiptreedraws: 1,1,1,1
+
+MCMC
+done 0 (out of 1100)
+done 100 (out of 1100)
+done 200 (out of 1100)
+done 300 (out of 1100)
+done 400 (out of 1100)
+done 500 (out of 1100)
+done 600 (out of 1100)
+done 700 (out of 1100)
+done 800 (out of 1100)
+done 900 (out of 1100)
+done 1000 (out of 1100)
+time: 2s
+check counts
+trcnt,tecnt,temecnt,treedrawscnt: 1000,0,0,1000
+\end{Soutput}
+\begin{Sinput}
+> mean((out.bart$yhat.train.mean -mu)^2)
+\end{Sinput}
+\begin{Soutput}
+[1] 0.001063777
+\end{Soutput}
+\begin{Sinput}
+> lines(t, out.bart$yhat.train.mean)
+> 
+\end{Sinput}
+\end{Schunk}
+

@@ -1,0 +1,18 @@
+---
+title: "Lecture 21: HMC"
+output: 
+  html_document:
+    theme: yeti
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Readings
+
+- To learn the ins and outs of HMC, please read Michael Betancourt's [A Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf)
+
+
+    

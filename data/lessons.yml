@@ -204,23 +204,45 @@ lessons:
     slidespdf: "20-random-effects-handout.pdf"
   
   - date: "Friday, Nov 18"
-    title: "Lab 9"  
-    hw: "HW 9"
-
+    title: "Lab 9" 
+    lab: "lab-09-hier.html"
+  
     
   - week:  "Week 12"
     date: "Tues, Nov 22"
     title:  "Lec 21: Mixed Effects Models"
-    
+    hw: "hw-09.html"
+    reading: "21-mixed-effects.html"
+    slides: "21-mixed-effects-handout.html"
+    slidespdf: "21-mixed-effects.pdf"
+
+
   - date: "Thurs, Nov 24"
-    title: " "
-  
+    title: "Thanksgiving Break - No Class "
   
   - week:  "Week 13"
+    title: "HMC"
+    date:  "Tues, Nov 29"
+    reading: "22-HMC-reading.html"
+    slides: "22-HMC.pdf"
+    slidespdf: "22-HMC-handout.pdf"
 
 
+  - date: "Thur, Dec 1"
+    title: "BARK: NonParametric Regression"
+    slides: "23-BARK/svm.pdf"
+    slidespdf: "23-BARK/svm-handout.pdf"
+    hw: "hw-10.html"
 
-
+  - date: "Fri, Dec 2"
+    title: "Lab 10"
+    lab: "lab-10-HMC.html"
+  
+  - week:  "Week 14"
+    title:  "Reading Period"
+    
+  - week: "Finals Period"
+    date:  "Mon, Dec 19  2pm-5pm (usual classroom)"
     
   
   
